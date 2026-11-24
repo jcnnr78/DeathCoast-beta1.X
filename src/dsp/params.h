@@ -2,7 +2,7 @@
 #ifndef TABLOR_PARAMS_H
 #define TABLOR_PARAMS_H
 
-#define TB_VERSION "northwest-1.3"
+#define TB_VERSION "northwest-1.4"
 #define TB_PARAM_COUNT 198
 #define TB_SLOTS 4
 #define TB_KNOBS 12

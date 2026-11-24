@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NorthWest v1.3: the whole parameter surface, from this one list.
+"""NorthWest v1.4: the whole parameter surface, from this one list.
 
 Writes src/dsp/params.h (engine), params.json (VST parameters, in this order = the VST index) and params.lock.
 4 monophonic MACHINES, each running a MODEL (WAVETABLE, FM, WEST COAST, ANALOG), its filter and amp envelope, and
@@ -9,7 +9,7 @@ LFO1/LFO2, an 8-row matrix with a target machine per row) is shared. Run:  pytho
 import json, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "northwest-1.3"
+VERSION = "northwest-1.4"
 SLOTS = 4
 
 MODELS     = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
