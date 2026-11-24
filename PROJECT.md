@@ -9,6 +9,15 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 2 (look) - v1.2, done (built locally, not yet on the MPC)
+- tools/gen_art.py draws images/nw/: knob strip (128 frames), wavetable view (64 frames, follows wtN_pos), filter
+  curves per type (64 frames, follow flt_freq / flt2_freq, shown per type with when=), ADSR stage pictures
+  (64 frames each), logo (Inter ExtraLight, OFL; only the PNG ships).
+- tools/gen_layout.py draws all 8 pages with frames; MAIN and ENVELOPES no longer use the Stitch backgrounds.
+- Meters (display filmstrips) were checked by the framework on an MPC One only; the when= switching of the filter
+  curves is the same mechanism as the OSC effect knobs (not yet seen on the device).
+- Unison 2 by default, max 4; factory presets carry wt1_uni/wt2_uni explicitly so they sound as before.
+
 ## Phase 1 (cleanup) - v1.1, done (not yet built on the MPC)
 - MOD page: envelope destination/amount removed; EG1/EG2 are routed only through the MATRIX. The me1/me2 dst/amt parameters are gone from the engine too.
 - Monophonic engine (one voice, last-note priority): VOICES, VOICE MODE, LEGATO removed. GLIDE MODE gains LEGATO (glide + no envelope retrigger, only between overlapping notes).

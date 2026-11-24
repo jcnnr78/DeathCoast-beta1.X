@@ -53,8 +53,8 @@
    "key": "wt1_uni",
    "name": "WT1 Unison",
    "min": 1,
-   "max": 6,
-   "default": 1,
+   "max": 4,
+   "default": 2,
    "display": "int"
   },
   {
@@ -85,8 +85,8 @@
    "key": "wt2_uni",
    "name": "WT2 Unison",
    "min": 1,
-   "max": 6,
-   "default": 1,
+   "max": 4,
+   "default": 2,
    "display": "int"
   },
   {

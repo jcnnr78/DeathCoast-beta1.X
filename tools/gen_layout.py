@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """NorthWest: builds layout.conf.
 
-MAIN and ENVELOPES keep Tablor's Stitch pages (layout.stitch6.conf, recoloured), with MAIN's unison knobs
-swapped for PAN; every other page is drawn here with framework frames. v1.1 page order:
+v1.2: every page is drawn here with framework frames (the Stitch backgrounds are gone; layout.stitch6.conf only
+gives the theme lines at its top), with NorthWest's own knob and the pictures that follow a parameter (meters)
+from tools/gen_art.py -- run that first. Page order:
 
     MAIN   OSC   FILTER   UNISON   ENVELOPES   MOD   MATRIX   GLOBAL
 
@@ -12,24 +13,36 @@ here = os.path.dirname(os.path.abspath(__file__)); root = os.path.dirname(here)
 src = open(os.path.join(root, "layout.stitch6.conf")).read()
 head, *tabs = re.split(r"(?m)^\[tab ", src)
 old = {t.split("]", 1)[0]: "[tab " + t for t in tabs}
-STRIP = "strip=images/stitch/knob_1.png frames=64"
+import importlib.util
+_spec = importlib.util.spec_from_file_location("gen_art", os.path.join(here, "gen_art.py"))
+ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)   # sizes of the pictures
+STRIP = "strip=images/nw/knob.png frames=128"
 
-def knob(cx, cy, label, key, when="", bw=0):
-    return 'knob cx=%d cy=%d r=26 label="%s" key=%s %s%s%s' % (cx, cy, label, key, STRIP,
+def knob(cx, cy, label, key, when="", bw=0, r=26):
+    return 'knob cx=%d cy=%d r=%d label="%s" key=%s %s%s%s' % (cx, cy, r, label, key, STRIP,
             (" bw=%d" % bw) if bw else "", (" when=" + when) if when else "")
+def meter(cx, cy, size, key, img, when=""):
+    return 'meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64%s' % (
+        cx, cy, size[0], size[1], key, img, (" when=" + when) if when else "")
 def popup(cx, cy, w, label, key): return 'popup cx=%d cy=%d w=%d h=44 label="%s" key=%s' % (cx, cy, w, label, key)
 def enumh(cx, cy, sw, label, key): return 'enum_h cx=%d cy=%d sw=%d sh=34 label="%s" key=%s' % (cx, cy, sw, label, key)
 def enumv(cx, cy, sw, label, key): return 'enum_v cx=%d cy=%d label="%s" key=%s sw=%d sh=22' % (cx, cy, label, key, sw)
 def frame(x, y, w, h, title): return 'frame x=%d y=%d w=%d h=%d title="%s"' % (x, y, w, h, title)
 def text(cx, cy, label, size=1.5): return 'text cx=%d cy=%d label="%s" size=%s' % (cx, cy, label, size)
 
-# ---- MAIN: table, position, level, tune, PAN (unison moved to its own page) -----------------------------
-MAIN = old["MAIN"]
-for o in (1, 2):
-    MAIN = MAIN.replace('label="WT%d UNISON" key=wt%d_uni ' % (o, o), 'label="WT%d PAN" key=wt%d_pan ' % (o, o))
-MAIN = re.sub(r'(?m)^qlinks .*$', 'qlinks "MAIN" = wt1_select,-,-,-,wt1_pos,wt1_level,wt1_tune,wt1_pan,'
-              'wt2_select,-,-,-,wt2_pos,wt2_level,wt2_tune,wt2_pan', MAIN)
-assert "wt1_uni" not in MAIN and "wt2_pan" in MAIN
+# ---- MAIN: table, wave view following POSITION, level, tune, pan ------------------------------------------
+L = ["[tab MAIN]"]
+WV = ART.WAVE
+for o, y0 in ((1, 92), (2, 404)):
+    p = "wt%d" % o
+    L += [frame(10, y0, 1258, 304, "OSC %d" % o),
+          'stepper cx=331 cy=%d w=600 h=42 label="" key=%s_select get=%s_name style=dotmatrix' % (y0 + 86, p, p),
+          meter(331, y0 + 216, WV, p + "_pos", "wave_%dx%d.png" % WV)]
+    for i, (lab, k) in enumerate((("POSITION", "_pos"), ("LEVEL", "_level"), ("TUNE", "_tune"), ("PAN", "_pan"))):
+        L.append(knob(719 + i * 152, y0 + 160, "WT%d %s" % (o, lab), p + k, r=28))
+L.append('qlinks "MAIN" = wt1_select,-,-,-,wt1_pos,wt1_level,wt1_tune,wt1_pan,'
+         'wt2_select,-,-,-,wt2_pos,wt2_level,wt2_tune,wt2_pan')
+MAIN = "\n".join(L) + "\n"
 
 # ---- OSC: effect mode per oscillator, sub, noise ---------------------------------------------------------
 L = ["[tab OSC]"]
@@ -52,20 +65,40 @@ L += [frame(896, 92, 372, 304, "SUB"),
       'sub_level,sub_wave,sub_tune,-,noise_level,noise_type,-,-']
 OSC = "\n".join(L) + "\n"
 
-# ---- FILTER (two filters + routing) --------------------------------------------------------------------
-L = ["[tab FILTER]", frame(10, 92, 1258, 304, "FILTER 1"),
-     popup(120, 242, 150, "TYPE", "flt_type")]
+# ---- FILTER (two filters + routing), each with its response curve following CUTOFF / FREQ ---------------------
+FS = ART.FLT
+L = ["[tab FILTER]", frame(10, 92, 1258, 304, "FILTER 1"), popup(120, 242, 150, "TYPE", "flt_type")]
+for i, t in enumerate(ART.FLT_TYPES):
+    L.append(meter(370, 244, FS, "flt_freq", "flt_%s_%dx%d.png" % ((t,) + FS), "flt_type:%d" % i))
 for i, (lab, key) in enumerate((("CUTOFF", "flt_freq"), ("RESONANCE", "flt_res"), ("FILTER ENV", "flt_env"),
                                 ("KEY TRACK", "flt_key"), ("VEL TRACK", "flt_vel"))):
-    L.append(knob(330 + i * 190, 237, lab, key))
-L += [frame(10, 404, 900, 304, "FILTER 2"), popup(120, 554, 150, "TYPE", "flt2_type")]
+    L.append(knob(600 + i * 140, 237, lab, key))
+L += [frame(10, 404, 976, 304, "FILTER 2"), popup(120, 554, 150, "TYPE", "flt2_type"),
+      text(370, 556, "OFF", 1.4) + " when=flt2_type:0"]
+for i, t in enumerate(ART.FLT_TYPES):
+    L.append(meter(370, 556, FS, "flt2_freq", "flt_%s_%dx%d.png" % ((t,) + FS), "flt2_type:%d" % (i + 1)))
 for i, (lab, key) in enumerate((("FREQ", "flt2_freq"), ("RESONANCE", "flt2_res"), ("ENV", "flt2_env"),
                                 ("KEY TRACK", "flt2_key"))):
-    L.append(knob(330 + i * 140, 549, lab, key, bw=120))
-L += [frame(916, 404, 352, 304, "ROUTING"),
-      'enum_v cx=1092 cy=560 label="" key=flt_route sw=130 sh=34',
+    L.append(knob(570 + i * 115, 549, lab, key, bw=110))
+L += [frame(992, 404, 276, 304, "ROUTING"),
+      'enum_v cx=1130 cy=560 label="" key=flt_route sw=130 sh=34',
       'qlinks "FILTER" = flt_freq,flt_res,flt_type,-,flt_env,flt_key,flt_vel,-,flt2_freq,flt2_res,flt2_type,-,flt2_env,flt2_key,flt_route,-']
 FILTER = "\n".join(L) + "\n"
+
+# ---- ENVELOPES: amp + filter ADSR, a small picture of each stage over its knob -----------------------------------
+ES = ART.ENV
+L = ["[tab ENVELOPES]"]
+for title, p, y0 in (("AMP ENV", "vca", 92), ("FILTER ENV", "flt", 404)):
+    L.append(frame(10, y0, 900, 304, title))
+    for i, (st, lab) in enumerate((("a", "ATTACK"), ("d", "DECAY"), ("s", "SUSTAIN"), ("r", "RELEASE"))):
+        cx = 120 + i * 225
+        L += [meter(cx, y0 + 88, ES, "%s_%s" % (p, st), "env_%s_%dx%d.png" % ((st,) + ES)),
+              knob(cx, y0 + 200, "%s %s" % ("VCA" if p == "vca" else "FLT", lab), "%s_%s" % (p, st))]
+L += [frame(916, 92, 352, 304, "VELOCITY"), knob(1092, 245, "VELOCITY", "vca_vel"),
+      frame(916, 404, 352, 304, ""),
+      'art file=images/nw/logo.png x=%d y=%d w=%d h=%d' % ((1092 - 158, 556 - 30, 316, 60)),
+      'qlinks "ENVELOPES" = vca_a,vca_d,vca_s,vca_r,vca_vel,-,-,-,flt_a,flt_d,flt_s,flt_r']
+ENVELOPES = "\n".join(L) + "\n"
 
 # ---- UNISON: the whole stack of each oscillator in one block (was split over MAIN, SHAPE and OSC FX) ----
 L = ["[tab UNISON]"]
@@ -121,7 +154,7 @@ L = ["[tab GLOBAL]",
      'qlinks "GLOBAL" = glide,glide_mode,-,-,pb_range,volume,-,-,-,-,-,-,preset']
 GLOBAL = "\n".join(L) + "\n"
 
-order = [MAIN, OSC, FILTER, UNISON, old["ENVELOPES"], MOD, MATRIX, GLOBAL]
+order = [MAIN, OSC, FILTER, UNISON, ENVELOPES, MOD, MATRIX, GLOBAL]
 out = head.rstrip("\n") + "\n\n" + "\n".join(s.rstrip("\n") + "\n" for s in order)
 open(os.path.join(root, "layout.conf"), "w").write(out)
 print("layout.conf written:", len(order), "tabs")

@@ -134,6 +134,7 @@ REMOVE = ["voice_mode", "voices", "legato",                       # mono slot: G
 DST_GONE = ["WT1 Bend", "WT2 Bend", "WT1 Formant", "WT2 Formant"]
 DST2 = [d for d in DST if d not in DST_GONE]
 GLIDE_MODES = ["Off", "Glissando", "Portamento", "Legato"]
+UNI_MAX, UNI_DEFAULT = 4, 2      # v1.2: unison 2 voices by default, at most 4 (CPU on the MPC One)
 
 h = open(os.path.join(ROOT, "src/dsp/params.h")).read()
 # rows of tb_params, in order
@@ -143,6 +144,7 @@ rows = [r for r in rows if re.search(r'\{ "([a-z0-9_]+)"', r).group(1) not in RE
 keys = [re.search(r'\{ "([a-z0-9_]+)"', r).group(1) for r in rows]
 dst_arr = re.search(r'\{ "mm1_dst", TB_ENUM, 0, \d+, 0, \d+, (\w+) \}', h).group(1)
 rows = [re.sub(r'(\{ "mm\d_dst", TB_ENUM, 0, )\d+(, 0, )\d+', r"\g<1>%d\g<2>%d" % (len(DST2) - 1, len(DST2)), r) for r in rows]
+rows = [re.sub(r'(\{ "wt[12]_uni", TB_INT, 1, )\d+, \d+', r"\g<1>%d, %d" % (UNI_MAX, UNI_DEFAULT), r) for r in rows]
 rows = [re.sub(r'(\{ "glide_mode", TB_ENUM, 0, )\d+(, 0, )\d+', r"\g<1>%d\g<2>%d" % (len(GLIDE_MODES) - 1, len(GLIDE_MODES)), r) for r in rows]
 h = h[:body.start(2)] + "\n".join(rows) + h[body.end(2):]
 h = re.sub(r"static const char \*const %s\[\] = \{[^}]*\};" % dst_arr,
@@ -157,7 +159,7 @@ h = re.sub(r"static const char \*const tb_opts_6\[\] = \{[^}]*\};\n", "", h)
 en = re.search(r"enum \{\n(    TB_P_.*?)\n\};", h, re.S)
 h = h[:en.start(1)] + "\n".join("    TB_P_%s = %d," % (k.upper(), i) for i, k in enumerate(keys)) + h[en.end(1):]
 h = re.sub(r"#define TB_PARAM_COUNT \d+", "#define TB_PARAM_COUNT %d" % len(keys), h)
-h = re.sub(r'#define TB_VERSION "[^"]*"', '#define TB_VERSION "northwest-1.1"', h)
+h = re.sub(r'#define TB_VERSION "[^"]*"', '#define TB_VERSION "northwest-1.2"', h)
 # the two JSON strings (chain_params for hosts, ui_hierarchy for Move's stock UI)
 def edit_json(h, var, fn):
     m = re.search(r'(%s =\n    ")(.*?)(";\n)' % var, h, re.S)
@@ -169,7 +171,7 @@ def fix_entry(e):
     if e.get("key", "").endswith("_dst") and e["key"].startswith("mm"): e["options"] = DST2
     if e.get("key") in ("wt1_fx_mode", "wt2_fx_mode"): e["options"] = FX_MODES
     if e.get("key") == "glide_mode": e["options"] = GLIDE_MODES
-    if e.get("key") in ("wt1_uni", "wt2_uni"): e["max"] = 6
+    if e.get("key") in ("wt1_uni", "wt2_uni"): e["max"] = UNI_MAX
     return e
 h = edit_json(h, "tb_chain_params_json", lambda j: [fix_entry(e) for e in j if e["key"] not in REMOVE])
 def hier(j):
@@ -188,7 +190,8 @@ for fn in ("params.json", "params.base.json"):
         if p["key"].startswith("mm") and p["key"].endswith("_dst"): p["options"] = [o.upper() for o in DST2] if up else DST2
         if p["key"] in ("wt1_fx_mode", "wt2_fx_mode"): p["options"] = [o.upper() for o in FX_MODES] if up else FX_MODES
         if p["key"] == "glide_mode": p["options"] = [o.upper() for o in GLIDE_MODES] if up else GLIDE_MODES
+        if p["key"] in ("wt1_uni", "wt2_uni"): p["max"], p["default"] = UNI_MAX, UNI_DEFAULT
     json.dump(j, open(os.path.join(ROOT, fn), "w"), indent=1)
 lock = [k for k in open(os.path.join(ROOT, "params.lock")).read().split() if k not in REMOVE]
 open(os.path.join(ROOT, "params.lock"), "w").write("\n".join(lock) + "\n")
-print("NorthWest v1.1: removed", len(REMOVE), "-> engine params", len(keys), "| VST params", len(lock))
+print("NorthWest: removed", len(REMOVE), "-> engine params", len(keys), "| VST params", len(lock))

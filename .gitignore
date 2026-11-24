@@ -3,3 +3,4 @@ logs/
 preview/
 library/
 dist/
+__pycache__/

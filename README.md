@@ -10,6 +10,16 @@
 - Pages (8): MAIN (table, position, level, tune, pan) · OSC (effect, sub, noise) · FILTER · UNISON (voices, detune, spread, mode for each oscillator) · ENVELOPES · MOD · MATRIX · GLOBAL (glide, bend range, volume, preset).
 - 96 engine parameters (was 107), 106 VST parameters (was 117).
 
+## v1.2 (look)
+
+- Own knob: flat round disc, thin orange value ring, short pointer (`images/nw/knob.png`, drawn by `tools/gen_art.py`).
+- MAIN: a wavetable view under each table name that follows POSITION (a generic morph, not the selected table's real shape).
+- FILTER: each filter shows its type's response curve, its corner following CUTOFF / FREQ (resonance not drawn).
+- ENVELOPES: a small picture of each stage (attack, decay, sustain, release) over its knob; the NorthWest logo.
+- Every page is drawn with framework frames; the Stitch backgrounds (and their stale TABLOR texts) are gone.
+- Unison: 2 voices by default, at most 4 (factory presets keep the unison they had).
+- Run `python3 tools/gen_art.py` then `python3 tools/gen_layout.py` after changing a picture or a page.
+
 The text below the line is upstream Tablor's README, kept for reference; its page list is out of date.
 
 ---
