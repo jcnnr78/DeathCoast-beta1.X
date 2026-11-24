@@ -1,0 +1,36 @@
+{
+  "name": "[SYN] NorthWest",
+  "vendor": "NorthWest",
+  "uid": "NWst",
+  "so": "northwest.so",
+  "programs": {"param": "preset", "name": "preset_name", "count": "preset_count", "name_at": "preset_name_at"},
+  "module": "src/module.json",
+  "build": {
+    "sources": [
+      "src/dsp/tablor_plugin.cpp",
+      "src/dsp/engine.cpp",
+      "src/dsp/wt/loader.cpp",
+      "src/ported/wavetable.cpp",
+      "src/ported/audiofilter/ParametricCreator.cpp"
+    ],
+    "cflags": [
+      "-Isrc",
+      "-Isrc/dsp",
+      "-Isrc/host",
+      "-Isrc/ported",
+      "-std=c++17",
+      "-DMPC_PORT"
+    ],
+    "libs": [
+      "-lm"
+    ]
+  },
+  "params": "params.json",
+  "layout": "layout.conf",
+  "art": "html",
+  "defines": {
+    "QLINK_TRAVEL": 1, "SET_IF_CHANGED": 1,
+    "MODULE_DIR": "\"/sdcard/vst/northwest\"",
+    "MODULE_SUBDIR": "\"northwest\""
+  }
+}

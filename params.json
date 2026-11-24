@@ -1,0 +1,1177 @@
+{
+ "name": "Tablor",
+ "params": [
+  {
+   "key": "wt1_pos",
+   "name": "WT1 POSITION",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_pos",
+   "name": "WT2 POSITION",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_level",
+   "name": "WT1 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "wt2_level",
+   "name": "WT2 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_tune",
+   "name": "WT1 TUNE",
+   "min": -24,
+   "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_tune",
+   "name": "WT2 TUNE",
+   "min": -24,
+   "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_uni",
+   "name": "WT1 UNISON",
+   "min": 1,
+   "max": 6,
+   "default": 1,
+   "display": "int"
+  },
+  {
+   "key": "wt1_detune",
+   "name": "WT1 DETUNE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_spread",
+   "name": "WT1 SPREAD",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_pan",
+   "name": "WT1 PAN",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "wt2_uni",
+   "name": "WT2 UNISON",
+   "min": 1,
+   "max": 6,
+   "default": 1,
+   "display": "int"
+  },
+  {
+   "key": "wt2_detune",
+   "name": "WT2 DETUNE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_spread",
+   "name": "WT2 SPREAD",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_pan",
+   "name": "WT2 PAN",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "sub_tune",
+   "name": "SUB TUNE",
+   "min": -24,
+   "max": 24,
+   "default": -12,
+   "display": "int"
+  },
+  {
+   "key": "flt_freq",
+   "name": "CUTOFF",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int"
+  },
+  {
+   "key": "flt_res",
+   "name": "RESONANCE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "flt_type",
+   "name": "FILTER TYPE",
+   "options": [
+    "LP 12",
+    "LP 24",
+    "HP 12",
+    "HP 24",
+    "BP 12",
+    "BP 24",
+    "NOTCH 12",
+    "NOTCH 24"
+   ],
+   "default": 1
+  },
+  {
+   "key": "sub_level",
+   "name": "SUB LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "sub_wave",
+   "name": "SUB WAVE",
+   "options": [
+    "SINE",
+    "TRIANGLE",
+    "SAW",
+    "SQUARE",
+    "PULSE",
+    "PULSE TR"
+   ],
+   "default": 0
+  },
+  {
+   "key": "noise_level",
+   "name": "NOISE LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "noise_type",
+   "name": "NOISE TYPE",
+   "options": [
+    "WHITE",
+    "PINK"
+   ],
+   "default": 0
+  },
+  {
+   "key": "vca_a",
+   "name": "VCA ATTACK",
+   "min": 0,
+   "max": 127,
+   "default": 51,
+   "display": "int"
+  },
+  {
+   "key": "vca_d",
+   "name": "VCA DECAY",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "vca_s",
+   "name": "VCA SUSTAIN",
+   "min": 0,
+   "max": 127,
+   "default": 102,
+   "display": "int"
+  },
+  {
+   "key": "vca_r",
+   "name": "VCA RELEASE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "flt_a",
+   "name": "FLT ATTACK",
+   "min": 0,
+   "max": 127,
+   "default": 51,
+   "display": "int"
+  },
+  {
+   "key": "flt_d",
+   "name": "FLT DECAY",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "flt_s",
+   "name": "FLT SUSTAIN",
+   "min": 0,
+   "max": 127,
+   "default": 102,
+   "display": "int"
+  },
+  {
+   "key": "flt_r",
+   "name": "FLT RELEASE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me1_a",
+   "name": "EG1 A",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me1_d",
+   "name": "EG1 D",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me1_s",
+   "name": "EG1 S",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me1_r",
+   "name": "EG1 R",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me2_a",
+   "name": "EG2 A",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me2_d",
+   "name": "EG2 D",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me2_s",
+   "name": "EG2 S",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me2_r",
+   "name": "EG2 R",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "vca_vel",
+   "name": "VELOCITY",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "flt_key",
+   "name": "KEY TRACK",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "flt_vel",
+   "name": "VEL TRACK",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "flt_env",
+   "name": "FILTER ENV",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "glide",
+   "name": "GLIDE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "glide_mode",
+   "name": "GLIDE MODE",
+   "options": [
+    "OFF",
+    "GLISSANDO",
+    "PORTAMENTO",
+    "LEGATO"
+   ],
+   "default": 0
+  },
+  {
+   "key": "pb_range",
+   "name": "BEND RANGE",
+   "min": 0,
+   "max": 24,
+   "default": 2,
+   "display": "int"
+  },
+  {
+   "key": "volume",
+   "name": "VOLUME",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "wt1_select",
+   "refresh_display": true,
+   "name": "WT1 TABLE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "type": "stepper"
+  },
+  {
+   "key": "wt1_select_prev",
+   "name": "WT1 PREV",
+   "momentary": true,
+   "step_of": "wt1_select",
+   "step_delta": -1
+  },
+  {
+   "key": "wt1_select_next",
+   "name": "WT1 NEXT",
+   "momentary": true,
+   "step_of": "wt1_select",
+   "step_delta": 1
+  },
+  {
+   "key": "wt1_name",
+   "name": "WT1 NAME",
+   "min": 0,
+   "max": 0,
+   "display": "string",
+   "type": "readout"
+  },
+  {
+   "key": "wt2_select",
+   "refresh_display": true,
+   "name": "WT2 TABLE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "type": "stepper"
+  },
+  {
+   "key": "wt2_select_prev",
+   "name": "WT2 PREV",
+   "momentary": true,
+   "step_of": "wt2_select",
+   "step_delta": -1
+  },
+  {
+   "key": "wt2_select_next",
+   "name": "WT2 NEXT",
+   "momentary": true,
+   "step_of": "wt2_select",
+   "step_delta": 1
+  },
+  {
+   "key": "wt2_name",
+   "name": "WT2 NAME",
+   "min": 0,
+   "max": 0,
+   "display": "string",
+   "type": "readout"
+  },
+  {
+   "key": "preset",
+   "refresh_display": true,
+   "name": "PRESET",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "type": "stepper"
+  },
+  {
+   "key": "preset_prev",
+   "name": "PREV PRESET",
+   "momentary": true,
+   "step_of": "preset",
+   "step_delta": -1
+  },
+  {
+   "key": "preset_next",
+   "name": "NEXT PRESET",
+   "momentary": true,
+   "step_of": "preset",
+   "step_delta": 1
+  },
+  {
+   "key": "preset_name",
+   "name": "PRESET NAME",
+   "min": 0,
+   "max": 0,
+   "display": "string",
+   "type": "readout"
+  },
+  {
+   "key": "wt1_fx_mode",
+   "name": "WT1 FX MODE",
+   "options": [
+    "NONE",
+    "FM",
+    "SYNC",
+    "FOLD",
+    "WARP"
+   ],
+   "default": 0
+  },
+  {
+   "key": "wt1_fx1",
+   "name": "WT1 FX1",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_fx2",
+   "name": "WT1 FX2",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt1_uni_mode",
+   "name": "WT1 UNI MODE",
+   "options": [
+    "CLASSIC",
+    "SHIMMER",
+    "NOISE",
+    "PHASE SYNC",
+    "POS SPREAD",
+    "RANDOM"
+   ],
+   "default": 0
+  },
+  {
+   "key": "wt2_fx_mode",
+   "name": "WT2 FX MODE",
+   "options": [
+    "NONE",
+    "FM",
+    "SYNC",
+    "FOLD",
+    "WARP"
+   ],
+   "default": 0
+  },
+  {
+   "key": "wt2_fx1",
+   "name": "WT2 FX1",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_fx2",
+   "name": "WT2 FX2",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "wt2_uni_mode",
+   "name": "WT2 UNI MODE",
+   "options": [
+    "CLASSIC",
+    "SHIMMER",
+    "NOISE",
+    "PHASE SYNC",
+    "POS SPREAD",
+    "RANDOM"
+   ],
+   "default": 0
+  },
+  {
+   "key": "flt2_type",
+   "name": "FILTER2 TYPE",
+   "options": [
+    "OFF",
+    "LP 12",
+    "LP 24",
+    "HP 12",
+    "HP 24",
+    "BP 12",
+    "BP 24",
+    "NOTCH 12",
+    "NOTCH 24"
+   ],
+   "default": 0
+  },
+  {
+   "key": "flt2_freq",
+   "name": "FILTER2 FREQ",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "flt2_res",
+   "name": "FILTER2 RES",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "flt2_env",
+   "name": "FILTER2 ENV",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "flt2_key",
+   "name": "FILTER2 KEY",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "flt_route",
+   "name": "FILTER ROUTE",
+   "options": [
+    "SERIAL",
+    "PARALLEL",
+    "SPLIT"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo1_shape",
+   "name": "LFO1 SHAPE",
+   "options": [
+    "SINE",
+    "TRIANGLE",
+    "SAW UP",
+    "SAW DOWN",
+    "SQUARE",
+    "S&H",
+    "SMOOTH RND"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo1_sync",
+   "name": "LFO1 SYNC",
+   "options": [
+    "FREE",
+    "SYNC"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo1_rate",
+   "name": "LFO1 RATE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "lfo1_fade",
+   "name": "LFO1 FADE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "lfo1_retrig",
+   "name": "LFO1 RETRIG",
+   "options": [
+    "KEY",
+    "FREE"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo2_shape",
+   "name": "LFO2 SHAPE",
+   "options": [
+    "SINE",
+    "TRIANGLE",
+    "SAW UP",
+    "SAW DOWN",
+    "SQUARE",
+    "S&H",
+    "SMOOTH RND"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo2_sync",
+   "name": "LFO2 SYNC",
+   "options": [
+    "FREE",
+    "SYNC"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo2_rate",
+   "name": "LFO2 RATE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "lfo2_fade",
+   "name": "LFO2 FADE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "lfo2_retrig",
+   "name": "LFO2 RETRIG",
+   "options": [
+    "KEY",
+    "FREE"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm1_src",
+   "name": "MOD1 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm1_dst",
+   "name": "MOD1 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm1_amt",
+   "name": "MOD1 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm2_src",
+   "name": "MOD2 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm2_dst",
+   "name": "MOD2 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm2_amt",
+   "name": "MOD2 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm3_src",
+   "name": "MOD3 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm3_dst",
+   "name": "MOD3 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm3_amt",
+   "name": "MOD3 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm4_src",
+   "name": "MOD4 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm4_dst",
+   "name": "MOD4 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm4_amt",
+   "name": "MOD4 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm5_src",
+   "name": "MOD5 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm5_dst",
+   "name": "MOD5 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm5_amt",
+   "name": "MOD5 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm6_src",
+   "name": "MOD6 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm6_dst",
+   "name": "MOD6 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm6_amt",
+   "name": "MOD6 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm7_src",
+   "name": "MOD7 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm7_dst",
+   "name": "MOD7 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm7_amt",
+   "name": "MOD7 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm8_src",
+   "name": "MOD8 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm8_dst",
+   "name": "MOD8 DEST",
+   "options": [
+    "NONE",
+    "WT1 POS",
+    "WT2 POS",
+    "WT1 LEVEL",
+    "WT2 LEVEL",
+    "WT1 TUNE",
+    "WT2 TUNE",
+    "WT1 PAN",
+    "WT2 PAN",
+    "FILTER FREQ",
+    "FILTER RES",
+    "SUB LEVEL",
+    "NOISE LEVEL",
+    "AMP",
+    "PITCH",
+    "WT1 FX1",
+    "WT1 FX2",
+    "WT2 FX1",
+    "WT2 FX2",
+    "UNI DETUNE",
+    "FILTER2 FREQ",
+    "FILTER2 RES"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm8_amt",
+   "name": "MOD8 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  }
+ ]
+}

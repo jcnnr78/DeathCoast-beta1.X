@@ -1,0 +1,22 @@
+# NorthWest - project notes
+
+- 4 mono slots; each slot picks a machine (WAVETABLE, FM, WEST COAST, ANALOG), repeats allowed; machine + params stored in the preset.
+- Note routing: layers for now (zones / MIDI channel per slot later).
+- FM: TONE/DRUM switch in one voice; velocity modulates FM index and pitch.
+- ANALOG (Moog DFAM style): 2 oscillators (sine/tri/saw/pulse), FM 1->2, sync, shared pitch EG, noise mix, 24 dB ladder LP/HP, decay-only envelopes.
+- WEST COAST shares oscillators/mixer/envelopes with ANALOG: wavefolder + LPG instead of ladder.
+- Target: MPC One. CPU figures are estimates until measured with tools/bench.sh.
+- Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
+- 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
+
+## Phase 1 (cleanup) - v1.1, done (not yet built on the MPC)
+- MOD page: envelope destination/amount removed; EG1/EG2 are routed only through the MATRIX. The me1/me2 dst/amt parameters are gone from the engine too.
+- Monophonic engine (one voice, last-note priority): VOICES, VOICE MODE, LEGATO removed. GLIDE MODE gains LEGATO (glide + no envelope retrigger, only between overlapping notes).
+- Unison in one block: page UNISON = VOICES, DETUNE, SPREAD, MODE per oscillator. PAN moved to MAIN (where UNISON was).
+- BEND/FORMANT vs CLASSIC/MODERN: decided. Effect modes are NONE / FM / SYNC / FOLD / WARP; WARP = bend (FX1) + formant (FX2), upper half of the old knobs only. Matrix destinations WT1/WT2 BEND/FORMANT removed (use WTn FX1/FX2).
+- SUB and NOISE stay in the wavetable machine (page OSC); the ANALOG machine gets its own noise in v2.2.
+- FLT ENV / AMP ENV stay fixed per voice; EG1/EG2 are matrix sources only.
+- Page VOICE renamed GLOBAL; pages SHAPE and OSC FX became UNISON and OSC. Pages UNISON, OSC and GLOBAL are drawn with framework frames (no Stitch background).
+- Factory presets migrated with tools/migrate_v11.py.
+- Checks (PC, offline): 13 patches bit-identical to the fase1 engine in mono (tools/offline/regress_v11.sh); every preset and a matrix-at-maximum patch render with clean release tails; preset -> state -> reload gives the same state through the plugin API; CPU 0.3 % (typical) / 0.8 % (heavy) of one x86 core for the mono voice.
+- Not touched yet: src/ui_pages.json and src/web_ui.html (Move-only UIs, not used by the MPC build) still list the removed parameters.

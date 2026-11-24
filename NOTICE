@@ -1,0 +1,9 @@
+NorthWest is a modified version of Tablor (https://github.com/athousanddetails/schwung-tablor,
+commit d51887187f7a03f7b32cc4a74f5c60c5532e65fa), vendored through
+https://github.com/saustin2010/mpc-vst-tablor. Tablor itself is after Wavetable by
+Roland Rabien (FigBug) and uses AudioFilter (Michael Massberg), dr_flac (David Reid) and pink noise code
+(Thomas Merchant, MIT). All are BSD-3-Clause / MIT / public domain; see LICENSE, which is kept unchanged
+as the BSD-3-Clause terms require.
+
+Changes made for NorthWest are listed in WAVETABLOR.md.
+Neither the names of the copyright holders nor of the contributors are used to endorse NorthWest.
