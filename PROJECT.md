@@ -9,7 +9,14 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
-## Phase 3 (machines) - v1.3 (built locally, not yet on the MPC)
+## Phase 3 (machines) - v1.3 (1.0.3 tested on the MPC One by the user, 24-nov)
+- After the first test: page names carry the machine number; WAVETABLE knobs regrouped so SUB is the right-hand 2x2
+  block on its own panel (K5 SUB LEVEL, K6 SUB DRIVE (new), K11 SUB OCTAVE, K12 SUB WAVE; SPREAD moved to K8, 64 =
+  half); a POSITION cursor drawn over the table picture (posmark, a second meter on top of it); header selectors are
+  steppers (MPC's data wheel turns a touched stepper box; a popup's box is its open flag, so the wheel can't turn it).
+- Framework gotcha (offline, 2026-11-24): a stepper with when= got blank arrows, because the builder cuts the arrow
+  images from the last layer it drew. tools/gen_layout.py fix_arrows(): the arrows go on the page background, each
+  model patches the others' arrows, and each machine page ends with a neutral layer (an invisible pixel, when muted).
 - Numbered 1.3, not 2.0 (user, 24-nov). Names: MACHINE 1-4, each runs a MODEL (WAVETABLE, FM, WEST COAST, ANALOG).
   Keys: mN_* (mN_model, mN_k1..k12, ...); matrix rows target ALL or M1-M4 (mmN_slot).
 - Pages by machine, not by model: MIX, MACHINE 1-4, MOD, MATRIX, GLOBAL (8 Fn keys).

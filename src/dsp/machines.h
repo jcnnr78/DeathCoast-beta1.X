@@ -47,13 +47,14 @@ inline float velocityToGain(float velocity, float sensitivity)
 inline int slotParam(int slot, int s1Index) { return s1Index + slot * TB_SLOT_STRIDE; }
 
 /* ------------------------------------------------------------------ knob meanings */
-/* WAVETABLE: K1 POSITION, K2 FX 1, K3 FX 2, K4 DETUNE, K5 SPREAD, K6 SUB LEVEL, K7 UNISON (1..4),
- *            K8 SUB OCTAVE (-2, -1, 0), K9 SUB WAVE
+/* WAVETABLE: K1 POSITION, K2 FX 1, K3 FX 2, K4 DETUNE, K7 UNISON (1..4), K8 SPREAD (64 = half),
+ *            SUB (the right-hand 2x2 block, one Q-Link column): K5 SUB LEVEL, K6 SUB DRIVE,
+ *            K11 SUB OCTAVE (-2, -1, 0), K12 SUB WAVE
  * FM:        K1-K3 OP2-OP4 LEVEL, K4 FEEDBACK, K5 PITCH ENV, K6 NOISE, K7 MOD DECAY,
  *            K8-K10 OP2-OP4 RATIO, K11 PITCH DECAY, K12 VEL > FM
  * Matrix TIMBRE A..D = K1..K4. */
 inline int wtUnison(float v) { return 1 + (int) std::lround(v / 127.0f * 3.0f); }
-/* sub: K8 in 3 steps (default 64 = one octave down), K9 in 6 (default 64 = SINE) */
+/* sub: OCTAVE in 3 steps (default 43 = one octave down), WAVE in 6 (default 64 = SINE) */
 inline int wtSubOct(float v) { return v < 43.0f ? -2 : v < 86.0f ? -1 : 0; }
 inline int wtSubWave(float v) { return std::clamp((int) (v * 6.0f / 128.0f), 0, 5); }
 inline const char *wtSubWaveName(int i)
@@ -75,8 +76,8 @@ inline float fmDecaySeconds(float v) { return 0.005f * std::pow(800.0f, v / 127.
 
 inline const char *knobName(int machine, int k, int fxMode)
 {
-    static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE",
-                                  "SUB WAVE", "-", "-", "-" };
+    static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SUB LEVEL", "SUB DRIVE", "UNISON", "SPREAD",
+                                  "-", "-", "SUB OCTAVE", "SUB WAVE" };
     static const char *fxn[5][2] = { { "FX 1", "FX 2" }, { "FM AMOUNT", "FM RATIO" }, { "SYNC", "PULSE WIDTH" },
                                      { "ASYMMETRY", "FOLD" }, { "BEND", "FORMANT" } };
     static const char *fm[12] = { "OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
@@ -93,8 +94,8 @@ inline const char *knobName(int machine, int k, int fxMode)
 inline void knobText(char *buf, int len, int machine, int k, float v)
 {
     if (machine == M_WAVETABLE && k == 6) { snprintf(buf, len, "%d VOICES", wtUnison(v)); return; }
-    if (machine == M_WAVETABLE && k == 7) { snprintf(buf, len, "%d OCT", wtSubOct(v)); return; }
-    if (machine == M_WAVETABLE && k == 8) { snprintf(buf, len, "%s", wtSubWaveName(wtSubWave(v))); return; }
+    if (machine == M_WAVETABLE && k == 10) { snprintf(buf, len, "%d OCT", wtSubOct(v)); return; }
+    if (machine == M_WAVETABLE && k == 11) { snprintf(buf, len, "%s", wtSubWaveName(wtSubWave(v))); return; }
     if (machine == M_FM) {
         if (k >= 7 && k <= 9) { snprintf(buf, len, "x%.2f", (double) fmRatio(v)); return; }
         if (k == 6 && v >= 126.5f) { snprintf(buf, len, "HOLD"); return; }
@@ -145,7 +146,7 @@ public:
         vp.voices   = std::clamp(wtUnison(K[6]), 1, 4);
         vp.position = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
         vp.detune   = std::clamp(potDetune(K[3]) + mo[MD_TD], 0.0f, 1.0f);
-        vp.spread   = pot01(K[4]);
+        vp.spread   = pot01(K[7]);
         vp.gain = 1.0f; vp.pan = 0.0f;
         vp.mode = std::clamp((int) P[slotParam(slot, TB_P_M1_WT_UMODE)], 0, UNI_COUNT - 1);
         const int fx = std::clamp((int) P[slotParam(slot, TB_P_M1_WT_FX)], 0, 4);
@@ -173,11 +174,11 @@ public:
         default: break;
         }
         osc.processAdding(note, vp, L, R, n);
-        /* sub oscillator: K6 level, K8 octave, K9 wave (centred, through the filter like the table) */
-        const float subLvl = potSquared(K[5]);
+        /* sub oscillator: K5 level, K6 drive, K11 octave, K12 wave (centred, through the filter like the table) */
+        const float subLvl = potSquared(K[4]);
         if (subLvl > 0.0f) {
             StereoOscillator::Params sp;
-            switch (wtSubWave(K[8])) {
+            switch (wtSubWave(K[11])) {
             case 0: sp.wave = Wave::pulse; sp.pw = 0.5f; break;
             case 1: sp.wave = Wave::pulse; sp.pw = 0.25f; break;
             case 2: sp.wave = Wave::pulse; sp.pw = 0.125f; break;
@@ -185,8 +186,18 @@ public:
             case 4: sp.wave = Wave::triangle; break;
             default: sp.wave = Wave::sawUp; break;
             }
-            sp.leftGain = sp.rightGain = subLvl;
-            sub.processAdding(note + 12.0f * (float) wtSubOct(K[7]), sp, L, R, n);
+            const float drive = pot01(K[5]);
+            const float subNote = note + 12.0f * (float) wtSubOct(K[10]);
+            if (drive <= 0.0f) {
+                sp.leftGain = sp.rightGain = subLvl;
+                sub.processAdding(subNote, sp, L, R, n);
+            } else {                                      /* DRIVE: the sub alone through a soft clipper */
+                float sb[kBlock] = {}, dummy[kBlock] = {};
+                sp.leftGain = 1.0f; sp.rightGain = 0.0f;
+                sub.processAdding(subNote, sp, sb, dummy, n);
+                const float g = 1.0f + drive * 9.0f, norm = subLvl / std::tanh(g);
+                for (int i = 0; i < n; i++) { const float y = std::tanh(sb[i] * g) * norm; L[i] += y; R[i] += y; }
+            }
         }
         if (swapped)                                      /* table swapped mid-note: fade the block in */
             for (int i = 0; i < n; i++) { float g = (float) i / (float) n; L[i] *= g; R[i] *= g; }

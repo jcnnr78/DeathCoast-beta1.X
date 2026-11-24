@@ -288,6 +288,20 @@
    "default": 0
   },
   {
+   "key": "m1_wt_fx_prev",
+   "name": "M1 WT EFFECT PREV",
+   "momentary": true,
+   "step_of": "m1_wt_fx",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_wt_fx_next",
+   "name": "M1 WT EFFECT NEXT",
+   "momentary": true,
+   "step_of": "m1_wt_fx",
+   "step_delta": 1
+  },
+  {
    "key": "m1_wt_umode",
    "name": "M1 WT UNI MODE",
    "options": [
@@ -299,6 +313,20 @@
     "RANDOM"
    ],
    "default": 0
+  },
+  {
+   "key": "m1_wt_umode_prev",
+   "name": "M1 WT UNI MODE PREV",
+   "momentary": true,
+   "step_of": "m1_wt_umode",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_wt_umode_next",
+   "name": "M1 WT UNI MODE NEXT",
+   "momentary": true,
+   "step_of": "m1_wt_umode",
+   "step_delta": 1
   },
   {
    "key": "m1_fm_algo",
@@ -316,6 +344,20 @@
    "default": 0
   },
   {
+   "key": "m1_fm_algo_prev",
+   "name": "M1 FM ALGORITHM PREV",
+   "momentary": true,
+   "step_of": "m1_fm_algo",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_fm_algo_next",
+   "name": "M1 FM ALGORITHM NEXT",
+   "momentary": true,
+   "step_of": "m1_fm_algo",
+   "step_delta": 1
+  },
+  {
    "key": "m1_fm_mode",
    "name": "M1 FM MODE",
    "options": [
@@ -323,6 +365,20 @@
     "DRUM"
    ],
    "default": 0
+  },
+  {
+   "key": "m1_fm_mode_prev",
+   "name": "M1 FM MODE PREV",
+   "momentary": true,
+   "step_of": "m1_fm_mode",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_fm_mode_next",
+   "name": "M1 FM MODE NEXT",
+   "momentary": true,
+   "step_of": "m1_fm_mode",
+   "step_delta": 1
   },
   {
    "key": "m1_osc_w1",
@@ -336,6 +392,20 @@
    "default": 2
   },
   {
+   "key": "m1_osc_w1_prev",
+   "name": "M1 OSC1 WAVE PREV",
+   "momentary": true,
+   "step_of": "m1_osc_w1",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_osc_w1_next",
+   "name": "M1 OSC1 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m1_osc_w1",
+   "step_delta": 1
+  },
+  {
    "key": "m1_osc_w2",
    "name": "M1 OSC2 WAVE",
    "options": [
@@ -347,6 +417,20 @@
    "default": 3
   },
   {
+   "key": "m1_osc_w2_prev",
+   "name": "M1 OSC2 WAVE PREV",
+   "momentary": true,
+   "step_of": "m1_osc_w2",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_osc_w2_next",
+   "name": "M1 OSC2 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m1_osc_w2",
+   "step_delta": 1
+  },
+  {
    "key": "m1_osc_sync",
    "name": "M1 OSC SYNC",
    "options": [
@@ -354,6 +438,20 @@
     "ON"
    ],
    "default": 0
+  },
+  {
+   "key": "m1_osc_sync_prev",
+   "name": "M1 OSC SYNC PREV",
+   "momentary": true,
+   "step_of": "m1_osc_sync",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_osc_sync_next",
+   "name": "M1 OSC SYNC NEXT",
+   "momentary": true,
+   "step_of": "m1_osc_sync",
+   "step_delta": 1
   },
   {
    "key": "m1_select",
@@ -674,6 +772,20 @@
    "default": 0
   },
   {
+   "key": "m2_wt_fx_prev",
+   "name": "M2 WT EFFECT PREV",
+   "momentary": true,
+   "step_of": "m2_wt_fx",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_wt_fx_next",
+   "name": "M2 WT EFFECT NEXT",
+   "momentary": true,
+   "step_of": "m2_wt_fx",
+   "step_delta": 1
+  },
+  {
    "key": "m2_wt_umode",
    "name": "M2 WT UNI MODE",
    "options": [
@@ -685,6 +797,20 @@
     "RANDOM"
    ],
    "default": 0
+  },
+  {
+   "key": "m2_wt_umode_prev",
+   "name": "M2 WT UNI MODE PREV",
+   "momentary": true,
+   "step_of": "m2_wt_umode",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_wt_umode_next",
+   "name": "M2 WT UNI MODE NEXT",
+   "momentary": true,
+   "step_of": "m2_wt_umode",
+   "step_delta": 1
   },
   {
    "key": "m2_fm_algo",
@@ -702,6 +828,20 @@
    "default": 0
   },
   {
+   "key": "m2_fm_algo_prev",
+   "name": "M2 FM ALGORITHM PREV",
+   "momentary": true,
+   "step_of": "m2_fm_algo",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_fm_algo_next",
+   "name": "M2 FM ALGORITHM NEXT",
+   "momentary": true,
+   "step_of": "m2_fm_algo",
+   "step_delta": 1
+  },
+  {
    "key": "m2_fm_mode",
    "name": "M2 FM MODE",
    "options": [
@@ -709,6 +849,20 @@
     "DRUM"
    ],
    "default": 0
+  },
+  {
+   "key": "m2_fm_mode_prev",
+   "name": "M2 FM MODE PREV",
+   "momentary": true,
+   "step_of": "m2_fm_mode",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_fm_mode_next",
+   "name": "M2 FM MODE NEXT",
+   "momentary": true,
+   "step_of": "m2_fm_mode",
+   "step_delta": 1
   },
   {
    "key": "m2_osc_w1",
@@ -722,6 +876,20 @@
    "default": 2
   },
   {
+   "key": "m2_osc_w1_prev",
+   "name": "M2 OSC1 WAVE PREV",
+   "momentary": true,
+   "step_of": "m2_osc_w1",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_osc_w1_next",
+   "name": "M2 OSC1 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m2_osc_w1",
+   "step_delta": 1
+  },
+  {
    "key": "m2_osc_w2",
    "name": "M2 OSC2 WAVE",
    "options": [
@@ -733,6 +901,20 @@
    "default": 3
   },
   {
+   "key": "m2_osc_w2_prev",
+   "name": "M2 OSC2 WAVE PREV",
+   "momentary": true,
+   "step_of": "m2_osc_w2",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_osc_w2_next",
+   "name": "M2 OSC2 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m2_osc_w2",
+   "step_delta": 1
+  },
+  {
    "key": "m2_osc_sync",
    "name": "M2 OSC SYNC",
    "options": [
@@ -740,6 +922,20 @@
     "ON"
    ],
    "default": 0
+  },
+  {
+   "key": "m2_osc_sync_prev",
+   "name": "M2 OSC SYNC PREV",
+   "momentary": true,
+   "step_of": "m2_osc_sync",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_osc_sync_next",
+   "name": "M2 OSC SYNC NEXT",
+   "momentary": true,
+   "step_of": "m2_osc_sync",
+   "step_delta": 1
   },
   {
    "key": "m2_select",
@@ -1060,6 +1256,20 @@
    "default": 0
   },
   {
+   "key": "m3_wt_fx_prev",
+   "name": "M3 WT EFFECT PREV",
+   "momentary": true,
+   "step_of": "m3_wt_fx",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_wt_fx_next",
+   "name": "M3 WT EFFECT NEXT",
+   "momentary": true,
+   "step_of": "m3_wt_fx",
+   "step_delta": 1
+  },
+  {
    "key": "m3_wt_umode",
    "name": "M3 WT UNI MODE",
    "options": [
@@ -1071,6 +1281,20 @@
     "RANDOM"
    ],
    "default": 0
+  },
+  {
+   "key": "m3_wt_umode_prev",
+   "name": "M3 WT UNI MODE PREV",
+   "momentary": true,
+   "step_of": "m3_wt_umode",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_wt_umode_next",
+   "name": "M3 WT UNI MODE NEXT",
+   "momentary": true,
+   "step_of": "m3_wt_umode",
+   "step_delta": 1
   },
   {
    "key": "m3_fm_algo",
@@ -1088,6 +1312,20 @@
    "default": 0
   },
   {
+   "key": "m3_fm_algo_prev",
+   "name": "M3 FM ALGORITHM PREV",
+   "momentary": true,
+   "step_of": "m3_fm_algo",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_fm_algo_next",
+   "name": "M3 FM ALGORITHM NEXT",
+   "momentary": true,
+   "step_of": "m3_fm_algo",
+   "step_delta": 1
+  },
+  {
    "key": "m3_fm_mode",
    "name": "M3 FM MODE",
    "options": [
@@ -1095,6 +1333,20 @@
     "DRUM"
    ],
    "default": 0
+  },
+  {
+   "key": "m3_fm_mode_prev",
+   "name": "M3 FM MODE PREV",
+   "momentary": true,
+   "step_of": "m3_fm_mode",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_fm_mode_next",
+   "name": "M3 FM MODE NEXT",
+   "momentary": true,
+   "step_of": "m3_fm_mode",
+   "step_delta": 1
   },
   {
    "key": "m3_osc_w1",
@@ -1108,6 +1360,20 @@
    "default": 2
   },
   {
+   "key": "m3_osc_w1_prev",
+   "name": "M3 OSC1 WAVE PREV",
+   "momentary": true,
+   "step_of": "m3_osc_w1",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_osc_w1_next",
+   "name": "M3 OSC1 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m3_osc_w1",
+   "step_delta": 1
+  },
+  {
    "key": "m3_osc_w2",
    "name": "M3 OSC2 WAVE",
    "options": [
@@ -1119,6 +1385,20 @@
    "default": 3
   },
   {
+   "key": "m3_osc_w2_prev",
+   "name": "M3 OSC2 WAVE PREV",
+   "momentary": true,
+   "step_of": "m3_osc_w2",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_osc_w2_next",
+   "name": "M3 OSC2 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m3_osc_w2",
+   "step_delta": 1
+  },
+  {
    "key": "m3_osc_sync",
    "name": "M3 OSC SYNC",
    "options": [
@@ -1126,6 +1406,20 @@
     "ON"
    ],
    "default": 0
+  },
+  {
+   "key": "m3_osc_sync_prev",
+   "name": "M3 OSC SYNC PREV",
+   "momentary": true,
+   "step_of": "m3_osc_sync",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_osc_sync_next",
+   "name": "M3 OSC SYNC NEXT",
+   "momentary": true,
+   "step_of": "m3_osc_sync",
+   "step_delta": 1
   },
   {
    "key": "m3_select",
@@ -1446,6 +1740,20 @@
    "default": 0
   },
   {
+   "key": "m4_wt_fx_prev",
+   "name": "M4 WT EFFECT PREV",
+   "momentary": true,
+   "step_of": "m4_wt_fx",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_wt_fx_next",
+   "name": "M4 WT EFFECT NEXT",
+   "momentary": true,
+   "step_of": "m4_wt_fx",
+   "step_delta": 1
+  },
+  {
    "key": "m4_wt_umode",
    "name": "M4 WT UNI MODE",
    "options": [
@@ -1457,6 +1765,20 @@
     "RANDOM"
    ],
    "default": 0
+  },
+  {
+   "key": "m4_wt_umode_prev",
+   "name": "M4 WT UNI MODE PREV",
+   "momentary": true,
+   "step_of": "m4_wt_umode",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_wt_umode_next",
+   "name": "M4 WT UNI MODE NEXT",
+   "momentary": true,
+   "step_of": "m4_wt_umode",
+   "step_delta": 1
   },
   {
    "key": "m4_fm_algo",
@@ -1474,6 +1796,20 @@
    "default": 0
   },
   {
+   "key": "m4_fm_algo_prev",
+   "name": "M4 FM ALGORITHM PREV",
+   "momentary": true,
+   "step_of": "m4_fm_algo",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_fm_algo_next",
+   "name": "M4 FM ALGORITHM NEXT",
+   "momentary": true,
+   "step_of": "m4_fm_algo",
+   "step_delta": 1
+  },
+  {
    "key": "m4_fm_mode",
    "name": "M4 FM MODE",
    "options": [
@@ -1481,6 +1817,20 @@
     "DRUM"
    ],
    "default": 0
+  },
+  {
+   "key": "m4_fm_mode_prev",
+   "name": "M4 FM MODE PREV",
+   "momentary": true,
+   "step_of": "m4_fm_mode",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_fm_mode_next",
+   "name": "M4 FM MODE NEXT",
+   "momentary": true,
+   "step_of": "m4_fm_mode",
+   "step_delta": 1
   },
   {
    "key": "m4_osc_w1",
@@ -1494,6 +1844,20 @@
    "default": 2
   },
   {
+   "key": "m4_osc_w1_prev",
+   "name": "M4 OSC1 WAVE PREV",
+   "momentary": true,
+   "step_of": "m4_osc_w1",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_osc_w1_next",
+   "name": "M4 OSC1 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m4_osc_w1",
+   "step_delta": 1
+  },
+  {
    "key": "m4_osc_w2",
    "name": "M4 OSC2 WAVE",
    "options": [
@@ -1505,6 +1869,20 @@
    "default": 3
   },
   {
+   "key": "m4_osc_w2_prev",
+   "name": "M4 OSC2 WAVE PREV",
+   "momentary": true,
+   "step_of": "m4_osc_w2",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_osc_w2_next",
+   "name": "M4 OSC2 WAVE NEXT",
+   "momentary": true,
+   "step_of": "m4_osc_w2",
+   "step_delta": 1
+  },
+  {
    "key": "m4_osc_sync",
    "name": "M4 OSC SYNC",
    "options": [
@@ -1512,6 +1890,20 @@
     "ON"
    ],
    "default": 0
+  },
+  {
+   "key": "m4_osc_sync_prev",
+   "name": "M4 OSC SYNC PREV",
+   "momentary": true,
+   "step_of": "m4_osc_sync",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_osc_sync_next",
+   "name": "M4 OSC SYNC NEXT",
+   "momentary": true,
+   "step_of": "m4_osc_sync",
+   "step_delta": 1
   },
   {
    "key": "m4_select",
