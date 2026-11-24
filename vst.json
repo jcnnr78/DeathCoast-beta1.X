@@ -7,7 +7,7 @@
   "module": "src/module.json",
   "build": {
     "sources": [
-      "src/dsp/tablor_plugin.cpp",
+      "src/dsp/northwest_plugin.cpp",
       "src/dsp/engine.cpp",
       "src/dsp/wt/loader.cpp",
       "src/ported/wavetable.cpp",

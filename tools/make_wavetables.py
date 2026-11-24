@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Generates the WaveTablor wavetable library (original, procedural, no samples from anywhere).
+"""Generates the NorthWest wavetable library (original, procedural, no samples from anywhere).
 
-    python3 tools/make_wavetables.py            # writes wavetables/WaveTablor/<Pack>/<Name> 2048.wav
+    python3 tools/make_wavetables.py            # writes wavetables/NorthWest/<Pack>/<Name> 2048.wav
 
 Every table is 64 frames x 2048 samples, 16-bit mono WAV. The file name ends in " 2048" so the plugin's
 loader reads the frame size from the name. Frames are built from harmonics (or in the time domain and then
@@ -11,7 +11,7 @@ Needs numpy.
 import numpy as np, os, wave, sys
 
 N, F, H = 2048, 64, 1024          # samples per frame, frames, spectrum bins
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "wavetables", "WaveTablor")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "wavetables", "NorthWest")
 k = np.arange(1, 513, dtype=np.float64)           # harmonic numbers 1..512
 ph = (np.arange(N) / N)                           # one cycle, 0..1
 

@@ -24,7 +24,7 @@ int main(int argc,char**argv){
       double sq=0; float pkk=0; bool fin=true; for(size_t i=20000;i<b.size();i+=2){float v=b[i]/32768.f;sq+=v*v;pkk=std::max(pkk,std::fabs(v));}
       float rms=std::sqrt(sq/((b.size()-20000)/2)); worst=std::max(worst,pkk); minrms=std::min(minrms,rms);
     }
-    printf("%-52s frames=%d peak=%.2f minRMS=%.3f %s\n", f.substr(f.find("WaveTablor/")+11).c_str(), nf, worst, minrms, (minrms<0.01f||worst>=0.999f)?"<-- CHECK":"");
+    printf("%-52s frames=%d peak=%.2f minRMS=%.3f %s\n", f.substr(f.find("NorthWest/")+10).c_str(), nf, worst, minrms, (minrms<0.01f||worst>=0.999f)?"<-- CHECK":"");
     if(minrms<0.01f||worst>=0.999f)bad++;
   }
   printf("%zu files, %d problems\n",files.size(),bad); return bad?1:0; }

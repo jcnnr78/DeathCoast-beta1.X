@@ -1,191 +1,70 @@
 # NorthWest
 
-(Formerly WaveTablor.) Synth for the Akai MPC with 4 monophonic slots, each running a selectable machine: wavetable, FM, west coast or analog (DFAM-style). Right now it has one slot with the wavetable machine (WaveTablor 1.0.4 cleaned up, 52 wavetables); the other machines come next. Project plan: see PROJECT.md.
+A synthesizer for the Akai MPC (built and tested for the MPC One on MPC OS 2.15.1): **four monophonic machines
+in layers**, each running its own **model** — wavetable, FM, west coast or analog — for rich, harmonic sequences
+(basslines, arpeggios, FM percussion) at a low CPU cost. Its own minimal, rounded charcoal-and-orange screen.
 
-## v1.1 (cleanup)
+Status: **1.3** (in testing). WEST COAST arrives in 1.4, ANALOG and the effects in 1.5. Plan and decisions:
+`PROJECT.md`.
 
-- **Monophonic**, last-note priority. VOICES, VOICE MODE and LEGATO are gone; GLIDE MODE is now OFF / GLISSANDO / PORTAMENTO / LEGATO (LEGATO = 303-style slide: glides and keeps the envelopes running only when notes overlap).
-- **Effect modes** per oscillator: NONE / FM / SYNC / FOLD / WARP (SYNC and FOLD were CLASSIC and MODERN; WARP is the old BEND + FORMANT, as FX1 and FX2).
-- **EG1 / EG2** are routed only in the MATRIX (their own destination and amount are gone).
-- Pages (8): MAIN (table, position, level, tune, pan) · OSC (effect, sub, noise) · FILTER · UNISON (voices, detune, spread, mode for each oscillator) · ENVELOPES · MOD · MATRIX · GLOBAL (glide, bend range, volume, preset).
-- 96 engine parameters (was 107), 106 VST parameters (was 117).
+## How it plays
 
-## v1.3 (4 machines)
+Every note plays on all four machines at once (layers), on the track's MIDI channel. Each machine is monophonic,
+with last-note priority; GLIDE MODE can be OFF, GLISSANDO, PORTAMENTO or LEGATO (303-style slides between
+overlapping notes). A machine at level 0 or muted costs no CPU. Models can repeat: four FMs, four wavetables or any mix.
 
-- **4 monophonic MACHINES in layers**, all on the track's MIDI channel. Each machine picks its MODEL (arrows or list):
-  WAVETABLE, FM, WEST COAST (v1.4) or ANALOG (v1.5). Models can repeat. The preset keeps every machine.
-- **MIX**: model, level, pan, tune and mute per machine. Machines at level 0 or muted cost nothing.
-- **MACHINE 1..4**: the model's own controls (they swap with the model), its filter (type, cutoff, resonance,
-  envelope amount and decay, key) and its amp envelope (A, D, S, R, velocity). Each machine has 12 knobs whose
-  names and values change with the model. The filter picture follows CUTOFF and RESONANCE.
-- **WAVETABLE** (slimmer than v1.2): 1 table with unison (1-4), position, effect (FM, SYNC, FOLD, WARP), detune, spread,
-  and a SUB oscillator (level, octave -2/-1/0, wave). The screen draws the loaded table's own waves (every table the
-  plugin ships; a table of your own shows as USER TABLE), with POSITION under it.
-- **FM**: 4 operators, 8 algorithms, feedback on op 4, ratios per operator, a shared modulator decay, pitch envelope,
-  noise, velocity to FM index. Mode DRUM makes the note one-shot (it plays its decay out).
-- **MOD / MATRIX**: EG1/EG2 and LFO1/LFO2 are shared; each matrix row has a MACHINE (ALL, M1..M4). Destinations: PITCH,
-  LEVEL, PAN, CUTOFF, RESONANCE, TIMBRE A-D (= the machine's K1-K4).
-- **GLOBAL**: glide (all machines), bend range, volume, presets, logo.
-- Parameters: `tools/gen_params_v2.py`; pages: `tools/gen_layout.py`; pictures: `tools/gen_art.py` and
-  `tools/gen_tables.py` (the tables; run it before gen_params_v2.py when the library changes); old presets:
-  `tools/migrate_v20.py`.
-- CPU on the PC (4 machines all playing): 1.0-1.6 % of one core (`tools/offline/bench.cpp`). Not measured on the MPC yet.
+## Models
 
-## v1.2 (look)
+| Model | Sound | Controls |
+|---|---|---|
+| WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, spread, unison mode; sub level, octave, wave |
+| FM | 4 sine operators, 8 algorithms, feedback on operator 4 | levels and ratios of operators 2-4, a shared modulator decay, pitch envelope, noise, velocity to FM; mode TONE or DRUM (one-shot) |
+| WEST COAST | coming in 1.4 | shares the analog oscillators; wavefolder and low pass gate |
+| ANALOG | coming in 1.5 | 2 oscillators, FM, sync, pitch envelope, noise, 24 dB ladder |
 
-- Own knob: flat round disc, thin orange value ring, short pointer (`images/nw/knob.png`, drawn by `tools/gen_art.py`).
-- MAIN: a wavetable view under each table name that follows POSITION (a generic morph, not the selected table's real shape).
-- FILTER: each filter shows its type's response curve, its corner following CUTOFF / FREQ (resonance not drawn).
-- ENVELOPES: a small picture of each stage (attack, decay, sustain, release) over its knob; the NorthWest logo.
-- Every page is drawn with framework frames; the Stitch backgrounds (and their stale TABLOR texts) are gone.
-- Unison: 2 voices by default, at most 4 (factory presets keep the unison they had).
-- Run `python3 tools/gen_art.py` then `python3 tools/gen_layout.py` after changing a picture or a page.
-
-The text below the line is upstream Tablor's README, kept for reference; its page list is out of date.
-
----
-
-# Tablor
-
-**Synth** · A two-oscillator wavetable synth that ships with its wavetables and 9 factory presets. · maker in MPC: athousanddetails · licence: BSD-3-Clause
-
-<img src="screenshots/page_0.png" width="760" alt="Tablor on the MPC touchscreen">
-
-Two wavetable oscillators, each scanning its own table (the table's name shows next to it, and the arrows step through the library), with unison and shape controls, a sub and noise, a filter, amp and filter envelopes, two modulation envelopes and a voice section. Its wavetable library ships with it; add your own tables to /sdcard/vst/tablor/wavetables on the MPC.
-
-Its 9 factory presets (Init, First Contact, Neu Bass, Formant Keys, Dust Pad, Sub Punch, Glass Bells, Res Bass, E Piano) are in MPC's PRESET menu and on the VOICE page's PRESET selector (2026-10-04).
-
-## On the MPC
-
-- In the plugin browser: **[SYN] Tablor** by **athousanddetails** (Synth)
-- Files: the release installs one folder, `/sdcard/Synths/athousanddetails - VST - [SYN] Tablor/`, holding `tablor.so`, its screen and its library (`tablor/`). The vst_instruments installer puts `tablor.so` in `/sdcard/vst/` and its data in `/sdcard/vst/tablor/` instead; the plugin finds them either way (its data folder is `tablor/` next to the `.so`).
-- 69 parameters (all automatable) on 6 pages
-
-## Playing it
-
-Add it to a **plugin track** and play it from the pads, a keyboard or a MIDI clip. Every control can be turned with the Q-Links and automated, and the settings are saved with your project.
+Every machine also has a filter (8 types; cutoff, resonance, envelope amount and decay, key tracking) and an amp
+envelope (attack, decay, sustain, release, velocity).
 
 ## Pages
 
-Screenshots are rendered from the built skin with the engine's real values right after it's inserted. On the MPC each page is a tab under the plugin header. The Q-Links follow the page column by column: on a 4-knob MPC the Q-Link button steps through the columns, and MPC outlines the active one.
+| Page | What is on it | Q-Link sets |
+|---|---|---|
+| MIX | model, level, pan, tune and mute of each machine (one column each) | – |
+| MACHINE 1-4 | the model selector (arrows and list), the model's controls (they change with the model), filter and amp | MACHINE · FILTER AMP |
+| MOD | EG1, EG2, LFO1, LFO2, shared by all machines | ENVS · LFOS |
+| MATRIX | 8 rows: source, destination, machine (ALL or M1-M4), amount | – |
+| GLOBAL | glide, bend range, volume, presets | – |
 
-### 1. MAIN
+The 12 machine knobs (K1-K12) keep their place for every model, so a Q-Link always turns the same knob; their names
+and values follow the model. On screen, left to right is a Q-Link column top to bottom. The wavetable view draws the
+loaded table's own waves, the filter view follows CUTOFF and RESONANCE, the envelope views follow their knobs.
 
-<img src="screenshots/page_0.png" width="760" alt="Tablor, page MAIN">
+## Presets
 
-Q-Link columns: **1** WT1 TABLE  ·  **2** WT1 POSITION, WT1 LEVEL, WT1 TUNE, WT1 UNISON  ·  **3** WT2 TABLE  ·  **4** WT2 POSITION, WT2 LEVEL, WT2 TUNE, WT2 UNISON
+14 factory sounds (`presets/northwest.tbl`), among them FM Bass, FM Kick, FM Snare, FM Hat, Layer WT + FM and
+"Bajo y Percusion" (all four machines). The sound is also saved with the MPC project.
 
-### 2. FILTER
+## Wavetables
 
-<img src="screenshots/page_1.png" width="760" alt="Tablor, page FILTER">
-
-Q-Link columns: **1** CUTOFF, RESONANCE, FILTER TYPE  ·  **2** FILTER ENV, KEY TRACK, VEL TRACK  ·  **3** SUB LEVEL, SUB WAVE, SUB TUNE  ·  **4** NOISE LEVEL, NOISE TYPE
-
-### 3. SHAPE
-
-<img src="screenshots/page_2.png" width="760" alt="Tablor, page SHAPE">
-
-Q-Link columns: **1** WT1 DETUNE, WT1 SPREAD, WT1 PAN  ·  **2** WT2 DETUNE, WT2 SPREAD, WT2 PAN  ·  **3** WT1 BEND, WT1 FORMANT  ·  **4** WT2 BEND, WT2 FORMANT
-
-### 4. ENVELOPES
-
-<img src="screenshots/page_3.png" width="760" alt="Tablor, page ENVELOPES">
-
-Q-Link columns: **1** VCA ATTACK, VCA DECAY, VCA SUSTAIN, VCA RELEASE  ·  **2** VELOCITY  ·  **3** FLT ATTACK, FLT DECAY, FLT SUSTAIN, FLT RELEASE
-
-### 5. MOD ENVS
-
-<img src="screenshots/page_4.png" width="760" alt="Tablor, page MOD ENVS">
-
-Q-Link columns: **1** EG1 A, EG1 D, EG1 S, EG1 R  ·  **2** EG1 DST, EG1 AMT  ·  **3** EG2 A, EG2 D, EG2 S, EG2 R  ·  **4** EG2 DST, EG2 AMT
-
-### 6. VOICE
-
-<img src="screenshots/page_5.png" width="760" alt="Tablor, page VOICE">
-
-Q-Link columns: **1** VOICE MODE, VOICES, LEGATO  ·  **2** GLIDE, GLIDE MODE  ·  **3** BEND RANGE, VOLUME  ·  **4** PRESET
-
-## Install
-
-Needs a standalone MPC or Force on MPC OS 3.x with root SSH access (checked on an MPC Live II).
-
-**From the release:** download `SYN-Tablor-<version>-mpc-armv7.zip` from [Releases](https://github.com/saustin2010/mpc-vst-tablor/releases),
-copy it to the MPC, unzip it and run `sh install.sh` in its folder as root. The installer stops MPC, backs up
-`MPC.settings`, installs the plugin folder and starts MPC again; `INSTALL.md` in the zip has the details and a by-hand route.
-Your own files in `tablor/wavetables/` are kept when you update or uninstall.
-
-**With the rest of the collection:** from [vst_instruments](https://github.com/saustin2010/vst_instruments) ([INSTALL.md](https://github.com/saustin2010/vst_instruments/blob/main/INSTALL.md)):
-
-```
-./install.sh <mpc-address> tablor
-```
-
-Use one or the other for this plugin: both register the same plugin (same uid), so the last one run wins.
-
-## Where it comes from
-
-- Upstream: https://github.com/athousanddetails/schwung-tablor
-- Vendored at commit d51887187f7a03f7b32cc4a74f5c60c5532e65fa 2026-09-03
-- Schwung module "Tablor" v1.3.3 by athousanddetails; after Wavetable (Roland Rabien / FigBug, BSD-3)
-- Licence: BSD-3-Clause ([`LICENSE`](LICENSE))
-- Wavetables (shipped, from Tablor's repo): Adventure Kid, 65 tables by Kristoffer Ekstrand, public domain; Neu
-  KatalYst, 50 tables, free to use ("use them in all your synths"), as credited in Tablor's README
-- MPC port and screen: [vst_instruments](https://github.com/saustin2010/vst_instruments) (`schwung/instruments/tablor`), built on [sd88me's mpc-vst-plugins](https://github.com/sd88me/mpc-vst-plugins) (wrapper, Schwung adapter, skin tools).
-
-## Changes for the MPC
-
-- `src/dsp/wt/scanner.h`: the wavetables are read from the plugin's data folder, `<data folder>/wavetables` (`/sdcard/vst/tablor/wavetables` with this repo's installer, the folder beside the plugin in a release), where the shipped packs go and you add your own; the first-run copy into a user folder is skipped (`-DMPC_PORT`).
-- `src/dsp/tablor_plugin.cpp`: `wt1_name`/`wt2_name` readouts (the table's file name) for the screen.
-- `src/dsp/tablor_plugin.cpp` (2026-10-04): the factory presets on the MPC: `preset` / `preset_name` / `preset_count` / `preset_name_at:<n>` (appended params, and MPC's PRESET menu); choosing one resets to the defaults and applies its `TBLR2;` blob, as Move's preset browser does. The presets' Move wavetable paths (`/data/UserData/UserLibrary/Wavetables/`) map to `<data folder>/wavetables/`; they're read when the plugin is created (MPC reads the menu's size then); the state remembers the chosen preset, so a reopened project keeps its edits.
-- `src/dsp/wt/loader.h` + `tb_destroy_instance`: the loader thread is joined before the instance is deleted. Upstream deletes members the loader may still be publishing into (ASan heap-use-after-free on a quick insert/remove, found by the offline test 2026-10-01).
-- Diff: `upstream-changes.diff`.
-- `params.base.json` comes from the module's `chain_params` (what the engine actually takes, saved as `chain_params.engine.json`), not its menu tree.
-- New touchscreen page from its Google Stitch design (`design/`): the design's artwork as the background, its own knob art, live names and values, and controls the design left out added in its style (see RESKINNING.md).
-- **Full-height screen (2026-10-18)**: the panels fill MPC's 1280 × 628 plugin area. The Stitch conversion used to
-  centre the design at the height it had under its own header and footer (MPC draws its own), which left an empty
-  band above and below.
-
-## Files
-
-| Path | What |
-|---|---|
-| `screenshots/` | the pages as MPC draws them |
-| `release/` | `library.json` (where its library comes from, pinned) and `fetch-library.py` (fetches it) |
-| `.github/workflows/release.yml` | the release build (GitHub Actions, a draft release) |
-| `FRAMEWORK.md` | the changes to sd88me's tools this plugin is built with, and why |
-| `deploy/` | ready to install: `vst/` → `/sdcard/vst/`, `Synths/` → `/sdcard/Synths/`, plus the plugin-list entry (not used by the release) |
-| `vst.json` | build settings: name, maker, sources, compiler flags |
-| `params.json` | the plugin's parameters as MPC sees them (VST index = order) |
-| `params.base.json` | the engine's own parameter list it was derived from |
-| `chain_params.engine.json` | what the engine reports it takes (its `chain_params`) |
-| `layout.conf` | the screen: control positions, art, Q-Links (generated from the Stitch design) |
-| `layout.grid.conf` | the plan of pages and controls the Stitch conversion fills in |
-| `tablor.css` | the artwork stylesheet |
-| `images/` | artwork: backgrounds, knobs, displays |
-| `design/` | the Google Stitch design this screen was converted from (`stitch.html`, as Stitch wrote it) |
-| `src/` | the engine's source, vendored from upstream |
-| `upstream-changes.diff` | every local change to the upstream source |
-| `UPSTREAM` | where the source came from, and at which commit |
+- `wavetables/NorthWest/`: 52 original tables in 6 categories, made by `tools/make_wavetables.py`.
+- Fetched at build time (`release/library.json`): **Adventure Kid** (AKWF/AKWP) by Kristoffer Ekstrand, public
+  domain, 65 tables; **Neu KatalYst**, free to use, 50 tables.
+- Your own tables go in the plugin's `northwest/wavetables/` folder on the MPC.
 
 ## Building
 
-With Docker (32-bit ARM emulation for the build), Python 3 and the tools from
-[saustin2010/mpc-vst-plugins](https://github.com/saustin2010/mpc-vst-plugins/tree/steve-features) (sd88me's [mpc-vst-plugins](https://github.com/sd88me/mpc-vst-plugins)
-plus changes offered to it, until they're merged there; the commit is the one in `.github/workflows/release.yml`, and [FRAMEWORK.md](FRAMEWORK.md) says which changes this plugin uses and why):
+GitHub Actions: *Actions → Release (draft) → Run workflow* (version, *dry_run* to build only). The zip it makes is
+for MPC OS 3.x; for MPC OS 2.15.1 its screen has to be converted (`TUI.json`, `os_compat`). Local builds and the
+offline checks: `BUILD.md` and `tools/offline/README.md`.
 
-```
-git clone -b steve-features https://github.com/saustin2010/mpc-vst-plugins
-MPC_VST=$PWD/mpc-vst-plugins
-python3 release/fetch-library.py library        # its library, from its project at a pinned commit
-bash "$MPC_VST/tools/build_port.sh" vst.json        # build/: tablor.so, the screen, the plugin-list entry
-bash "$MPC_VST/tools/test_port.sh" vst.json         # the offline host test (ASan/UBSan): must print PASSED
-```
+The files that make the plugin are generated: `tools/gen_params_v2.py` (parameters), `tools/gen_tables.py` (table
+pictures), `tools/gen_art.py` (knob and other pictures), `tools/gen_layout.py` (pages).
 
-Releases are built by GitHub Actions (`.github/workflows/release.yml`, "Release (draft)") as a draft, installed and checked
-on a device, then published. More: [BUILDING.md](https://github.com/saustin2010/vst_instruments/blob/main/BUILDING.md), and to change the screen, [RESKINNING.md](https://github.com/saustin2010/vst_instruments/blob/main/RESKINNING.md).
+## Credits and licence
 
-## Development
-
-This plugin is developed in [vst_instruments](https://github.com/saustin2010/vst_instruments) (`schwung/instruments/tablor`), next to the other plugins
-and the tools that made its screen, and published to [mpc-vst-tablor](https://github.com/saustin2010/mpc-vst-tablor) for its
-releases. Issues and pull requests are welcome in either.
+NorthWest is released under the BSD-3-Clause licence (`LICENSE`). Parts of its code come from **Tablor** by
+athousanddetails and from **Wavetable** by Roland Rabien (FigBug), with AudioFilter (Michael Massberg), dr_flac
+(David Reid, public domain) and pink noise code (Thomas Merchant, MIT); their copyright notices are kept in
+`LICENSE`, and `NOTICE` says where the code comes from. The MPC plugin framework is
+[mpc-vst-plugins](https://github.com/saustin2010/mpc-vst-plugins). The logo uses Inter (SIL Open Font Licence).
+Not affiliated with Akai Professional; "MPC" is a trademark of inMusic Brands.

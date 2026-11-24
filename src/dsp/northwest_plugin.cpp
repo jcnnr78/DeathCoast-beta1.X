@@ -1,4 +1,5 @@
-/* Tablor — 2-osc wavetable synth for Ableton Move (Schwung module).
+/* NorthWest -- the plugin around the engine (parameters, presets, wavetable library, state).
+ * Derived from Tablor's Schwung module (BSD-3-Clause, see LICENSE and NOTICE).
  *
  * plugin_api_v2. Parameter surface + version-tagged state round-trip +
  * the phase 3 engine: 8 voices, poly/mono, glide, mod matrix.
@@ -440,8 +441,8 @@ static void load_presets(tablor_instance *inst)
 {
     auto boot = std::make_shared<tablor_instance::PresetList>();
     char path[600];
-    /* WaveTablor: its own factory sounds come first, then Tablor's. */
-    static const char *const kFactoryFiles[] = { "wavetablor.tbl", "factory.tbl" };
+    /* NorthWest's factory sounds (presets/northwest.tbl). Older libraries' files use another parameter set. */
+    static const char *const kFactoryFiles[] = { "northwest.tbl" };
     for (const char *fn : kFactoryFiles) {
     snprintf(path, sizeof path, "%s/presets/%s", inst->module_dir, fn);
     FILE *f = fopen(path, "r");
@@ -1218,7 +1219,7 @@ static void *tb_create_instance(const char *module_dir, const char *json_default
         if (g_host && g_host->log) {
             char msg[160];
             snprintf(msg, sizeof msg,
-                     "tablor: v" TB_VERSION " ready, %d wavetables, %d packs, %d presets",
+                     "northwest: v" TB_VERSION " ready, %d wavetables, %d packs, %d presets",
                      (int) inst->scanner.list().size(),
                      (int) inst->selection()->packs.size(),
                      (int) inst->presetList()->items.size());

@@ -1,4 +1,9 @@
-# WaveTablor
+# Changes
+
+NorthWest 1.1-1.3: see PROJECT.md (phases) and README.md. Below: the first release (then called WaveTablor, 1.0.x),
+as changed from Tablor.
+
+## WaveTablor 1.0.x
 
 A fork of Tablor aiming at Ableton Live's *Wavetable* instrument on the MPC. Phase 1 (this release) is the sound
 engine; the screens are phase 2 (a mock-up exists, see "Screens" below).
@@ -18,7 +23,7 @@ engine; the screens are phase 2 (a mock-up exists, see "Screens" below).
 | &nbsp;&nbsp;Destinations | everything the old EG routes had, plus Pitch (±2 oct), WT1/WT2 FX1 and FX2, Unison Detune, Filter 2 Freq/Res. EG1/EG2's own destination menus gained the same list | |
 | Second filter | `flt2_type` (Off, LP/HP/BP/Notch × 12/24 dB), cutoff, resonance, key tracking, filter-envelope amount | `flt2_*` |
 | Filter routing | **Serial**, **Parallel** (−3 dB sum) or **Split** (osc 1 + sub → F1, osc 2 + noise → F2) | `flt_route` |
-| Factory sounds | 8 new starting points that need no wavetable files | `presets/wavetablor.tbl` |
+| Factory sounds | 8 new starting points that need no wavetable files | `presets/wavetablor.tbl` (now `presets/northwest.tbl`) |
 
 ## Compatibility
 

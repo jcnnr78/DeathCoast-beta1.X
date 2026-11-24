@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """NorthWest v1.3: rewrite a v1.0-1.2 preset line (TBLR2;key=value;...) for the 4-machine surface.
 
-    python3 tools/migrate_v20.py presets/wavetablor.tbl      (rewrites the file in place)
+    python3 tools/migrate_v20.py presets/northwest.tbl      (rewrites the file in place)
 
 Oscillator 1 becomes machine 1 (WAVETABLE), oscillator 2 becomes machine 2 (WAVETABLE) when its level was up; the
 amp envelope and filter 1 are copied to each machine used. NOISE, FILTER 2 and the filter envelope's
