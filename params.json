@@ -333,7 +333,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 2
+   "default": 0
   },
   {
    "key": "m1_osc_w2",
@@ -344,7 +344,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 3
+   "default": 0
   },
   {
    "key": "m1_osc_sync",
@@ -719,7 +719,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 2
+   "default": 0
   },
   {
    "key": "m2_osc_w2",
@@ -730,7 +730,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 3
+   "default": 0
   },
   {
    "key": "m2_osc_sync",
@@ -1105,7 +1105,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 2
+   "default": 0
   },
   {
    "key": "m3_osc_w2",
@@ -1116,7 +1116,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 3
+   "default": 0
   },
   {
    "key": "m3_osc_sync",
@@ -1491,7 +1491,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 2
+   "default": 0
   },
   {
    "key": "m4_osc_w2",
@@ -1502,7 +1502,7 @@
     "SAW",
     "PULSE"
    ],
-   "default": 3
+   "default": 0
   },
   {
    "key": "m4_osc_sync",
@@ -2261,6 +2261,42 @@
    "min": 0,
    "max": 127,
    "default": 124,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_cview",
+   "name": "M1 FOLD VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_cview",
+   "name": "M2 FOLD VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_cview",
+   "name": "M3 FOLD VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_cview",
+   "name": "M4 FOLD VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 0,
    "display": "int",
    "clamped": true
   },

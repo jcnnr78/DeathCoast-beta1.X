@@ -58,8 +58,8 @@ for n in range(1, SLOTS + 1):
     E(s + "wt_umode", S + "WT UNI MODE", UNI_MODES, 0)
     E(s + "fm_algo", S + "FM ALGORITHM", FM_ALGOS, 0)
     E(s + "fm_mode", S + "FM MODE", FM_MODES, 0)
-    E(s + "osc_w1", S + "OSC1 WAVE", OSC_WAVES, 2)
-    E(s + "osc_w2", S + "OSC2 WAVE", OSC_WAVES, 3)
+    E(s + "osc_w1", S + "OSC1 WAVE", OSC_WAVES, 0)
+    E(s + "osc_w2", S + "OSC2 WAVE", OSC_WAVES, 0)
     E(s + "osc_sync", S + "OSC SYNC", OFF_ON, 0)
     PATH(s + "table")
 for i in (1, 2):
@@ -155,6 +155,10 @@ out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "
 # a meter; HAS_DISPLAY_REV (vst.json) makes the wrapper report it when it changes ("display_rev")
 for n in range(1, SLOTS + 1):
     out.append({"key": "m%d_fview" % n, "name": "M%d FILTER VIEW" % n, "min": 0, "max": 127, "default": 124,
+                "display": "int", "clamped": True})
+# the WEST COAST picture: FOLD (16 steps) x SYMMETRY (8) as one value, worked out by the plugin
+for n in range(1, SLOTS + 1):
+    out.append({"key": "m%d_cview" % n, "name": "M%d FOLD VIEW" % n, "min": 0, "max": 127, "default": 0,
                 "display": "int", "clamped": True})
 # the WAVETABLE picture: which frame of images/nw/tables_*.png (the loaded table), worked out by the plugin
 import re as _re

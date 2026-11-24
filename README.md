@@ -4,7 +4,7 @@ A synthesizer for the Akai MPC (built and tested for the MPC One on MPC OS 2.15.
 in layers**, each running its own **model** — wavetable, FM, west coast or analog — for rich, harmonic sequences
 (basslines, arpeggios, FM percussion) at a low CPU cost. Its own minimal, rounded charcoal-and-orange screen.
 
-Status: **1.3** (in testing). WEST COAST arrives in 1.4, ANALOG and the effects in 1.5. Plan and decisions:
+Status: **1.4** in progress (branch v1.4: WEST COAST); 1.3 in testing. ANALOG and the effects arrive in 1.5. Plan and decisions:
 `PROJECT.md`.
 
 ## How it plays
@@ -19,7 +19,7 @@ overlapping notes). A machine at level 0 or muted costs no CPU. Models can repea
 |---|---|---|
 | WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, spread, unison mode; sub level, octave, wave |
 | FM | 4 sine operators, 8 algorithms, feedback on operator 4 | levels and ratios of operators 2-4, a shared modulator decay, pitch envelope, noise, velocity to FM; mode TONE or DRUM (one-shot) |
-| WEST COAST | coming in 1.4 | shares the analog oscillators; wavefolder and low pass gate |
+| WEST COAST | carrier phase-modulated by a second oscillator (sine, triangle, saw, pulse; sync), wavefolder, low pass gate (filter + VCA through a vactrol, driven by the amp envelope) | FM amount, fold, symmetry, osc mix, LPG depth and response, modulator ratio and fine, velocity to fold; a picture of the folded wave |
 | ANALOG | coming in 1.5 | 2 oscillators, FM, sync, pitch envelope, noise, 24 dB ladder |
 
 Every machine also has a filter (8 types; cutoff, resonance, envelope amount and decay, key tracking) and an amp
@@ -41,8 +41,8 @@ loaded table's own waves, the filter view follows CUTOFF and RESONANCE, the enve
 
 ## Presets
 
-14 factory sounds (`presets/northwest.tbl`), among them FM Bass, FM Kick, FM Snare, FM Hat, Layer WT + FM and
-"Bajo y Percusion" (all four machines). The sound is also saved with the MPC project.
+17 factory sounds (`presets/northwest.tbl`), among them FM Bass, FM Kick, FM Snare, FM Hat, Layer WT + FM,
+"Bajo y Percusion" (all four machines), West Coast Bongo, Folded Bass and West Arp. The sound is also saved with the MPC project.
 
 ## Wavetables
 

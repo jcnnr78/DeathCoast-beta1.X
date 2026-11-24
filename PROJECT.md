@@ -9,6 +9,16 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 4 (west coast) - v1.4, branch v1.4 (built locally, not yet on the MPC)
+- WEST COAST model (src/dsp/machines.h WcMachine): osc 1 phase-modulates osc 2 (OscPair, band-limited AnalogTables
+  waves, hard sync), sine wavefolder (up to ~3 folds, symmetry offset), low pass gate = 2-pole low pass + VCA on a
+  vactrol follower of the amp envelope (rise 3 ms, fall = LPG RESPONSE 20 ms..2 s). The slot does not apply the amp
+  envelope again for this model and stays active until the vactrol has fallen.
+- K: FM AMOUNT, FOLD, SYMMETRY, OSC MIX, LPG DEPTH, -, LPG RESPONSE, MOD RATIO, MOD FINE, -, -, VEL > FOLD.
+- osc_w1/osc_w2 default SINE now (they were SAW/PULSE, unused until 1.4).
+- Fold picture: mN_cview (FOLD 16 x SYMMETRY 8) drives a 128-frame meter (380x96, exactly the 12288 px limit).
+- 3 presets: West Coast Bongo, Folded Bass, West Arp. CPU 4 x WEST COAST: 1.27 % of one x86 core.
+
 ## Phase 3 (machines) - v1.3 (built locally, not yet on the MPC)
 - Numbered 1.3, not 2.0 (user, 24-nov). Names: MACHINE 1-4, each runs a MODEL (WAVETABLE, FM, WEST COAST, ANALOG).
   Keys: mN_* (mN_model, mN_k1..k12, ...); matrix rows target ALL or M1-M4 (mmN_slot).

@@ -13,3 +13,6 @@ FM Snare|TBLR2;m1_model=1;m1_fm_mode=1;m1_fm_algo=6;m1_k1=75;m1_k8=68;m1_k7=40;m
 FM Hat|TBLR2;m1_model=1;m1_fm_mode=1;m1_fm_algo=0;m1_k1=110;m1_k2=100;m1_k3=90;m1_k4=40;m1_k8=99;m1_k9=110;m1_k10=121;m1_k7=30;m1_k6=60;m1_amp_d=35;m1_ftype=3;m1_cutoff=100;m1_tune=12;
 Layer WT + FM|TBLR2;m1_k7=64;m1_k4=40;m1_k5=70;m1_amp_a=10;m1_amp_r=70;m2_model=1;m2_level=75;m2_tune=12;m2_fm_algo=6;m2_k1=55;m2_k8=91;m2_k7=60;m2_amp_d=90;m2_amp_s=0;m2_amp_r=90;
 Bajo y Percusion|TBLR2;m1_level=100;m1_tune=-12;m1_wt_fx=3;m1_k3=50;m1_cutoff=70;m1_reso=40;m1_fenv=100;m1_fdec=55;m1_amp_s=90;m2_model=1;m2_level=85;m2_fm_mode=1;m2_fm_algo=7;m2_k5=50;m2_k11=35;m2_k6=15;m2_amp_d=60;m2_tune=-24;m3_model=1;m3_level=55;m3_tune=12;m3_fm_algo=6;m3_k1=60;m3_k8=82;m3_k7=45;m3_amp_d=50;m3_amp_s=0;m4_level=45;m4_tune=7;m4_k1=60;m4_k7=43;m4_k4=30;m4_amp_d=50;m4_amp_s=0;m4_pan=30;
+West Coast Bongo|TBLR2;m1_model=2;m1_k1=50;m1_k8=73;m1_k2=40;m1_k5=127;m1_k7=35;m1_amp_a=0;m1_amp_d=45;m1_amp_s=0;m1_amp_r=40;
+Folded Bass|TBLR2;m1_model=2;m1_tune=-12;m1_k2=80;m1_k3=30;m1_k12=100;m1_k5=70;m1_k7=50;m1_amp_s=100;m1_cutoff=95;
+West Arp|TBLR2;m1_model=2;m1_k1=70;m1_k8=82;m1_k2=60;m1_k5=110;m1_k7=60;m1_amp_d=55;m1_amp_s=0;m1_amp_r=45;m1_pan=50;m2_model=2;m2_level=60;m2_tune=12;m2_k1=40;m2_k8=73;m2_k2=30;m2_k5=127;m2_k7=30;m2_amp_d=40;m2_amp_s=0;m2_pan=78;

@@ -118,6 +118,25 @@ def posbar(w, h, n=64):
         frames.append(down(im, w, h))
     strip(frames, "posbar_%dx%d.png" % (w, h))
 
+def fold(w, h):
+    """WEST COAST: one cycle of the carrier through the wavefolder. 128 frames = FOLD in 16 steps x SYMMETRY in 8
+    (frame = fold * 8 + sym), the value the plugin reports as mN_cview; the same law as WcMachine."""
+    frames = []
+    ph = np.linspace(0, 1, 200)
+    for i in range(128):
+        fo, sy = (i // 8) / 15, (i % 8) / 7
+        x = np.sin(2 * np.pi * ph) * (1 + fo * 7) + sy * 0.8
+        y = np.sin(np.pi / 2 * x) if (fo > 0 or sy > 0) else x
+        im = display(w, h, 8); d = ImageDraw.Draw(im)
+        d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 160), width=SS)
+        pts = [((10 + (w - 20) * p) * SS, (h / 2 - (h / 2 - 9) * v) * SS) for p, v in zip(ph, y)]
+        glow = canvas(w, h); gd = ImageDraw.Draw(glow)
+        polyline(gd, pts, hexc("e8871e", 130), int(6 * SS))
+        im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(3 * SS)))
+        polyline(d, pts, ACC_HI, int(2.2 * SS))
+        frames.append(down(im, w, h))
+    strip(frames, "fold_%dx%d.png" % (w, h))
+
 # ---------------------------------------------------------------------------------------------- filters
 FLT_TYPES = ["lp12", "lp24", "hp12", "hp24", "bp12", "bp24", "notch12", "notch24"]
 
@@ -213,6 +232,7 @@ def logo(size=64):
 
 # sizes used by tools/gen_layout.py
 POSBAR = (360, 10)    # the machine pages' sizes
+FOLD = (380, 96)
 FLT = (220, 56)
 ENV = (96, 50)
 
@@ -220,6 +240,7 @@ if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
     posbar(*POSBAR)
+    fold(*FOLD)
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
     logo()

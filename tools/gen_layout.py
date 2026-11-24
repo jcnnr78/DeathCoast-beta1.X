@@ -65,6 +65,8 @@ K_LABELS = {
     0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE", "SUB WAVE", "", "", ""],
     1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
+    2: ["FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "", "LPG RESPONSE", "MOD RATIO", "MOD FINE", "", "",
+        "VEL > FOLD"],
 }
 KX = [120 + i * 205 for i in range(6)]      # knob columns of the model area
 ROW1, ROW2 = 272, 398
@@ -97,7 +99,9 @@ def slot_page(n):
           popup(1160, 158, 170, "EFFECT", s + "wt_fx", m + ":0"),
           popup(800, 158, 230, "ALGORITHM", s + "fm_algo", m + ":1"),
           enumh(1100, 162, 110, "MODE", s + "fm_mode", m + ":1"),
-          text(900, 150, "WEST COAST: COMING IN v1.4", 1.3, m + ":2"),
+          popup(790, 158, 170, "MOD WAVE", s + "osc_w1", m + ":2"),
+          popup(975, 158, 170, "CARRIER WAVE", s + "osc_w2", m + ":2"),
+          enumh(1165, 162, 80, "SYNC", s + "osc_sync", m + ":2"),
           text(900, 150, "ANALOG: COMING IN v1.5", 1.3, m + ":3")]
     # model area
     for i, name in enumerate(MODELS):
@@ -113,6 +117,9 @@ def slot_page(n):
             % (tx, ROW2 - 6, TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), m + ":0"),
           meter(tx, ROW2 + 38, ART.POSBAR, s + "k1", "posbar_%dx%d.png" % ART.POSBAR, m + ":0"),
           popup(KX[3], ROW2 + 6, 200, "UNISON MODE", s + "wt_umode", m + ":0")]
+    # WEST COAST: one cycle through the wavefolder (FOLD x SYMMETRY, mN_cview from the plugin)
+    L.append(W('meter cx=%d cy=%d w=%d h=%d key=%scview strip=images/nw/fold_%dx%d.png frames=128'
+               % ((KX[3] + KX[4]) // 2, ROW2, ART.FOLD[0], ART.FOLD[1], s, ART.FOLD[0], ART.FOLD[1]), m + ":2"))
     # filter
     FS, ES = ART.FLT, ART.ENV
     L += [frame(10, 482, 690, 226, "FILTER"), popup(95, 632, 150, "TYPE", s + "ftype")]

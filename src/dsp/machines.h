@@ -51,6 +51,8 @@ inline int slotParam(int slot, int s1Index) { return s1Index + slot * TB_SLOT_ST
  *            K8 SUB OCTAVE (-2, -1, 0), K9 SUB WAVE
  * FM:        K1-K3 OP2-OP4 LEVEL, K4 FEEDBACK, K5 PITCH ENV, K6 NOISE, K7 MOD DECAY,
  *            K8-K10 OP2-OP4 RATIO, K11 PITCH DECAY, K12 VEL > FM
+ * WEST COAST: K1 FM AMOUNT, K2 FOLD, K3 SYMMETRY, K4 OSC MIX, K5 LPG DEPTH, K7 LPG RESPONSE,
+ *            K8 MOD RATIO, K9 MOD FINE, K12 VEL > FOLD
  * Matrix TIMBRE A..D = K1..K4. */
 inline int wtUnison(float v) { return 1 + (int) std::lround(v / 127.0f * 3.0f); }
 /* sub: K8 in 3 steps (default 64 = one octave down), K9 in 6 (default 64 = SINE) */
@@ -73,6 +75,11 @@ inline float fmRatio(float v)
 /* MOD DECAY / PITCH DECAY: 5 ms .. 4 s; MOD DECAY at 127 holds (no decay) */
 inline float fmDecaySeconds(float v) { return 0.005f * std::pow(800.0f, v / 127.0f); }
 
+/* WEST COAST: LPG RESPONSE = the vactrol's fall, 20 ms .. 2 s */
+inline float wcResponseSeconds(float v) { return 0.02f * std::pow(100.0f, v / 127.0f); }
+/* MOD FINE: +-50 cents, 64 = 0 */
+inline float wcFineSemis(float v) { return (v - 64.0f) / 63.0f * 0.5f; }
+
 inline const char *knobName(int machine, int k, int fxMode)
 {
     static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE",
@@ -87,6 +94,9 @@ inline const char *knobName(int machine, int k, int fxMode)
         return wt[k];
     }
     if (machine == M_FM) return fm[k];
+    static const char *wc[12] = { "FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "-", "LPG RESPONSE",
+                                  "MOD RATIO", "MOD FINE", "-", "-", "VEL > FOLD" };
+    if (machine == M_WESTCOAST) return wc[k];
     return "-";
 }
 
@@ -105,6 +115,16 @@ inline void knobText(char *buf, int len, int machine, int k, float v)
             return;
         }
         if (k == 4) { snprintf(buf, len, "+%d st", (int) std::lround(v / 127.0f * 48.0f)); return; }
+    }
+    if (machine == M_WESTCOAST) {
+        if (k == 7) { snprintf(buf, len, "x%.2f", (double) fmRatio(v)); return; }
+        if (k == 8) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
+        if (k == 6) {
+            const float s = wcResponseSeconds(v);
+            if (s < 1.0f) snprintf(buf, len, "%d ms", (int) std::lround(s * 1000.0f));
+            else snprintf(buf, len, "%.1f s", (double) s);
+            return;
+        }
     }
     snprintf(buf, len, "%d", (int) std::lround(v));
 }
@@ -305,13 +325,110 @@ private:
     uint32_t rs = 1;
 };
 
+/* ------------------------------------------------------------------ the analog oscillator pair */
+/* Shared by WEST COAST (and ANALOG, 1.5): osc 1 is the modulator / sync master, osc 2 the carrier.
+ * Band-limited waves from AnalogTables, read at a phase this class keeps, so FM (as phase modulation)
+ * and hard sync work per sample. */
+struct OscPair {
+    float ph1 = 0, ph2 = 0;
+    void reset() { ph1 = ph2 = 0; }
+    static float wave(const AnalogTables &t, int w, float note, float ph)
+    {
+        switch (w) {
+        case 0: return t.processSine(note, ph);
+        case 1: return t.processTriangle(note, ph);
+        case 2: return t.processSawUp(note, ph);
+        default: return t.processPulse(note, ph, 0.5f);
+        }
+    }
+};
+
+/* ------------------------------------------------------------------ WEST COAST machine */
+/* carrier (osc 2) phase-modulated by osc 1 -> sine wavefolder (3 folds deep at the top of FOLD, SYMMETRY
+ * adds an offset before folding) -> low pass gate: a 2-pole low pass and a VCA both driven by the amp
+ * envelope through a vactrol (fast rise, slow fall set by LPG RESPONSE). The slot does not apply its amp
+ * envelope again for this model: the gate is the VCA. */
+class WcMachine {
+public:
+    explicit WcMachine(AnalogTables &a) : tables(a)
+    {
+        for (int i = 0; i <= kSin; i++) sinTab[i] = std::sin(2.0 * M_PI * (double) i / kSin);
+    }
+    void setSampleRate(double sr) { sampleRate = (float) sr; }
+    void start(float vel) { osc.reset(); lp1 = lp2 = 0.0f; velocity = vel; }
+    float gate() const { return vac; }
+
+    void render(const float *P, int slot, float note, const float *mo, const float *env, float *L, float *R, int n)
+    {
+        const float *K = P + slotParam(slot, TB_P_M1_K1);
+        const int w1 = (int) P[slotParam(slot, TB_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, TB_P_M1_OSC_W2)];
+        const bool sync = (int) P[slotParam(slot, TB_P_M1_OSC_SYNC)] != 0;
+        const float fm = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
+        const float velAmt = pot01(K[11]);
+        const float fold = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f) * (1.0f - velAmt + velAmt * velocity);
+        const float sym = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
+        const float mix = std::clamp(pot01(K[3]) + mo[MD_TD], 0.0f, 1.0f);
+        const float depth = pot01(K[4]);
+        const float fall = std::exp(-1.0f / (wcResponseSeconds(K[6]) * sampleRate));
+        const float rise = std::exp(-1.0f / (0.003f * sampleRate));
+
+        const float note1 = note + 12.0f * std::log2(fmRatio(K[7])) + wcFineSemis(K[8]);
+        const float f1 = std::min(midiNoteToHz(note1), sampleRate * 0.45f) / sampleRate;
+        const float f2 = std::min(midiNoteToHz(note), sampleRate * 0.45f) / sampleRate;
+        const float pm = fm * fm * 2.0f;                         /* modulation depth, cycles */
+        const float gainIn = 1.0f + fold * 7.0f;                /* up to ~3 folds */
+        const float off = sym * 0.8f;
+
+        for (int i = 0; i < n; i++) {
+            const float m = OscPair::wave(tables, w1, note1, osc.ph1);
+            float c2 = osc.ph2 + pm * m;
+            c2 -= std::floor(c2);
+            const float c = OscPair::wave(tables, w2, note, c2);
+            osc.ph1 += f1;
+            if (osc.ph1 >= 1.0f) { osc.ph1 -= 1.0f; if (sync) osc.ph2 = osc.ph1 * f2 / f1; }
+            osc.ph2 += f2; if (osc.ph2 >= 1.0f) osc.ph2 -= 1.0f;
+
+            float x = (c * (1.0f - mix) + m * mix) * gainIn + off;
+            x = fold > 0.0f || off > 0.0f ? sinLookup(x * 0.25f) : x;   /* sin(pi/2 * x): folds past +-1 */
+
+            /* vactrol: follows the amp envelope up fast, falls slowly */
+            const float e = env[i];
+            vac = e > vac ? e + (vac - e) * rise : e + (vac - e) * fall;
+            /* low pass gate: cutoff 40 Hz .. 18 kHz with the vactrol (LPG DEPTH 0 = always open);
+             * the coefficient is worked out every 8 samples (pow + exp are dear on the MPC) */
+            if ((i & 7) == 0) {
+                const float open = 1.0f - depth + depth * vac;
+                const float fc = 40.0f * std::pow(450.0f, open);
+                g = 1.0f - std::exp(-2.0f * (float) M_PI * std::min(fc, sampleRate * 0.45f) / sampleRate);
+            }
+            lp1 += g * (x - lp1);
+            lp2 += g * (lp1 - lp2);
+            const float y = lp2 * vac * 1.5f;
+            L[i] += y; R[i] += y;
+        }
+    }
+
+private:
+    static constexpr int kSin = 4096;
+    float sinLookup(float x) const              /* sin(2 pi x) */
+    {
+        x -= std::floor(x);
+        const float f = x * kSin; const int i = (int) f; const float fr = f - (float) i;
+        return sinTab[i] + (sinTab[i + 1] - sinTab[i]) * fr;
+    }
+    AnalogTables &tables;
+    OscPair osc;
+    float sinTab[kSin + 1];
+    float lp1 = 0, lp2 = 0, vac = 0, velocity = 0, sampleRate = 44100.0f, g = 1.0f;
+};
+
 /* ------------------------------------------------------------------ slot */
 class Slot {
 public:
-    explicit Slot(AnalogTables &a) : wt(a) {}
+    explicit Slot(AnalogTables &a) : wt(a), wc(a) {}
     void setSampleRate(double sr)
     {
-        wt.setSampleRate(sr); fm.setSampleRate(sr);
+        wt.setSampleRate(sr); fm.setSampleRate(sr); wc.setSampleRate(sr);
         filter.setSampleRate(sr); amp.setSampleRate(sr); fenv.setSampleRate(sr);
         noteSmoother.setSampleRate(sr);
         sampleRate = sr;
@@ -337,6 +454,7 @@ public:
         filter.reset(); lastFn = -1000.0f;
         if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(TB_P_M1_WT_UMODE)]);
         if (machine == M_FM) fm.start(vel, seed);
+        if (machine == M_WESTCOAST) wc.start(vel);
         updateEnvs(P, 0);
         fenv.reset(); fenv.noteOn();
         amp.reset(); amp.noteOn();
@@ -392,7 +510,14 @@ public:
         float L[kBlock] = {}, R[kBlock] = {};
         if (machine == M_WAVETABLE) wt.render(t, P, slot, note, mo, L, R, n);
         else if (machine == M_FM)   fm.render(P, slot, note, mo, L, R, n);
-        /* WEST COAST / ANALOG: v2.1 / v2.2 */
+        else if (machine == M_WESTCOAST) {
+            /* the low pass gate is this model's VCA: it gets the amp envelope sample by sample */
+            float env[kBlock], dummy[kBlock];
+            for (int i = 0; i < n; i++) env[i] = dummy[i] = 1.0f;
+            amp.processMultiplying(env, dummy, n);
+            wc.render(P, slot, note, mo, env, L, R, n);
+        }
+        /* ANALOG: 1.5 */
 
         /* filter */
         const float filterWidth = 12.0f * std::log2(20000.0f / 440.0f) + 69.0f;
@@ -426,13 +551,13 @@ public:
         const float g = velocityToGain(velocity, pot01(P[sp(TB_P_M1_VEL)])) *
                         std::clamp(potSquared(P[sp(TB_P_M1_LEVEL)]) + mo[MD_LEVEL], 0.0f, 1.0f);
         const float pan = std::clamp(potBipolar(P[sp(TB_P_M1_PAN)]) + mo[MD_PAN], -1.0f, 1.0f);
-        amp.processMultiplying(L, R, n);
+        if (machine != M_WESTCOAST) amp.processMultiplying(L, R, n);
         const float gl = g * std::min(1.0f, 1.0f - pan), gr = g * std::min(1.0f, 1.0f + pan);
         for (int i = 0; i < n; i++) { outL[i] += L[i] * gl; outR[i] += R[i] * gr; }
 
         noteSmoother.process(n);
         const auto st = amp.getState();
-        if (st == AnalogADSR::State::idle ||
+        if ((st == AnalogADSR::State::idle && (machine != M_WESTCOAST || wc.gate() < 1e-4f)) ||
             (drum && st == AnalogADSR::State::sustain && amp.getOutput() < 1e-4f))
             active = false;
     }
@@ -453,6 +578,7 @@ private:
 
     WtMachine wt;
     FmMachine fm;
+    WcMachine wc;
     Filter filter;
     AnalogADSR amp, fenv;
     ValueSmoother<float> noteSmoother;

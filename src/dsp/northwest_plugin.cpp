@@ -498,6 +498,14 @@ static int tb_wview(const tablor_instance *inst, int m)
     return 0;
 }
 
+/* the WEST COAST fold picture: FOLD (K2) in 16 steps x SYMMETRY (K3) in 8 */
+static int tb_cview(const float *P, int m)
+{
+    const int fo = (int) std::lround(P[TB_P_M1_K2 + m * TB_SLOT_STRIDE] / 127.0f * 15.0f);
+    const int sy = (int) std::lround(P[TB_P_M1_K3 + m * TB_SLOT_STRIDE] / 127.0f * 7.0f);
+    return std::clamp(fo, 0, 15) * 8 + std::clamp(sy, 0, 7);
+}
+
 static int tb_fview(const float *P, int m)
 {
     const int cut = (int) std::lround(P[TB_P_M1_CUTOFF + m * TB_SLOT_STRIDE] / 127.0f * 31.0f);
@@ -1048,6 +1056,11 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
         snprintf(tmp, sizeof tmp, "%d", tb_fview(inst->params(), m));
         return write_str(buf, buf_len, tmp);
     }
+    if (int m = slot_key(key, "cview"); m >= 0) {
+        char tmp[8];
+        snprintf(tmp, sizeof tmp, "%d", tb_cview(inst->params(), m));
+        return write_str(buf, buf_len, tmp);
+    }
     if (int m = slot_key(key, "wview"); m >= 0) {
         char tmp[8];
         snprintf(tmp, sizeof tmp, "%d", tb_wview(inst, m));
@@ -1058,6 +1071,7 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
         for (int m = 0; m < TB_SLOTS; m++) {
             v = (v ^ (unsigned) tb_fview(inst->params(), m)) * 16777619u;
             v = (v ^ (unsigned) tb_wview(inst, m)) * 16777619u;
+            v = (v ^ (unsigned) tb_cview(inst->params(), m)) * 16777619u;
         }
         char tmp[16];
         snprintf(tmp, sizeof tmp, "%u", v);
