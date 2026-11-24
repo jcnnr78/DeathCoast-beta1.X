@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NorthWest v1.4: the whole parameter surface, from this one list.
+"""NorthWest v1.5: the whole parameter surface, from this one list.
 
 Writes src/dsp/params.h (engine), params.json (VST parameters, in this order = the VST index) and params.lock.
 4 monophonic MACHINES, each running a MODEL (WAVETABLE, FM, WEST COAST, ANALOG), its filter and amp envelope, and
@@ -9,7 +9,7 @@ LFO1/LFO2, an 8-row matrix with a target machine per row) is shared. Run:  pytho
 import json, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "northwest-1.4"
+VERSION = "northwest-1.5"
 SLOTS = 4
 
 MODELS     = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
@@ -61,6 +61,8 @@ for n in range(1, SLOTS + 1):
     E(s + "osc_w1", S + "OSC1 WAVE", OSC_WAVES, 0)
     E(s + "osc_w2", S + "OSC2 WAVE", OSC_WAVES, 0)
     E(s + "osc_sync", S + "OSC SYNC", OFF_ON, 0)
+    I(s + "dsend", S + "DELAY SEND", 0, 127, 0)
+    I(s + "rsend", S + "REVERB SEND", 0, 127, 0)
     PATH(s + "table")
 for i in (1, 2):
     I("me%d_a" % i, "EG%d A" % i, 0, 127, 0); I("me%d_d" % i, "EG%d D" % i, 0, 127, 64)
@@ -80,6 +82,15 @@ I("glide", "GLIDE", 0, 127, 0)
 E("glide_mode", "GLIDE MODE", GLIDE_MODES, 0)
 I("pb_range", "BEND RANGE", 0, 24, 2)
 I("volume", "VOLUME", 0, 127, 100)
+# FX: one delay and one reverb, fed by each machine's sends (mN_dsend / mN_rsend)
+I("fx_dtime", "DELAY TIME", 0, 127, 70)
+I("fx_dfb", "DELAY FEEDBACK", 0, 127, 50)
+I("fx_dtone", "DELAY TONE", 0, 127, 80)
+E("fx_dmode", "DELAY MODE", ["STEREO", "PING PONG"], 1)
+I("fx_dlevel", "DELAY LEVEL", 0, 127, 100)
+I("fx_rsize", "REVERB SIZE", 0, 127, 70)
+I("fx_rdamp", "REVERB DAMP", 0, 127, 60)
+I("fx_rlevel", "REVERB LEVEL", 0, 127, 100)
 
 # ------------------------------------------------------------------------------------------------ params.h
 opt_names, opt_lines = {}, []
@@ -144,7 +155,7 @@ for key, name, kind, lo, hi, d, opts, x in P:
     e.update(x)
     out.append(e)
     # arrows for the selectors drawn as steppers (arrows + a box the MPC data wheel turns once touched)
-    if key.endswith(("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync")):
+    if key.endswith(("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync", "fx_dmode", "glide_mode")):
         out += [{"key": key + "_prev", "name": name + " PREV", "momentary": True, "step_of": key, "step_delta": -1},
                 {"key": key + "_next", "name": name + " NEXT", "momentary": True, "step_of": key, "step_delta": 1}]
 out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "max": 127, "default": 0,

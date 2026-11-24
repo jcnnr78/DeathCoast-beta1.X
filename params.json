@@ -454,6 +454,22 @@
    "step_delta": 1
   },
   {
+   "key": "m1_dsend",
+   "name": "M1 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m1_rsend",
+   "name": "M1 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
    "key": "m1_select",
    "refresh_display": true,
    "name": "M1 TABLE",
@@ -936,6 +952,22 @@
    "momentary": true,
    "step_of": "m2_osc_sync",
    "step_delta": 1
+  },
+  {
+   "key": "m2_dsend",
+   "name": "M2 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m2_rsend",
+   "name": "M2 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
   },
   {
    "key": "m2_select",
@@ -1422,6 +1454,22 @@
    "step_delta": 1
   },
   {
+   "key": "m3_dsend",
+   "name": "M3 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m3_rsend",
+   "name": "M3 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
    "key": "m3_select",
    "refresh_display": true,
    "name": "M3 TABLE",
@@ -1904,6 +1952,22 @@
    "momentary": true,
    "step_of": "m4_osc_sync",
    "step_delta": 1
+  },
+  {
+   "key": "m4_dsend",
+   "name": "M4 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m4_rsend",
+   "name": "M4 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
   },
   {
    "key": "m4_select",
@@ -2573,6 +2637,20 @@
    "default": 0
   },
   {
+   "key": "glide_mode_prev",
+   "name": "GLIDE MODE PREV",
+   "momentary": true,
+   "step_of": "glide_mode",
+   "step_delta": -1
+  },
+  {
+   "key": "glide_mode_next",
+   "name": "GLIDE MODE NEXT",
+   "momentary": true,
+   "step_of": "glide_mode",
+   "step_delta": 1
+  },
+  {
    "key": "pb_range",
    "name": "BEND RANGE",
    "min": 0,
@@ -2583,6 +2661,85 @@
   {
    "key": "volume",
    "name": "VOLUME",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "fx_dtime",
+   "name": "DELAY TIME",
+   "min": 0,
+   "max": 127,
+   "default": 70,
+   "display": "int"
+  },
+  {
+   "key": "fx_dfb",
+   "name": "DELAY FEEDBACK",
+   "min": 0,
+   "max": 127,
+   "default": 50,
+   "display": "int"
+  },
+  {
+   "key": "fx_dtone",
+   "name": "DELAY TONE",
+   "min": 0,
+   "max": 127,
+   "default": 80,
+   "display": "int"
+  },
+  {
+   "key": "fx_dmode",
+   "name": "DELAY MODE",
+   "options": [
+    "STEREO",
+    "PING PONG"
+   ],
+   "default": 1
+  },
+  {
+   "key": "fx_dmode_prev",
+   "name": "DELAY MODE PREV",
+   "momentary": true,
+   "step_of": "fx_dmode",
+   "step_delta": -1
+  },
+  {
+   "key": "fx_dmode_next",
+   "name": "DELAY MODE NEXT",
+   "momentary": true,
+   "step_of": "fx_dmode",
+   "step_delta": 1
+  },
+  {
+   "key": "fx_dlevel",
+   "name": "DELAY LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 100,
+   "display": "int"
+  },
+  {
+   "key": "fx_rsize",
+   "name": "REVERB SIZE",
+   "min": 0,
+   "max": 127,
+   "default": 70,
+   "display": "int"
+  },
+  {
+   "key": "fx_rdamp",
+   "name": "REVERB DAMP",
+   "min": 0,
+   "max": 127,
+   "default": 60,
+   "display": "int"
+  },
+  {
+   "key": "fx_rlevel",
+   "name": "REVERB LEVEL",
    "min": 0,
    "max": 127,
    "default": 100,

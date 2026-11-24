@@ -9,6 +9,21 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 5 (analog + effects) - v1.5, branch v1.5 (built locally, not yet on the MPC)
+- ANALOG model (src/dsp/machines.h AnMachine), DFAM style: OscPair waves (pulse with PULSE WIDTH), osc 1 phase-modulates
+  osc 2 (FM 1>2), sync, white noise, tanh-like DRIVE (Pade, cheaper than tanh), decay pitch envelope (amount up to
+  +48 st, decay 5 ms..4 s, velocity amount, target OSC 1 / BOTH / OSC 2). The ladder is the machine filter's LP 24 /
+  HP 24 (same FILTER block as the other models). Header: OSC 1 WAVE, OSC 2 WAVE, SYNC (shared osc_w1/osc_w2/osc_sync).
+- K: FM 1>2, OSC 2 LEVEL, NOISE, DRIVE, PITCH ENV, PITCH DECAY, PULSE WIDTH, OSC 2 TUNE, OSC 2 FINE, OSC 1 OCTAVE,
+  VEL > P.ENV, P.ENV TARGET; the right-hand 2x2 (K5, K6, K11, K12) is the PITCH ENV panel, like SUB in WAVETABLE.
+- FX (src/dsp/fx.h): delay (10 ms..1.5 s, gliding time, feedback with LP tone + 90 Hz HP, stereo or ping pong) and
+  reverb (4 combs + 2 allpasses a side). Each machine has DELAY and REVERB sends (mN_dsend / mN_rsend, on MIX with
+  Q-Links level, pan, delay, reverb). Effects controls on GLOBAL. Each effect sleeps once silent.
+- Presets: the 8 inherited from Tablor/v1 and the 1.3/1.4 test sounds replaced by 24 written by tools/make_presets.py,
+  named BASS / MELODY / DRUM / EFX / DRONE. User presets folder renamed from Tablor's to "NorthWest Presets".
+- Checks (PC): host test PASSED; 24 presets render finite; preset -> state -> reload identical (tables load).
+  CPU x86: 4 x ANALOG 1.37 %, mixed with delay + reverb 1.6 %.
+
 ## Phase 4 (west coast) - v1.4, branch v1.4 (built locally, not yet on the MPC)
 - WEST COAST model (src/dsp/machines.h WcMachine): osc 1 phase-modulates osc 2 (OscPair, band-limited AnalogTables
   waves, hard sync), sine wavefolder (up to ~3 folds, symmetry offset), low pass gate = 2-pole low pass + VCA on a

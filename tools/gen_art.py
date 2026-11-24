@@ -104,16 +104,16 @@ def wave(w, h, n=64):
         frames.append(down(im, w, h))
     strip(frames, "wave_%dx%d.png" % (w, h))
 
-def subpanel(w=418, h=240):
+def subpanel(w=418, h=240, label="SUB", name="subpanel.png"):
     """WAVETABLE: the panel that sets the SUB knobs apart (one Q-Link column: level, drive, octave, wave)"""
     from PIL import ImageFont
     im = canvas(w, h); d = ImageDraw.Draw(im)
     d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("323236"), outline=hexc("4a4a50"), width=SS)
     try: f = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 15 * SS)
     except OSError: f = ImageFont.load_default(size=15 * SS)
-    d.text((12 * SS, 8 * SS), "SUB", font=f, fill=ACC)
-    im = down(im, w, h); im.save(os.path.join(OUT, "subpanel.png"), optimize=True)
-    print("  subpanel.png               %dx%d" % (w, h))
+    d.text((12 * SS, 8 * SS), label, font=f, fill=ACC)
+    im = down(im, w, h); im.save(os.path.join(OUT, name), optimize=True)
+    print("  %-26s %dx%d" % (name, w, h))
 
 def fold(w, h):
     """WEST COAST: one cycle of the carrier through the wavefolder. 128 frames = FOLD in 16 steps x SYMMETRY in 8
@@ -239,4 +239,5 @@ if __name__ == "__main__":
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
     subpanel()
+    subpanel(label="PITCH ENV", name="penvpanel.png")
     logo()

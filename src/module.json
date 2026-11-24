@@ -2,7 +2,7 @@
   "id": "northwest",
   "name": "NorthWest",
   "abbrev": "NW",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "NorthWest: 4 monophonic machines in layers, each running its model (wavetable, FM; west coast and analog coming), shared LFOs, envelopes and an 8-row mod matrix.",
   "author": "NorthWest project",
   "dsp": "dsp.so",

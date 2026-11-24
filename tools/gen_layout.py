@@ -67,22 +67,25 @@ K_LABELS = {
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
     2: ["FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "", "LPG RESPONSE", "MOD RATIO", "MOD FINE", "", "",
         "VEL > FOLD"],
+    3: ["FM 1>2", "OSC 2 LEVEL", "NOISE", "DRIVE", "PITCH ENV", "PITCH DECAY", "PULSE WIDTH", "OSC 2 TUNE", "OSC 2 FINE",
+        "OSC 1 OCTAVE", "VEL > P.ENV", "P.ENV TARGET"],
 }
 KX = [120 + i * 205 for i in range(6)]      # knob columns of the model area
 ROW1, ROW2 = 272, 398
 
-# ---- MIX: model, level, pan, tune, mute for each machine -----------------------------------------------------
+# ---- MIX: per machine model, level, pan, delay and reverb sends, tune, mute -------------------------------------
 L = ["[tab MIX]"]
 q = []
 for n in range(1, 5):
-    s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
+    s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155; a, b = cx - 76, cx + 76
     L += [frame(x0, 92, 310, 616, "MACHINE %d" % n),
-          popup(cx, 178, 250, "MODEL", s + "model"),
-          # one column per machine, top to bottom = its Q-Links top to bottom
-          knob(cx, 268, "LEVEL", s + "level", bw=160), knob(cx, 386, "PAN", s + "pan", bw=160),
-          knob(cx, 504, "TUNE", s + "tune", bw=160),
-          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (cx, 622, s)]
-    q += [s + "level", s + "pan", s + "tune", s + "mute"]
+          popup(cx, 170, 250, "MODEL", s + "model"),
+          # left to right, top to bottom = the machine's Q-Links (level, pan, delay, reverb); then tune and mute
+          knob(a, 262, "LEVEL", s + "level", bw=140), knob(b, 262, "PAN", s + "pan", bw=140),
+          knob(a, 400, "DELAY", s + "dsend", bw=140), knob(b, 400, "REVERB", s + "rsend", bw=140),
+          knob(a, 538, "TUNE", s + "tune", bw=140),
+          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (b, 548, s)]
+    q += [s + "level", s + "pan", s + "dsend", s + "rsend"]
 L.append('qlinks "MIX" = ' + ",".join(q))
 MIX = "\n".join(L) + "\n"
 
@@ -108,12 +111,16 @@ def slot_page(n):
           text(A[0], 124, "MOD WAVE", 1.0, m + ":2"), stepper(A[0], 164, A[1], s + "osc_w1", "", m + ":2"),
           text(B[0], 124, "CARRIER WAVE", 1.0, m + ":2"), stepper(B[0], 164, B[1], s + "osc_w2", "", m + ":2"),
           text(C[0], 124, "SYNC", 1.0, m + ":2"), stepper(C[0], 164, C[1], s + "osc_sync", "", m + ":2"),
+          text(A[0], 124, "OSC 1 WAVE", 1.0, m + ":3"), stepper(A[0], 164, A[1], s + "osc_w1", "", m + ":3"),
+          text(B[0], 124, "OSC 2 WAVE", 1.0, m + ":3"), stepper(B[0], 164, B[1], s + "osc_w2", "", m + ":3"),
+          text(C[0], 124, "SYNC", 1.0, m + ":3"), stepper(C[0], 164, C[1], s + "osc_sync", "", m + ":3"),
           ]
     # model area
-    COMING = {3: " (COMING IN 1.5)"}
     for i, name in enumerate(MODELS):
-        L.append(frame(10, 206, 1258, 270, name + COMING.get(i, ""), "%s:%d" % (m, i)))
+        L.append(frame(10, 206, 1258, 270, name, "%s:%d" % (m, i)))
+    # the right-hand 2x2 block on a panel of its own: SUB (WAVETABLE), PITCH ENV (ANALOG)
     L.append(W('art file=images/nw/subpanel.png x=846 y=232 w=418 h=240', m + ":0"))
+    L.append(W('art file=images/nw/penvpanel.png x=846 y=232 w=418 h=240', m + ":3"))
     for mi, labels in K_LABELS.items():
         for k, lab in enumerate(labels):
             if lab:
@@ -204,15 +211,24 @@ for i in range(8):
 L.append('qlinks "MATRIX" = ' + ",".join(["mm%d_amt" % n for n in range(1, 9)] + ["mm%d_dst" % n for n in range(1, 9)]))
 MATRIX = "\n".join(L) + "\n"
 
-# ---- GLOBAL: glide, bend range, volume, preset, logo -----------------------------------------------------------
+# ---- GLOBAL: glide, master, delay, reverb, preset, logo ---------------------------------------------------------
 L = ["[tab GLOBAL]",
-     frame(10, 92, 820, 304, "GLIDE"), knob(200, 237, "GLIDE TIME", "glide"),
-     enumv(560, 250, 150, "GLIDE MODE", "glide_mode"),
-     frame(836, 92, 432, 304, "MASTER"), knob(950, 237, "BEND RANGE", "pb_range"), knob(1150, 237, "VOLUME", "volume"),
-     frame(10, 404, 1258, 304, "PRESET"),
-     'stepper cx=500 cy=560 w=640 h=56 label="" key=preset get=preset_name style=dotmatrix',
-     'art file=images/nw/logo.png x=%d y=%d w=316 h=60' % (1100 - 158, 560 - 30),
-     'qlinks "GLOBAL" = glide,glide_mode,-,-,pb_range,volume,-,-,-,-,-,-,preset']
+     frame(10, 92, 620, 200, "GLIDE"), knob(140, 196, "GLIDE TIME", "glide", bw=140),
+     text(420, 132, "GLIDE MODE", 1.0), stepper(420, 172, 300, "glide_mode"),
+     frame(636, 92, 632, 200, "MASTER"), knob(800, 196, "BEND RANGE", "pb_range", bw=140),
+     knob(1000, 196, "VOLUME", "volume", bw=140),
+     frame(10, 298, 820, 200, "DELAY"),
+     knob(110, 400, "TIME", "fx_dtime", bw=130), knob(255, 400, "FEEDBACK", "fx_dfb", bw=130),
+     knob(400, 400, "TONE", "fx_dtone", bw=130), knob(545, 400, "LEVEL", "fx_dlevel", bw=130),
+     text(715, 360, "MODE", 1.0), stepper(715, 400, 210, "fx_dmode"),
+     frame(836, 298, 432, 200, "REVERB"),
+     knob(930, 400, "SIZE", "fx_rsize", bw=120), knob(1052, 400, "DAMP", "fx_rdamp", bw=120),
+     knob(1174, 400, "LEVEL", "fx_rlevel", bw=120),
+     frame(10, 504, 1258, 204, "PRESET"),
+     'stepper cx=500 cy=606 w=640 h=56 label="" key=preset get=preset_name style=dotmatrix',
+     'art file=images/nw/logo.png x=%d y=%d w=316 h=60' % (1100 - 158, 606 - 30),
+     'qlinks "GLOBAL" = glide,glide_mode,pb_range,volume,fx_dtime,fx_dfb,fx_dtone,fx_dlevel,'
+     'fx_rsize,fx_rdamp,fx_rlevel,-,preset,-,-,-']
 GLOBAL = "\n".join(L) + "\n"
 
 order = [MIX] + [slot_page(n) for n in range(1, 5)] + [MOD, MATRIX, GLOBAL]

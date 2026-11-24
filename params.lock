@@ -49,6 +49,8 @@ m1_osc_w2_next
 m1_osc_sync
 m1_osc_sync_prev
 m1_osc_sync_next
+m1_dsend
+m1_rsend
 m1_select
 m1_select_prev
 m1_select_next
@@ -104,6 +106,8 @@ m2_osc_w2_next
 m2_osc_sync
 m2_osc_sync_prev
 m2_osc_sync_next
+m2_dsend
+m2_rsend
 m2_select
 m2_select_prev
 m2_select_next
@@ -159,6 +163,8 @@ m3_osc_w2_next
 m3_osc_sync
 m3_osc_sync_prev
 m3_osc_sync_next
+m3_dsend
+m3_rsend
 m3_select
 m3_select_prev
 m3_select_next
@@ -214,6 +220,8 @@ m4_osc_w2_next
 m4_osc_sync
 m4_osc_sync_prev
 m4_osc_sync_next
+m4_dsend
+m4_rsend
 m4_select
 m4_select_prev
 m4_select_next
@@ -270,8 +278,20 @@ mm8_amt
 mm8_slot
 glide
 glide_mode
+glide_mode_prev
+glide_mode_next
 pb_range
 volume
+fx_dtime
+fx_dfb
+fx_dtone
+fx_dmode
+fx_dmode_prev
+fx_dmode_next
+fx_dlevel
+fx_rsize
+fx_rdamp
+fx_rlevel
 preset
 preset_prev
 preset_next

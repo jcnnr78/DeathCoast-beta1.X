@@ -5,6 +5,7 @@
 #pragma once
 
 #include "machines.h"
+#include "fx.h"
 
 #include <atomic>
 #include <memory>
@@ -50,6 +51,8 @@ private:
     Lfo lfo[2];
     float lfoVal[2] = {};
     ModShared ms;
+    nw::Delay delay;
+    nw::Reverb reverb;
     float noteRand = 0.0f, velocity = 0.0f;
     int curNote = 60;
     uint32_t rs = 1;

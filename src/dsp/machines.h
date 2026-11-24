@@ -81,6 +81,19 @@ inline float wcResponseSeconds(float v) { return 0.02f * std::pow(100.0f, v / 12
 /* MOD FINE: +-50 cents, 64 = 0 */
 inline float wcFineSemis(float v) { return (v - 64.0f) / 63.0f * 0.5f; }
 
+/* ANALOG */
+inline float fastTanh(float x)        /* Pade, clamped: within 2 % of tanh, monotonic */
+{
+    x = std::clamp(x, -3.0f, 3.0f);
+    const float x2 = x * x;
+    return x * (27.0f + x2) / (27.0f + 9.0f * x2);
+}
+inline float anPitchEnvSemis(float v) { const float x = v / 127.0f; return x * x * 48.0f; }
+inline float anPulseWidth(float v) { return 0.5f - 0.45f * v / 127.0f; }
+inline float anTuneSemis(float v) { return std::round((v - 64.0f) / 63.0f * 24.0f); }
+inline int anOctave(float v) { return std::clamp((int) std::lround(v / 127.0f * 4.0f), 0, 4) - 2; }
+inline int anTarget(float v) { return std::clamp((int) (v * 3.0f / 128.0f), 0, 2); }   /* 0 OSC 1, 1 BOTH, 2 OSC 2 */
+
 inline const char *knobName(int machine, int k, int fxMode)
 {
     static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SUB LEVEL", "SUB DRIVE", "UNISON", "SPREAD",
@@ -98,6 +111,9 @@ inline const char *knobName(int machine, int k, int fxMode)
     static const char *wc[12] = { "FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "-", "LPG RESPONSE",
                                   "MOD RATIO", "MOD FINE", "-", "-", "VEL > FOLD" };
     if (machine == M_WESTCOAST) return wc[k];
+    static const char *an[12] = { "FM 1>2", "OSC 2 LEVEL", "NOISE", "DRIVE", "PITCH ENV", "PITCH DECAY",
+                                  "PULSE WIDTH", "OSC 2 TUNE", "OSC 2 FINE", "OSC 1 OCTAVE", "VEL > P.ENV", "P.ENV TARGET" };
+    if (machine == M_ANALOG) return an[k];
     return "-";
 }
 
@@ -126,6 +142,20 @@ inline void knobText(char *buf, int len, int machine, int k, float v)
             else snprintf(buf, len, "%.1f s", (double) s);
             return;
         }
+    }
+    if (machine == M_ANALOG) {
+        if (k == 4) { snprintf(buf, len, "+%.1f st", (double) anPitchEnvSemis(v)); return; }
+        if (k == 5) {
+            const float s = fmDecaySeconds(v);
+            if (s < 1.0f) snprintf(buf, len, "%d ms", (int) std::lround(s * 1000.0f));
+            else snprintf(buf, len, "%.1f s", (double) s);
+            return;
+        }
+        if (k == 6) { snprintf(buf, len, "%d %%", (int) std::lround(anPulseWidth(v) * 100.0f)); return; }
+        if (k == 7) { snprintf(buf, len, "%+d st", (int) anTuneSemis(v)); return; }
+        if (k == 8) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
+        if (k == 9) { snprintf(buf, len, "%+d OCT", anOctave(v)); return; }
+        if (k == 11) { static const char *t[3] = { "OSC 1", "BOTH", "OSC 2" }; snprintf(buf, len, "%s", t[anTarget(v)]); return; }
     }
     snprintf(buf, len, "%d", (int) std::lround(v));
 }
@@ -352,6 +382,10 @@ struct OscPair {
         default: return t.processPulse(note, ph, 0.5f);
         }
     }
+    static float wave(const AnalogTables &t, int w, float note, float ph, float pw)
+    {
+        return w == 3 ? t.processPulse(note, ph, pw) : wave(t, w, note, ph);
+    }
 };
 
 /* ------------------------------------------------------------------ WEST COAST machine */
@@ -433,13 +467,79 @@ private:
     float lp1 = 0, lp2 = 0, vac = 0, velocity = 0, sampleRate = 44100.0f, g = 1.0f;
 };
 
+/* ------------------------------------------------------------------ ANALOG machine */
+/* DFAM-like: two band-limited oscillators (sine/tri/saw/pulse with PULSE WIDTH), osc 1 phase-modulates osc 2
+ * (FM 1>2), hard sync of osc 2 to osc 1, white noise, a decay-only pitch envelope (amount, decay, velocity, which
+ * oscillator) and a tanh DRIVE into the machine's filter (LP 24 / HP 24 give the ladder's slopes). The amp envelope
+ * is the slot's. */
+class AnMachine {
+public:
+    explicit AnMachine(AnalogTables &a) : tables(a) {}
+    void setSampleRate(double sr) { sampleRate = (float) sr; }
+    void start(float vel, uint32_t seed) { osc.reset(); trigger(vel); rng = seed | 1u; }
+    void trigger(float vel) { penv = 1.0f; velocity = vel; }
+
+    void render(const float *P, int slot, float note, const float *mo, float *L, float *R, int n)
+    {
+        const float *K = P + slotParam(slot, TB_P_M1_K1);
+        const int w1 = (int) P[slotParam(slot, TB_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, TB_P_M1_OSC_W2)];
+        const bool sync = (int) P[slotParam(slot, TB_P_M1_OSC_SYNC)] != 0;
+        const float fm = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
+        const float lvl2 = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
+        const float noise = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
+        const float drive = std::clamp(pot01(K[3]) + mo[MD_TD], 0.0f, 1.0f);
+        const float velAmt = pot01(K[10]);
+        const float penvSemis = anPitchEnvSemis(K[4]) * (1.0f - velAmt + velAmt * velocity);
+        const float pdec = std::exp(-1.0f / (fmDecaySeconds(K[5]) * sampleRate));
+        const float pw = anPulseWidth(K[6]);
+        const float off2 = anTuneSemis(K[7]) + wcFineSemis(K[8]);
+        const float n1base = note + 12.0f * (float) anOctave(K[9]);
+        const int target = anTarget(K[11]);
+        const float t1 = target <= 1 ? 1.0f : 0.0f, t2 = target >= 1 ? 1.0f : 0.0f;
+        const float pm = fm * fm * 2.0f;
+        const float g = 1.0f + drive * 6.0f, norm = 1.0f / fastTanh(g);
+        const float nl = noise * noise;
+        const float sum = 1.0f / (1.0f + lvl2 + nl);
+
+        float note1 = n1base, note2 = note + off2, f1 = 0, f2 = 0;
+        for (int i = 0; i < n; i++) {
+            if ((i & 15) == 0) {          /* pitch (pow) every 16 samples: the envelope is smooth enough */
+                const float pe = penvSemis * penv;
+                note1 = n1base + pe * t1; note2 = note + off2 + pe * t2;
+                f1 = std::min(midiNoteToHz(note1), sampleRate * 0.45f) / sampleRate;
+                f2 = std::min(midiNoteToHz(note2), sampleRate * 0.45f) / sampleRate;
+            }
+            penv *= pdec;
+            const float a = OscPair::wave(tables, w1, note1, osc.ph1, pw);
+            float c2 = osc.ph2 + pm * a;
+            c2 -= std::floor(c2);
+            const float b = OscPair::wave(tables, w2, note2, c2, pw);
+            osc.ph1 += f1;
+            if (osc.ph1 >= 1.0f) { osc.ph1 -= 1.0f; if (sync) osc.ph2 = osc.ph1 * f2 / f1; }
+            osc.ph2 += f2; if (osc.ph2 >= 1.0f) osc.ph2 -= 1.0f;
+            rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5;
+            const float wn = (float) (int32_t) rng * (1.0f / 2147483648.0f);
+            float x = (a + b * lvl2 + wn * nl) * sum;
+            if (drive > 0.0f) x = fastTanh(x * g) * norm;
+            L[i] += x * 0.8f; R[i] += x * 0.8f;
+        }
+        if (penv < 1e-6f) penv = 0.0f;
+    }
+
+private:
+    AnalogTables &tables;
+    OscPair osc;
+    float penv = 0, velocity = 0, sampleRate = 44100.0f;
+    uint32_t rng = 1;
+};
+
 /* ------------------------------------------------------------------ slot */
 class Slot {
 public:
-    explicit Slot(AnalogTables &a) : wt(a), wc(a) {}
+    explicit Slot(AnalogTables &a) : wt(a), wc(a), an(a) {}
     void setSampleRate(double sr)
     {
-        wt.setSampleRate(sr); fm.setSampleRate(sr); wc.setSampleRate(sr);
+        wt.setSampleRate(sr); fm.setSampleRate(sr); wc.setSampleRate(sr); an.setSampleRate(sr);
         filter.setSampleRate(sr); amp.setSampleRate(sr); fenv.setSampleRate(sr);
         noteSmoother.setSampleRate(sr);
         sampleRate = sr;
@@ -466,6 +566,7 @@ public:
         if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(TB_P_M1_WT_UMODE)]);
         if (machine == M_FM) fm.start(vel, seed);
         if (machine == M_WESTCOAST) wc.start(vel);
+        if (machine == M_ANALOG) an.start(vel, seed);
         updateEnvs(P, 0);
         fenv.reset(); fenv.noteOn();
         amp.reset(); amp.noteOn();
@@ -486,6 +587,7 @@ public:
         if (gm != GM_LEGATO) {
             fenv.noteOn(); amp.noteOn();
             if (machine == M_FM) fm.start(vel, seed);
+            if (machine == M_ANALOG) an.trigger(vel);
         }
     }
 
@@ -528,7 +630,7 @@ public:
             amp.processMultiplying(env, dummy, n);
             wc.render(P, slot, note, mo, env, L, R, n);
         }
-        /* ANALOG: 1.5 */
+        else if (machine == M_ANALOG) an.render(P, slot, note, mo, L, R, n);
 
         /* filter */
         const float filterWidth = 12.0f * std::log2(20000.0f / 440.0f) + 69.0f;
@@ -590,6 +692,7 @@ private:
     WtMachine wt;
     FmMachine fm;
     WcMachine wc;
+    AnMachine an;
     Filter filter;
     AnalogADSR amp, fenv;
     ValueSmoother<float> noteSmoother;

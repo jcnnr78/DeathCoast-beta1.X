@@ -12,6 +12,7 @@ Engine::Engine()
     for (auto &s : slots) s.setSampleRate(44100.0);
     for (auto &e : modEnv) e.setSampleRate(44100.0);
     for (auto &l : lfo) l.setSampleRate(44100.0);
+    delay.setSampleRate(44100.0); reverb.setSampleRate(44100.0);
     auto init = makeInitTable();
     for (auto &t : tables) std::atomic_store(&t, init);
 }
@@ -157,18 +158,33 @@ void Engine::renderBlock(int16_t *out, int frames)
 {
     std::shared_ptr<Wavetable> t[TB_SLOTS];
     for (int s = 0; s < TB_SLOTS; s++) t[s] = std::atomic_load(&tables[s]);
-    float L[kBlock], R[kBlock];
+    float L[kBlock], R[kBlock], SL[kBlock], SR[kBlock], DL[kBlock], DR[kBlock], VL[kBlock], VR[kBlock];
     int done = 0;
     while (done < frames) {
         const int n = std::min(frames - done, kBlock);
-        std::memset(L, 0, (size_t) n * sizeof(float));
-        std::memset(R, 0, (size_t) n * sizeof(float));
+        const size_t bytes = (size_t) n * sizeof(float);
+        std::memset(L, 0, bytes); std::memset(R, 0, bytes);
+        std::memset(DL, 0, bytes); std::memset(DR, 0, bytes);
+        std::memset(VL, 0, bytes); std::memset(VR, 0, bytes);
         updateMod(n);
         for (int s = 0; s < TB_SLOTS; s++) {
             if (!slots[s].isActive()) continue;
             if ((int) pots[slotParam(s, TB_P_M1_MUTE)] != 0) { slots[s].kill(); continue; }
-            slots[s].render(pots, t[s].get(), ms, L, R, n);
+            std::memset(SL, 0, bytes); std::memset(SR, 0, bytes);
+            slots[s].render(pots, t[s].get(), ms, SL, SR, n);
+            /* dry into the mix, and each machine's sends into the delay and reverb buses */
+            const float ds = potSquared(pots[slotParam(s, TB_P_M1_DSEND)]);
+            const float rs = potSquared(pots[slotParam(s, TB_P_M1_RSEND)]);
+            for (int i = 0; i < n; i++) {
+                L[i] += SL[i]; R[i] += SR[i];
+                DL[i] += SL[i] * ds; DR[i] += SR[i] * ds;
+                VL[i] += SL[i] * rs; VR[i] += SR[i] * rs;
+            }
         }
+        delay.process(DL, DR, L, R, n, pot01(pots[TB_P_FX_DTIME]), pot01(pots[TB_P_FX_DFB]), pot01(pots[TB_P_FX_DTONE]),
+                      (int) pots[TB_P_FX_DMODE] == 1, potSquared(pots[TB_P_FX_DLEVEL]));
+        reverb.process(VL, VR, L, R, n, pot01(pots[TB_P_FX_RSIZE]), pot01(pots[TB_P_FX_RDAMP]),
+                       potSquared(pots[TB_P_FX_RLEVEL]));
         const float master = potSquared(pots[TB_P_VOLUME]) * 0.8f;
         for (int i = 0; i < n; i++) {
             const float l = std::clamp(L[i] * master, -1.0f, 1.0f);

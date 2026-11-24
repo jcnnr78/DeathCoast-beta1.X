@@ -108,11 +108,11 @@ struct tablor_instance {
 };
 
 /* User presets are plain files the user can copy, share and manage:
- *   /data/UserData/UserLibrary/Tablor Presets/<Name>.tblr
+ *   /data/UserData/UserLibrary/NorthWest Presets/<Name>.tblr
  * filename (minus extension) IS the preset name; content is one
  * TBLR1 state blob line. */
 static constexpr const char *kPresetDir =
-    "/data/UserData/UserLibrary/Tablor Presets";
+    "/data/UserData/UserLibrary/NorthWest Presets";
 
 static std::string sanitize_preset_name(const char *raw)
 {
@@ -193,9 +193,9 @@ static void write_preset_file(const std::string &path, const char *blob)
  * deleted instead of reappearing on the next boot.
  */
 static constexpr const char *kSchwungPresetDir =
-    "/data/UserData/schwung/presets/tablor";
+    "/data/UserData/schwung/presets/northwest";
 static constexpr const char *kInstalledStamp =
-    "/data/UserData/schwung/presets/tablor/.installed";
+    "/data/UserData/schwung/presets/northwest/.installed";
 
 /* A NAME becomes both the display string and the file name, so it loses path
  * separators and control characters -- matching Schwung's own safeFileStem --
