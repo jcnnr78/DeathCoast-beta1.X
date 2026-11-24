@@ -143,7 +143,8 @@ for key, name, kind, lo, hi, d, opts, x in P:
     else: e.update(min=lo, max=hi, default=d, display="int")
     e.update(x)
     out.append(e)
-    if key.endswith("_model"):       # arrows for the model selector (stepper)
+    # arrows for the selectors drawn as steppers (arrows + a box the MPC data wheel turns once touched)
+    if key.endswith(("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync")):
         out += [{"key": key + "_prev", "name": name + " PREV", "momentary": True, "step_of": key, "step_delta": -1},
                 {"key": key + "_next", "name": name + " NEXT", "momentary": True, "step_of": key, "step_delta": 1}]
 out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "max": 127, "default": 0,

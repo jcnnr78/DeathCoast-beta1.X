@@ -17,7 +17,7 @@ overlapping notes). A machine at level 0 or muted costs no CPU. Models can repea
 
 | Model | Sound | Controls |
 |---|---|---|
-| WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, spread, unison mode; sub level, octave, wave |
+| WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, unison, spread, unison mode; SUB (its own panel): level, drive, octave, wave |
 | FM | 4 sine operators, 8 algorithms, feedback on operator 4 | levels and ratios of operators 2-4, a shared modulator decay, pitch envelope, noise, velocity to FM; mode TONE or DRUM (one-shot) |
 | WEST COAST | carrier phase-modulated by a second oscillator (sine, triangle, saw, pulse; sync), wavefolder, low pass gate (filter + VCA through a vactrol, driven by the amp envelope) | FM amount, fold, symmetry, osc mix, LPG depth and response, modulator ratio and fine, velocity to fold; a picture of the folded wave |
 | ANALOG | coming in 1.5 | 2 oscillators, FM, sync, pitch envelope, noise, 24 dB ladder |
@@ -35,9 +35,10 @@ envelope (attack, decay, sustain, release, velocity).
 | MATRIX | 8 rows: source, destination, machine (ALL or M1-M4), amount | – |
 | GLOBAL | glide, bend range, volume, presets | – |
 
-The 12 machine knobs (K1-K12) keep their place for every model, so a Q-Link always turns the same knob; their names
+The selectors at the top of a machine page (model, table, algorithm, mode...) are steppers: tap the arrows, or touch
+the box and turn the MPC's data wheel. The 12 machine knobs (K1-K12) keep their place for every model, so a Q-Link always turns the same knob; their names
 and values follow the model. On screen, left to right is a Q-Link column top to bottom. The wavetable view draws the
-loaded table's own waves, the filter view follows CUTOFF and RESONANCE, the envelope views follow their knobs.
+loaded table's own waves with a cursor on the frame POSITION is on, the filter view follows CUTOFF and RESONANCE, the envelope views follow their knobs.
 
 ## Presets
 

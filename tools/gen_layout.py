@@ -62,7 +62,7 @@ def stepper(cx, cy, w, key, get="", when=""):
 MODELS = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
 # K1..K12 labels per model ("" = the model doesn't use it: no knob shown)
 K_LABELS = {
-    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE", "SUB WAVE", "", "", ""],
+    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SUB LEVEL", "SUB DRIVE", "UNISON", "SPREAD", "", "", "SUB OCTAVE", "SUB WAVE"],
     1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
     2: ["FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "", "LPG RESPONSE", "MOD RATIO", "MOD FINE", "", "",
@@ -91,32 +91,36 @@ def slot_page(n):
     s = "m%d_" % n; m = s + "model"
     L = ["[tab MACHINE %d]" % n,
          frame(10, 92, 1258, 108, ""),
-         text(90, 150, "MACHINE %d" % n, 1.5),
-         stepper(330, 152, 300, m),
-         popup(560, 154, 130, "", m)]
-    # model-specific selectors in the top band
-    L += [stepper(880, 152, 360, s + "select", s + "tname", m + ":0"),
-          popup(1160, 158, 170, "EFFECT", s + "wt_fx", m + ":0"),
-          popup(800, 158, 230, "ALGORITHM", s + "fm_algo", m + ":1"),
-          enumh(1100, 162, 110, "MODE", s + "fm_mode", m + ":1"),
-          popup(790, 158, 170, "MOD WAVE", s + "osc_w1", m + ":2"),
-          popup(975, 158, 170, "CARRIER WAVE", s + "osc_w2", m + ":2"),
-          enumh(1165, 162, 80, "SYNC", s + "osc_sync", m + ":2"),
-          text(900, 150, "ANALOG: COMING IN v1.5", 1.3, m + ":3")]
+         text(85, 150, "MACHINE %d" % n, 1.5),
+         text(320, 124, "MODEL", 1.0), stepper(320, 164, 270, m),
+         popup(535, 166, 130, "", m)]
+    # model-specific selectors in the top band: steppers (arrows; once touched, the MPC data wheel turns them)
+    TV = (320, 60)
+    # three stepper places shared by every model (A, B, C), so their arrows line up (see fix_arrows)
+    A, B, C = (750, 250), (990, 210), (1180, 160)
+    L += [text(A[0], 124, "TABLE", 1.0, m + ":0"), stepper(A[0], 164, A[1], s + "select", s + "tname", m + ":0"),
+          W('meter cx=1100 cy=150 w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
+            % (TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), m + ":0"),
+          W('meter cx=1100 cy=150 w=%d h=%d key=%sk1 strip=images/nw/posmark_%dx%d.png frames=64'
+            % (TV[0], TV[1], s, TV[0], TV[1]), m + ":0"),
+          text(A[0], 124, "ALGORITHM", 1.0, m + ":1"), stepper(A[0], 164, A[1], s + "fm_algo", "", m + ":1"),
+          text(B[0], 124, "MODE", 1.0, m + ":1"), stepper(B[0], 164, B[1], s + "fm_mode", "", m + ":1"),
+          text(A[0], 124, "MOD WAVE", 1.0, m + ":2"), stepper(A[0], 164, A[1], s + "osc_w1", "", m + ":2"),
+          text(B[0], 124, "CARRIER WAVE", 1.0, m + ":2"), stepper(B[0], 164, B[1], s + "osc_w2", "", m + ":2"),
+          text(C[0], 124, "SYNC", 1.0, m + ":2"), stepper(C[0], 164, C[1], s + "osc_sync", "", m + ":2"),
+          ]
     # model area
+    COMING = {3: " (COMING IN 1.5)"}
     for i, name in enumerate(MODELS):
-        L.append(frame(10, 206, 1258, 270, name, "%s:%d" % (m, i)))
+        L.append(frame(10, 206, 1258, 270, name + COMING.get(i, ""), "%s:%d" % (m, i)))
+    L.append(W('art file=images/nw/subpanel.png x=846 y=232 w=418 h=240', m + ":0"))
     for mi, labels in K_LABELS.items():
         for k, lab in enumerate(labels):
             if lab:
                 L.append(knob(KX[k % 6], ROW1 if k < 6 else ROW2, lab, s + "k%d" % (k + 1), "%s:%d" % (m, mi), bw=150))
-    # WAVETABLE: the loaded table (its own waves, mN_wview from the plugin) with POSITION under it
-    TV = (360, 64)
-    tx = (KX[4] + KX[5]) // 2
-    L += [W('meter cx=%d cy=%d w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
-            % (tx, ROW2 - 6, TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), m + ":0"),
-          meter(tx, ROW2 + 38, ART.POSBAR, s + "k1", "posbar_%dx%d.png" % ART.POSBAR, m + ":0"),
-          popup(KX[3], ROW2 + 6, 200, "UNISON MODE", s + "wt_umode", m + ":0")]
+    # WAVETABLE: EFFECT and UNISON MODE (steppers) between UNISON/SPREAD and the SUB block; SUB on its own panel
+    L += [text(520, ROW2 - 40, "EFFECT", 1.0, m + ":0"), stepper(520, ROW2 - 4, 160, s + "wt_fx", "", m + ":0"),
+          text(727, ROW2 - 40, "UNISON MODE", 1.0, m + ":0"), stepper(727, ROW2 - 4, 230, s + "wt_umode", "", m + ":0")]
     # WEST COAST: one cycle through the wavefolder (FOLD x SYMMETRY, mN_cview from the plugin)
     L.append(W('meter cx=%d cy=%d w=%d h=%d key=%scview strip=images/nw/fold_%dx%d.png frames=128'
                % ((KX[3] + KX[4]) // 2, ROW2, ART.FOLD[0], ART.FOLD[1], s, ART.FOLD[0], ART.FOLD[1]), m + ":2"))
@@ -142,7 +146,33 @@ def slot_page(n):
           # left to right on screen = Q-Links top to bottom, 4 per column
           'qlinks "M%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
               "ftype", "cutoff", "reso", "fenv", "fdec", "fkey", "-", "-", "amp_a", "amp_d", "amp_s", "amp_r", "vel", "-", "-", "-"))]
-    return "\n".join(L) + "\n"
+    return "\n".join(fix_arrows(L, m)) + "\n"
+
+
+def fix_arrows(L, m):
+    """A stepper shown only for one model (when=) gets blank arrows from the skin builder: it cuts each arrow's
+    tap image out of the page background, and that stepper is drawn on its model's layer, not on the background.
+    So the arrows of those steppers are drawn on the background here, and each model covers (with a patch of
+    panel colour) the arrows of the other models' steppers it doesn't have."""
+    boxes = {}                         # (x, y, side) -> set of model indices that have a stepper there
+    for line in L:
+        g = re.match(r'stepper cx=(\d+) cy=(\d+) w=(\d+) h=(\d+) .* when=%s:(\d+)$' % m, line)
+        if not g: continue
+        cx, cy, w, h, mi = map(int, g.groups())
+        x0, y0 = cx - w // 2, cy - h // 2
+        boxes.setdefault((x0, y0, "prev"), set()).add(mi)
+        boxes.setdefault((x0 + w - h, y0, "next"), set()).add(mi)
+    arts = ['art file=images/nw/arrow_%s.png x=%d y=%d w=44 h=44' % (side, x, y) for (x, y, side) in sorted(boxes)]
+    for mi in range(len(MODELS)):
+        arts += [W('art file=images/nw/patch.png x=%d y=%d w=44 h=44' % (x, y), "%s:%d" % (m, mi))
+                 for (x, y, side), have in sorted(boxes.items()) if mi not in have]
+    # the background art right after the page's first frames, before any control
+    at = max(i for i, line in enumerate(L) if line.startswith("frame ") and "when=" not in line) + 1
+    # The builder cuts the arrow images from the LAST layer it drew ("the picture as it is"). End the page with a
+    # layer of its own that patches nothing (an invisible pixel, shown while the machine is muted), so that last
+    # layer is the background with every arrow on it.
+    last = W('art file=images/nw/none.png x=0 y=86 w=1 h=1', m.replace("model", "mute") + ":1")
+    return L[:at] + arts + L[at:] + [last]
 
 # ---- MOD: EG1/EG2 + LFOs (4 rows, two Q-Link sub-pages) --------------------------------------------------------
 def row(y0): return 'art file=images/row_panel.png x=10 y=%d w=1258 h=154' % y0

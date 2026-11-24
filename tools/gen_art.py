@@ -104,19 +104,16 @@ def wave(w, h, n=64):
         frames.append(down(im, w, h))
     strip(frames, "wave_%dx%d.png" % (w, h))
 
-def posbar(w, h, n=64):
-    """MACHINE pages: POSITION under the table picture (tools/gen_tables.py draws the table itself)"""
-    frames = []
-    for i in range(n):
-        t = i / (n - 1)
-        im = canvas(w, h); d = ImageDraw.Draw(im)
-        y = h * SS / 2
-        d.line(((2 * SS, y), ((w - 2) * SS, y)), fill=LINE, width=2 * SS)
-        d.line(((2 * SS, y), ((2 + (w - 4) * t) * SS, y)), fill=ACC, width=2 * SS)
-        x = (2 + (w - 4) * t) * SS
-        d.ellipse((x - 3 * SS, y - 3 * SS, x + 3 * SS, y + 3 * SS), fill=ACC_HI)
-        frames.append(down(im, w, h))
-    strip(frames, "posbar_%dx%d.png" % (w, h))
+def subpanel(w=418, h=240):
+    """WAVETABLE: the panel that sets the SUB knobs apart (one Q-Link column: level, drive, octave, wave)"""
+    from PIL import ImageFont
+    im = canvas(w, h); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("323236"), outline=hexc("4a4a50"), width=SS)
+    try: f = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 15 * SS)
+    except OSError: f = ImageFont.load_default(size=15 * SS)
+    d.text((12 * SS, 8 * SS), "SUB", font=f, fill=ACC)
+    im = down(im, w, h); im.save(os.path.join(OUT, "subpanel.png"), optimize=True)
+    print("  subpanel.png               %dx%d" % (w, h))
 
 def fold(w, h):
     """WEST COAST: one cycle of the carrier through the wavefolder. 128 frames = FOLD in 16 steps x SYMMETRY in 8
@@ -231,7 +228,6 @@ def logo(size=64):
     print("  logo.png                   %dx%d" % im.size)
 
 # sizes used by tools/gen_layout.py
-POSBAR = (360, 10)    # the machine pages' sizes
 FOLD = (380, 96)
 FLT = (220, 56)
 ENV = (96, 50)
@@ -239,8 +235,8 @@ ENV = (96, 50)
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
-    posbar(*POSBAR)
     fold(*FOLD)
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
+    subpanel()
     logo()

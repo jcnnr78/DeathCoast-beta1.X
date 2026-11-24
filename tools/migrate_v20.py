@@ -17,7 +17,7 @@ MAP = {"WT1 Pos": ("TIMBRE A", 1), "WT2 Pos": ("TIMBRE A", 2), "WT1 Level": ("LE
        "Filter Freq": ("CUTOFF", 0), "Filter Res": ("RESONANCE", 0), "Amp": ("LEVEL", 0), "Pitch": ("PITCH", 0),
        "WT1 FX1": ("TIMBRE B", 1), "WT1 FX2": ("TIMBRE C", 1), "WT2 FX1": ("TIMBRE B", 2), "WT2 FX2": ("TIMBRE C", 2),
        "Uni Detune": ("TIMBRE D", 0)}
-OSC = {"level": "level", "pos": "k1", "tune": "tune", "pan": "pan", "detune": "k4", "spread": "k5",
+OSC = {"level": "level", "pos": "k1", "tune": "tune", "pan": "pan", "detune": "k4", "spread": "k8",
        "fx_mode": "wt_fx", "fx1": "k2", "fx2": "k3", "uni_mode": "wt_umode", "table": "table"}
 COMMON = {"vca_a": "amp_a", "vca_d": "amp_d", "vca_s": "amp_s", "vca_r": "amp_r", "vca_vel": "vel",
           "flt_freq": "cutoff", "flt_res": "reso", "flt_type": "ftype", "flt_env": "fenv", "flt_d": "fdec", "flt_key": "fkey"}
@@ -44,14 +44,15 @@ def migrate(blob):
             if k in COMMON:
                 out["m%d_%s" % (o, COMMON[k])] = v
         out.setdefault("m%d_k7" % o, "0")          # v1 default was 1 voice
-    # v1 SUB -> machine 1's WAVETABLE sub (K6 level, K8 octave, K9 wave)
+        out.setdefault("m%d_k8" % o, "0")          # and no spread
+    # v1 SUB -> machine 1's WAVETABLE sub (K5 level, K11 octave, K12 wave)
     if float(kv.get("sub_level", 0)) > 0:
-        out["m1_k6"] = kv["sub_level"]
+        out["m1_k5"] = kv["sub_level"]
         t = float(kv.get("sub_tune", -12))
-        out["m1_k8"] = "20" if t <= -18 else "64" if t <= -6 else "110"
+        out["m1_k11"] = "20" if t <= -18 else "64" if t <= -6 else "110"
         old = ["SINE", "TRIANGLE", "SAW", "SQUARE", "PULSE 25", "PULSE 12"][int(float(kv.get("sub_wave", 0)))]
         new = ["SQUARE", "PULSE 25", "PULSE 12", "SINE", "TRIANGLE", "SAW"].index(old)
-        out["m1_k9"] = str(new * 128 // 6 + 10)
+        out["m1_k12"] = str(new * 128 // 6 + 10)
     for k, v in kv.items():
         if k.startswith(KEEP): out[k] = v
     for m in range(1, 9):
