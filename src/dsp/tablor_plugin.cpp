@@ -23,6 +23,7 @@
 
 #include "../host/plugin_api_v1.h"
 #include "params.h"
+#include "table_view.h"
 #include "engine.h"
 #include "wt/scanner.h"
 #include "wt/loader.h"
@@ -480,6 +481,20 @@ static int slot_key(const char *k, const char *suffix)
 {
     if (k[0] != 'm' || k[1] < '1' || k[1] > '0' + TB_SLOTS || k[2] != '_') return -1;
     return strcmp(k + 3, suffix) == 0 ? k[1] - '1' : -1;
+}
+
+/* the WAVETABLE picture: which frame of images/nw/tables_*.png shows machine m's table (0 = not in the list) */
+static int tb_wview(const tablor_instance *inst, int m)
+{
+    const char *path = inst->wt_path[m];
+    if (!path[0]) return 1;                                  /* built-in Init */
+    const char *leaf = strrchr(path, '/');
+    leaf = leaf ? leaf + 1 : path;
+    const char *dot = strrchr(leaf, '.');
+    const size_t len = dot ? (size_t) (dot - leaf) : strlen(leaf);
+    for (size_t i = 0; i < sizeof kTableViewNames / sizeof kTableViewNames[0]; i++)
+        if (strlen(kTableViewNames[i]) == len && !strncmp(kTableViewNames[i], leaf, len)) return 2 + (int) i;
+    return 0;
 }
 
 static int tb_fview(const float *P, int m)
@@ -1032,9 +1047,17 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
         snprintf(tmp, sizeof tmp, "%d", tb_fview(inst->params(), m));
         return write_str(buf, buf_len, tmp);
     }
-    if (!strcmp(key, "display_rev")) {          /* changes whenever a filter picture does (HAS_DISPLAY_REV) */
-        unsigned v = 0;
-        for (int m = 0; m < TB_SLOTS; m++) v = v * 128u + (unsigned) tb_fview(inst->params(), m);
+    if (int m = slot_key(key, "wview"); m >= 0) {
+        char tmp[8];
+        snprintf(tmp, sizeof tmp, "%d", tb_wview(inst, m));
+        return write_str(buf, buf_len, tmp);
+    }
+    if (!strcmp(key, "display_rev")) {          /* changes whenever a picture value does (HAS_DISPLAY_REV) */
+        unsigned v = 2166136261u;                /* FNV-1a over the filter and table pictures */
+        for (int m = 0; m < TB_SLOTS; m++) {
+            v = (v ^ (unsigned) tb_fview(inst->params(), m)) * 16777619u;
+            v = (v ^ (unsigned) tb_wview(inst, m)) * 16777619u;
+        }
         char tmp[16];
         snprintf(tmp, sizeof tmp, "%u", v);
         return write_str(buf, buf_len, tmp);

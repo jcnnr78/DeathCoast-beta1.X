@@ -4,8 +4,8 @@
     python3 tools/migrate_v20.py presets/wavetablor.tbl      (rewrites the file in place)
 
 Oscillator 1 becomes machine 1 (WAVETABLE), oscillator 2 becomes machine 2 (WAVETABLE) when its level was up; the
-amp envelope and filter 1 are copied to each machine used. SUB, NOISE, FILTER 2 and the filter envelope's
-attack/sustain have no place in v1.3 and are dropped. Matrix destinations are translated (with a target machine)."""
+amp envelope and filter 1 are copied to each machine used. NOISE, FILTER 2 and the filter envelope's
+attack/sustain have no place in v1.3 (SUB goes to machine 1's WAVETABLE sub) and are dropped. Matrix destinations are translated (with a target machine)."""
 import sys
 
 OLD_DST = ["None", "WT1 Pos", "WT2 Pos", "WT1 Level", "WT2 Level", "WT1 Tune", "WT2 Tune", "WT1 Pan", "WT2 Pan",
@@ -44,6 +44,14 @@ def migrate(blob):
             if k in COMMON:
                 out["m%d_%s" % (o, COMMON[k])] = v
         out.setdefault("m%d_k7" % o, "0")          # v1 default was 1 voice
+    # v1 SUB -> machine 1's WAVETABLE sub (K6 level, K8 octave, K9 wave)
+    if float(kv.get("sub_level", 0)) > 0:
+        out["m1_k6"] = kv["sub_level"]
+        t = float(kv.get("sub_tune", -12))
+        out["m1_k8"] = "20" if t <= -18 else "64" if t <= -6 else "110"
+        old = ["SINE", "TRIANGLE", "SAW", "SQUARE", "PULSE 25", "PULSE 12"][int(float(kv.get("sub_wave", 0)))]
+        new = ["SQUARE", "PULSE 25", "PULSE 12", "SINE", "TRIANGLE", "SAW"].index(old)
+        out["m1_k9"] = str(new * 128 // 6 + 10)
     for k, v in kv.items():
         if k.startswith(KEEP): out[k] = v
     for m in range(1, 9):

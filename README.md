@@ -18,13 +18,16 @@
 - **MACHINE 1..4**: the model's own controls (they swap with the model), its filter (type, cutoff, resonance,
   envelope amount and decay, key) and its amp envelope (A, D, S, R, velocity). Each machine has 12 knobs whose
   names and values change with the model. The filter picture follows CUTOFF and RESONANCE.
-- **WAVETABLE** (slimmer than v1.2): 1 table with unison (1-4), position, effect (FM, SYNC, FOLD, WARP), detune, spread.
+- **WAVETABLE** (slimmer than v1.2): 1 table with unison (1-4), position, effect (FM, SYNC, FOLD, WARP), detune, spread,
+  and a SUB oscillator (level, octave -2/-1/0, wave). The screen draws the loaded table's own waves (every table the
+  plugin ships; a table of your own shows as USER TABLE), with POSITION under it.
 - **FM**: 4 operators, 8 algorithms, feedback on op 4, ratios per operator, a shared modulator decay, pitch envelope,
   noise, velocity to FM index. Mode DRUM makes the note one-shot (it plays its decay out).
 - **MOD / MATRIX**: EG1/EG2 and LFO1/LFO2 are shared; each matrix row has a MACHINE (ALL, M1..M4). Destinations: PITCH,
   LEVEL, PAN, CUTOFF, RESONANCE, TIMBRE A-D (= the machine's K1-K4).
 - **GLOBAL**: glide (all machines), bend range, volume, presets, logo.
-- Parameters: `tools/gen_params_v2.py`; pages: `tools/gen_layout.py`; pictures: `tools/gen_art.py`; old presets:
+- Parameters: `tools/gen_params_v2.py`; pages: `tools/gen_layout.py`; pictures: `tools/gen_art.py` and
+  `tools/gen_tables.py` (the tables; run it before gen_params_v2.py when the library changes); old presets:
   `tools/migrate_v20.py`.
 - CPU on the PC (4 machines all playing): 1.0-1.6 % of one core (`tools/offline/bench.cpp`). Not measured on the MPC yet.
 

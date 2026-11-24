@@ -104,6 +104,20 @@ def wave(w, h, n=64):
         frames.append(down(im, w, h))
     strip(frames, "wave_%dx%d.png" % (w, h))
 
+def posbar(w, h, n=64):
+    """MACHINE pages: POSITION under the table picture (tools/gen_tables.py draws the table itself)"""
+    frames = []
+    for i in range(n):
+        t = i / (n - 1)
+        im = canvas(w, h); d = ImageDraw.Draw(im)
+        y = h * SS / 2
+        d.line(((2 * SS, y), ((w - 2) * SS, y)), fill=LINE, width=2 * SS)
+        d.line(((2 * SS, y), ((2 + (w - 4) * t) * SS, y)), fill=ACC, width=2 * SS)
+        x = (2 + (w - 4) * t) * SS
+        d.ellipse((x - 3 * SS, y - 3 * SS, x + 3 * SS, y + 3 * SS), fill=ACC_HI)
+        frames.append(down(im, w, h))
+    strip(frames, "posbar_%dx%d.png" % (w, h))
+
 # ---------------------------------------------------------------------------------------------- filters
 FLT_TYPES = ["lp12", "lp24", "hp12", "hp24", "bp12", "bp24", "notch12", "notch24"]
 
@@ -198,14 +212,14 @@ def logo(size=64):
     print("  logo.png                   %dx%d" % im.size)
 
 # sizes used by tools/gen_layout.py
-WAVE = (560, 110)     # v2.0: the slot pages' sizes
+POSBAR = (360, 10)    # the machine pages' sizes
 FLT = (220, 56)
 ENV = (96, 50)
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
-    wave(*WAVE)
+    posbar(*POSBAR)
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
     logo()

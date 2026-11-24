@@ -16,7 +16,11 @@
 - Generic knobs K1..K12 per machine with dynamic_name / dynamic_display (src/dsp/machines.h knobName/knobText).
 - Engine: src/dsp/machines.h (Slot = a machine, WtMachine, FmMachine), src/dsp/engine.cpp (note stack, shared
   modulation). src/dsp/voice.h (v1) is gone.
-- WAVETABLE slimmed (1 table, no sub/noise/filter 2) so 4 fit; filter envelope = decay only.
+- WAVETABLE slimmed (1 table, no noise/filter 2) so 4 fit; filter envelope = decay only. SUB kept (user, 24-nov):
+  K6 level, K8 octave, K9 wave.
+- Table picture: tools/gen_tables.py draws all 169 shipped tables (52 here + 115 Tablor library + Init) into one
+  169-frame strip (360x64) and src/dsp/table_view.h; the plugin reports mN_wview (which frame). Frame 0 = USER TABLE.
+  A 169-frame meter is more than the 128 seen on the device so far: check it.
 - Filter picture reacts to RESONANCE: mN_fview (CUTOFF 32 steps x RESONANCE 4, worked out by the plugin) drives a
   128-frame meter per filter type; HAS_DISPLAY_REV reports it (display_rev). Refreshes about 10 times a second.
 - Factory presets: the 8 v1 presets migrated (machine 1 = osc 1, machine 2 = osc 2), plus FM Bass, FM Kick, FM Snare,

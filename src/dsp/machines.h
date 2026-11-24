@@ -11,6 +11,7 @@
 #pragma once
 
 #include "../ported/wt_oscillator.h"
+#include "../ported/analog_tables.h"
 #include "../ported/filter.h"
 #include "../ported/adsr.h"
 #include "lfo.h"
@@ -46,11 +47,20 @@ inline float velocityToGain(float velocity, float sensitivity)
 inline int slotParam(int slot, int s1Index) { return s1Index + slot * TB_SLOT_STRIDE; }
 
 /* ------------------------------------------------------------------ knob meanings */
-/* WAVETABLE: K1 POSITION, K2 FX 1, K3 FX 2, K4 DETUNE, K5 SPREAD, K7 UNISON (1..4)
+/* WAVETABLE: K1 POSITION, K2 FX 1, K3 FX 2, K4 DETUNE, K5 SPREAD, K6 SUB LEVEL, K7 UNISON (1..4),
+ *            K8 SUB OCTAVE (-2, -1, 0), K9 SUB WAVE
  * FM:        K1-K3 OP2-OP4 LEVEL, K4 FEEDBACK, K5 PITCH ENV, K6 NOISE, K7 MOD DECAY,
  *            K8-K10 OP2-OP4 RATIO, K11 PITCH DECAY, K12 VEL > FM
  * Matrix TIMBRE A..D = K1..K4. */
 inline int wtUnison(float v) { return 1 + (int) std::lround(v / 127.0f * 3.0f); }
+/* sub: K8 in 3 steps (default 64 = one octave down), K9 in 6 (default 64 = SINE) */
+inline int wtSubOct(float v) { return v < 43.0f ? -2 : v < 86.0f ? -1 : 0; }
+inline int wtSubWave(float v) { return std::clamp((int) (v * 6.0f / 128.0f), 0, 5); }
+inline const char *wtSubWaveName(int i)
+{
+    static const char *n[6] = { "SQUARE", "PULSE 25", "PULSE 12", "SINE", "TRIANGLE", "SAW" };
+    return n[std::clamp(i, 0, 5)];
+}
 
 inline float fmRatio(float v)
 {
@@ -65,7 +75,8 @@ inline float fmDecaySeconds(float v) { return 0.005f * std::pow(800.0f, v / 127.
 
 inline const char *knobName(int machine, int k, int fxMode)
 {
-    static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "-", "UNISON", "-", "-", "-", "-", "-" };
+    static const char *wt[12] = { "POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE",
+                                  "SUB WAVE", "-", "-", "-" };
     static const char *fxn[5][2] = { { "FX 1", "FX 2" }, { "FM AMOUNT", "FM RATIO" }, { "SYNC", "PULSE WIDTH" },
                                      { "ASYMMETRY", "FOLD" }, { "BEND", "FORMANT" } };
     static const char *fm[12] = { "OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
@@ -82,6 +93,8 @@ inline const char *knobName(int machine, int k, int fxMode)
 inline void knobText(char *buf, int len, int machine, int k, float v)
 {
     if (machine == M_WAVETABLE && k == 6) { snprintf(buf, len, "%d VOICES", wtUnison(v)); return; }
+    if (machine == M_WAVETABLE && k == 7) { snprintf(buf, len, "%d OCT", wtSubOct(v)); return; }
+    if (machine == M_WAVETABLE && k == 8) { snprintf(buf, len, "%s", wtSubWaveName(wtSubWave(v))); return; }
     if (machine == M_FM) {
         if (k >= 7 && k <= 9) { snprintf(buf, len, "x%.2f", (double) fmRatio(v)); return; }
         if (k == 6 && v >= 126.5f) { snprintf(buf, len, "HOLD"); return; }
@@ -106,7 +119,8 @@ struct ModShared {
 /* ------------------------------------------------------------------ WAVETABLE machine */
 class WtMachine {
 public:
-    void setSampleRate(double sr) { osc.setSampleRate(sr); fmOsc.setSampleRate(sr); fmOsc.setBlockDC(false); }
+    explicit WtMachine(AnalogTables &a) : sub(a) {}
+    void setSampleRate(double sr) { osc.setSampleRate(sr); fmOsc.setSampleRate(sr); fmOsc.setBlockDC(false); sub.setSampleRate(sr); }
 
     void start(const Wavetable *t, int umode)
     {
@@ -115,6 +129,7 @@ public:
         for (int i = 0; i < 8; i++) ph[i] = umode == UNI_PHASESYNC ? 0.0f : (float) rand() / (float) RAND_MAX;
         osc.noteOn(ph, 8);
         fmOsc.noteOn(0.0f);
+        sub.noteOn(0.0f);
         last = t;
     }
 
@@ -158,6 +173,21 @@ public:
         default: break;
         }
         osc.processAdding(note, vp, L, R, n);
+        /* sub oscillator: K6 level, K8 octave, K9 wave (centred, through the filter like the table) */
+        const float subLvl = potSquared(K[5]);
+        if (subLvl > 0.0f) {
+            StereoOscillator::Params sp;
+            switch (wtSubWave(K[8])) {
+            case 0: sp.wave = Wave::pulse; sp.pw = 0.5f; break;
+            case 1: sp.wave = Wave::pulse; sp.pw = 0.25f; break;
+            case 2: sp.wave = Wave::pulse; sp.pw = 0.125f; break;
+            case 3: sp.wave = Wave::sine; break;
+            case 4: sp.wave = Wave::triangle; break;
+            default: sp.wave = Wave::sawUp; break;
+            }
+            sp.leftGain = sp.rightGain = subLvl;
+            sub.processAdding(note + 12.0f * (float) wtSubOct(K[7]), sp, L, R, n);
+        }
         if (swapped)                                      /* table swapped mid-note: fade the block in */
             for (int i = 0; i < n; i++) { float g = (float) i / (float) n; L[i] *= g; R[i] *= g; }
     }
@@ -165,6 +195,7 @@ public:
 private:
     VoicedWTOscillator osc { 4 };
     WTOscillator fmOsc;
+    StereoOscillator sub;
     float fmBuf[kBlock] = {};
     const Wavetable *last = nullptr;
 };
@@ -277,6 +308,7 @@ private:
 /* ------------------------------------------------------------------ slot */
 class Slot {
 public:
+    explicit Slot(AnalogTables &a) : wt(a) {}
     void setSampleRate(double sr)
     {
         wt.setSampleRate(sr); fm.setSampleRate(sr);

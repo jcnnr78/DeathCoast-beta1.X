@@ -17,6 +17,7 @@ _spec = importlib.util.spec_from_file_location("gen_art", os.path.join(here, "ge
 ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)
 
 STRIP = "strip=images/nw/knob.png frames=128"
+TABLE_FRAMES = int(re.search(r"TB_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(root, "src/dsp/table_view.h")).read()).group(1))
 def W(s, when): return s + (" when=" + when if when else "")
 def knob(cx, cy, label, key, when="", bw=0, r=26):
     return W('knob cx=%d cy=%d r=%d label="%s" key=%s %s%s' % (cx, cy, r, label, key, STRIP, (" bw=%d" % bw) if bw else ""), when)
@@ -33,7 +34,7 @@ def stepper(cx, cy, w, key, get="", when=""):
 MODELS = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
 # K1..K12 labels per model ("" = the model doesn't use it: no knob shown)
 K_LABELS = {
-    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "", "UNISON", "", "", "", "", ""],
+    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "SUB LEVEL", "UNISON", "SUB OCTAVE", "SUB WAVE", "", "", ""],
     1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
 }
@@ -76,8 +77,13 @@ def slot_page(n):
         for k, lab in enumerate(labels):
             if lab:
                 L.append(knob(KX[k % 6], ROW1 if k < 6 else ROW2, lab, s + "k%d" % (k + 1), "%s:%d" % (m, mi), bw=150))
-    L += [meter(KX[1] + 102 + 178, ROW2 + 6, ART.WAVE, s + "k1", "wave_%dx%d.png" % ART.WAVE, m + ":0"),
-          popup(KX[5], ROW2 + 6, 200, "UNISON MODE", s + "wt_umode", m + ":0")]
+    # WAVETABLE: the loaded table (its own waves, mN_wview from the plugin) with POSITION under it
+    TV = (360, 64)
+    tx = (KX[4] + KX[5]) // 2
+    L += [W('meter cx=%d cy=%d w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
+            % (tx, ROW2 - 6, TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), m + ":0"),
+          meter(tx, ROW2 + 38, ART.POSBAR, s + "k1", "posbar_%dx%d.png" % ART.POSBAR, m + ":0"),
+          popup(KX[3], ROW2 + 6, 200, "UNISON MODE", s + "wt_umode", m + ":0")]
     # filter
     FS, ES = ART.FLT, ART.ENV
     L += [frame(10, 482, 690, 226, "FILTER"), popup(95, 632, 150, "TYPE", s + "ftype")]

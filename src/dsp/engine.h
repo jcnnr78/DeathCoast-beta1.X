@@ -41,7 +41,8 @@ private:
     void modStart(bool fresh);
     void updateMod(int n);
 
-    Slot slots[TB_SLOTS];
+    AnalogTables analog { 44100.0 };
+    Slot slots[TB_SLOTS] = { Slot(analog), Slot(analog), Slot(analog), Slot(analog) };
     std::shared_ptr<Wavetable> tables[TB_SLOTS];
 
     /* shared modulation */

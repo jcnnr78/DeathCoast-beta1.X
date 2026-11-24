@@ -2263,6 +2263,42 @@
    "default": 124,
    "display": "int",
    "clamped": true
+  },
+  {
+   "key": "m1_wview",
+   "name": "M1 TABLE VIEW",
+   "min": 0,
+   "max": 168,
+   "default": 1,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_wview",
+   "name": "M2 TABLE VIEW",
+   "min": 0,
+   "max": 168,
+   "default": 1,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_wview",
+   "name": "M3 TABLE VIEW",
+   "min": 0,
+   "max": 168,
+   "default": 1,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_wview",
+   "name": "M4 TABLE VIEW",
+   "min": 0,
+   "max": 168,
+   "default": 1,
+   "display": "int",
+   "clamped": true
   }
  ]
 }

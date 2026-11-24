@@ -156,6 +156,12 @@ out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "
 for n in range(1, SLOTS + 1):
     out.append({"key": "m%d_fview" % n, "name": "M%d FILTER VIEW" % n, "min": 0, "max": 127, "default": 124,
                 "display": "int", "clamped": True})
+# the WAVETABLE picture: which frame of images/nw/tables_*.png (the loaded table), worked out by the plugin
+import re as _re
+_nf = int(_re.search(r"TB_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(ROOT, "src/dsp/table_view.h")).read()).group(1))
+for n in range(1, SLOTS + 1):
+    out.append({"key": "m%d_wview" % n, "name": "M%d TABLE VIEW" % n, "min": 0, "max": _nf - 1, "default": 1,
+                "display": "int", "clamped": True})
 json.dump({"name": "NorthWest", "params": out}, open(os.path.join(ROOT, "params.json"), "w"), indent=1)
 open(os.path.join(ROOT, "params.lock"), "w").write("\n".join(p["key"] for p in out) + "\n")
 print("engine params %d | VST params %d" % (len(P), len(out)))
