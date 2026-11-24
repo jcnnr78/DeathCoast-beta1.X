@@ -56,8 +56,17 @@ def frame(x, y, w, h, title, when=""): return W('frame x=%d y=%d w=%d h=%d title
 def text(cx, cy, label, size=1.5, when=""): return W('text cx=%d cy=%d label="%s" size=%s' % (cx, cy, label, size), when)
 def meter(cx, cy, size, key, img, when=""):
     return W('meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64' % (cx, cy, size[0], size[1], key, img), when)
+STEP_KEYS = ("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync", "fx_dmode",
+             "glide_mode")
 def stepper(cx, cy, w, key, get="", when=""):
-    return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s style=dotmatrix' % (cx, cy, w, key, (" get=" + get) if get else ""), when)
+    """the box's key is "<key>_st" for an option list (a whole-number twin the wheel steps one option a click); the
+    arrows stay "<key>_prev" / "<key>_next" (prev= / next=)"""
+    extra = ""
+    if key.endswith(STEP_KEYS):
+        extra = " prev=%s_prev next=%s_next" % (key, key)
+        key = key + "_st"
+    return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s%s style=dotmatrix'
+             % (cx, cy, w, key, (" get=" + get) if get else "", extra), when)
 
 MODELS = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
 # K1..K12 labels per model ("" = the model doesn't use it: no knob shown)

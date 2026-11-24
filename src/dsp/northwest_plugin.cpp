@@ -880,6 +880,23 @@ static void apply_state_blob(tablor_instance *inst, const char *val)
 /* set / get                                                           */
 /* ------------------------------------------------------------------ */
 
+/* "<enum key>_st": the same selector as a whole number 0..n-1, for the steppers at the top of the pages. MPC's data
+ * wheel (and its -/+ keys) step a whole-number param with "nudge_pct" one value a click; an option list under
+ * QLINK_TRAVEL needs half an option's width of travel, which on a 2-option list is 50 clicks. Text: "<key>_st_display". */
+static int stepper_alias(const char *key, bool *display)
+{
+    char base[64];
+    size_t n = strlen(key);
+    *display = false;
+    if (n > 11 && !strcmp(key + n - 11, "_st_display")) { *display = true; n -= 11; }
+    else if (n > 3 && !strcmp(key + n - 3, "_st")) n -= 3;
+    else return -1;
+    if (n >= sizeof base) return -1;
+    memcpy(base, key, n); base[n] = 0;
+    const int idx = param_index(base);
+    return idx >= 0 && tb_params[idx].type == TB_ENUM ? idx : -1;
+}
+
 static void tb_set_param(void *instance, const char *key, const char *val)
 {
     auto *inst = (tablor_instance *) instance;
@@ -945,7 +962,11 @@ static void tb_set_param(void *instance, const char *key, const char *val)
     }
 
     int idx = param_index(k);
-    if (idx < 0) return;
+    if (idx < 0) {
+        bool disp;
+        idx = stepper_alias(k, &disp);
+        if (idx < 0 || disp) return;
+    }
     const tb_param_t *p = &tb_params[idx];
 
     if (p->type == TB_PATH) {
@@ -1132,7 +1153,16 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
     }
 
     int idx = param_index(key);
-    if (idx < 0) return -1;
+    if (idx < 0) {
+        bool disp;
+        const int a = stepper_alias(key, &disp);
+        if (a < 0) return -1;
+        const int v = (int) inst->params()[a];
+        if (disp) return write_str(buf, buf_len, tb_params[a].options[std::clamp(v, 0, tb_params[a].n_options - 1)]);
+        char tmp[8];
+        snprintf(tmp, sizeof tmp, "%d", v);
+        return write_str(buf, buf_len, tmp);
+    }
     const tb_param_t *p = &tb_params[idx];
 
     if (p->type == TB_PATH)

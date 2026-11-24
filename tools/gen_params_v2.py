@@ -157,7 +157,13 @@ for key, name, kind, lo, hi, d, opts, x in P:
     # arrows for the selectors drawn as steppers (arrows + a box the MPC data wheel turns once touched)
     if key.endswith(("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync", "fx_dmode", "glide_mode")):
         out += [{"key": key + "_prev", "name": name + " PREV", "momentary": True, "step_of": key, "step_delta": -1},
-                {"key": key + "_next", "name": name + " NEXT", "momentary": True, "step_of": key, "step_delta": 1}]
+                {"key": key + "_next", "name": name + " NEXT", "momentary": True, "step_of": key, "step_delta": 1},
+                # the stepper's box: the same selector as a whole number (the plugin answers "<key>_st"), so the data
+                # wheel and the -/+ keys move it one option a click ("nudge_pct"); an option list needs half an
+                # option's width of wheel travel per step under QLINK_TRAVEL (50 clicks on a 2-option list)
+                {"key": key + "_st", "name": name, "min": 0, "max": len(opts) - 1, "default": d, "display": "int",
+                 "dynamic_display": True, "nudge_pct": 50, "refresh_display": True,
+                 "clamped": True}]   # it follows the option list (the host test steps it on a range of 6+)
 out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "max": 127, "default": 0,
          "display": "int", "type": "stepper"},
         {"key": "preset_prev", "name": "PREV PRESET", "momentary": True, "step_of": "preset", "step_delta": -1},

@@ -21,6 +21,11 @@
   Q-Links level, pan, delay, reverb). Effects controls on GLOBAL. Each effect sleeps once silent.
 - Presets: the 8 inherited from Tablor/v1 and the 1.3/1.4 test sounds replaced by 24 written by tools/make_presets.py,
   named BASS / MELODY / DRUM / EFX / DRONE. User presets folder renamed from Tablor's to "NorthWest Presets".
+- Header selectors (user, 24-nov, after trying 1.4 on the MPC One: the wheel works on the boxes but is "a long way"):
+  under QLINK_TRAVEL an option list needs half an option's width of wheel travel per step (a wheel click is 1 % of the
+  range: 50 clicks on a 2-option list, 17 on MODEL). Each box now shows "<key>_st", a whole-number twin the plugin
+  aliases to the option list (stepper_alias), with nudge_pct 50: one option per wheel click; arrows unchanged. The MPC's
+  -/+ keys should step a focused box the same way (not yet checked on the device).
 - Checks (PC): host test PASSED; 24 presets render finite; preset -> state -> reload identical (tables load).
   CPU x86: 4 x ANALOG 1.37 %, mixed with delay + reverb 1.6 %.
 
