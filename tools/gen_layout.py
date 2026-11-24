@@ -47,10 +47,11 @@ q = []
 for n in range(1, 5):
     s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
     L += [frame(x0, 92, 310, 616, "MACHINE %d" % n),
-          popup(cx, 196, 250, "MODEL", s + "model"),
-          knob(cx - 70, 350, "LEVEL", s + "level", bw=120), knob(cx + 70, 350, "PAN", s + "pan", bw=120),
-          knob(cx - 70, 520, "TUNE", s + "tune", bw=120),
-          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (cx + 70, 515, s)]
+          popup(cx, 178, 250, "MODEL", s + "model"),
+          # one column per machine, top to bottom = its Q-Links top to bottom
+          knob(cx, 268, "LEVEL", s + "level", bw=160), knob(cx, 386, "PAN", s + "pan", bw=160),
+          knob(cx, 504, "TUNE", s + "tune", bw=160),
+          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (cx, 622, s)]
     q += [s + "level", s + "pan", s + "tune", s + "mute"]
 L.append('qlinks "MIX" = ' + ",".join(q))
 MIX = "\n".join(L) + "\n"
@@ -102,8 +103,9 @@ def slot_page(n):
     # Q-Link columns of 4: row 1 left, row 2 left, the right 2x2, the filter
     L += ['qlinks "MACHINE" = ' + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
           ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
-          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in ("cutoff", "reso", "fenv", "fdec", "fkey", "ftype", "model", "-",
-                                                               "amp_a", "amp_d", "amp_s", "amp_r", "vel")) + ",-,-,-"]
+          # left to right on screen = Q-Links top to bottom, 4 per column
+          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in (
+              "ftype", "cutoff", "reso", "fenv", "fdec", "fkey", "-", "-", "amp_a", "amp_d", "amp_s", "amp_r", "vel", "-", "-", "-"))]
     return "\n".join(L) + "\n"
 
 # ---- MOD: EG1/EG2 + LFOs (4 rows, two Q-Link sub-pages) --------------------------------------------------------
@@ -121,7 +123,7 @@ for n, y0 in zip((1, 2), rows[2:]):
           enumh(500, y0 + 66, 100, "RATE MODE", p + "_sync"), knob(720, y0 + 52, "RATE", p + "_rate"),
           knob(870, y0 + 52, "FADE IN", p + "_fade"), enumh(1090, y0 + 66, 100, "RESTART", p + "_retrig")]
 L += ['qlinks "ENVS" = me1_a,me1_d,me1_s,me1_r,-,-,-,-,me2_a,me2_d,me2_s,me2_r,-,-,-,-',
-      'qlinks "LFOS" = lfo1_shape,lfo1_rate,lfo1_fade,lfo1_sync,lfo1_retrig,-,-,-,lfo2_shape,lfo2_rate,lfo2_fade,lfo2_sync,lfo2_retrig,-,-,-']
+      'qlinks "LFOS" = lfo1_shape,lfo1_sync,lfo1_rate,lfo1_fade,lfo1_retrig,-,-,-,lfo2_shape,lfo2_sync,lfo2_rate,lfo2_fade,lfo2_retrig,-,-,-']
 MOD = "\n".join(L) + "\n"
 
 # ---- MATRIX (8 rows: source -> destination x amount, on one machine or all) ---------------------------------------
