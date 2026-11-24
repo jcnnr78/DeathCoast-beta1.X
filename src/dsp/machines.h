@@ -42,7 +42,7 @@ inline float velocityToGain(float velocity, float sensitivity)
     return std::clamp(g, 0.0f, 1.0f);
 }
 
-/* a slot's parameter: P[slotParam(n, TB_P_S1_CUTOFF)] */
+/* a slot's parameter: P[slotParam(n, TB_P_M1_CUTOFF)] */
 inline int slotParam(int slot, int s1Index) { return s1Index + slot * TB_SLOT_STRIDE; }
 
 /* ------------------------------------------------------------------ knob meanings */
@@ -125,15 +125,15 @@ public:
         const bool swapped = last && t != last;
         last = t;
         osc.setWavetable(t);
-        const float *K = P + slotParam(slot, TB_P_S1_K1);
+        const float *K = P + slotParam(slot, TB_P_M1_K1);
         VoicedWTParams vp;
         vp.voices   = std::clamp(wtUnison(K[6]), 1, 4);
         vp.position = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
         vp.detune   = std::clamp(potDetune(K[3]) + mo[MD_TD], 0.0f, 1.0f);
         vp.spread   = pot01(K[4]);
         vp.gain = 1.0f; vp.pan = 0.0f;
-        vp.mode = std::clamp((int) P[slotParam(slot, TB_P_S1_WT_UMODE)], 0, UNI_COUNT - 1);
-        const int fx = std::clamp((int) P[slotParam(slot, TB_P_S1_WT_FX)], 0, 4);
+        vp.mode = std::clamp((int) P[slotParam(slot, TB_P_M1_WT_UMODE)], 0, UNI_COUNT - 1);
+        const int fx = std::clamp((int) P[slotParam(slot, TB_P_M1_WT_FX)], 0, 4);
         const float fx1 = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
         const float fx2 = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
         vp.fm = nullptr;
@@ -191,8 +191,8 @@ public:
 
     void render(const float *P, int slot, float note, const float *mo, float *L, float *R, int n)
     {
-        const float *K = P + slotParam(slot, TB_P_S1_K1);
-        const int algo = std::clamp((int) P[slotParam(slot, TB_P_S1_FM_ALGO)], 0, 7);
+        const float *K = P + slotParam(slot, TB_P_M1_K1);
+        const int algo = std::clamp((int) P[slotParam(slot, TB_P_M1_FM_ALGO)], 0, 7);
         /* which operators each operator hears (bit i = op i+1), and which are carriers */
         static const uint8_t modBy[8][4] = {
             { 0x2, 0x4, 0x8, 0 },     /* 4>3>2>1   */
@@ -290,8 +290,8 @@ public:
     void start(int idx, const float *P, const Wavetable *t, int note, float vel, float glideFrom, uint32_t seed)
     {
         slot = idx;
-        machine = std::clamp((int) P[sp(TB_P_S1_MACHINE)], 0, M_COUNT - 1);
-        drum = machine == M_FM && (int) P[sp(TB_P_S1_FM_MODE)] == 1;
+        machine = std::clamp((int) P[sp(TB_P_M1_MODEL)], 0, M_COUNT - 1);
+        drum = machine == M_FM && (int) P[sp(TB_P_M1_FM_MODE)] == 1;
         midiNote = note; velocity = vel; active = true;
         const int gm = (int) P[TB_P_GLIDE_MODE];
         glissando = gm == GM_GLISSANDO;
@@ -303,7 +303,7 @@ public:
             noteSmoother.setValueUnsmoothed((float) note / 127.0f);
         }
         filter.reset(); lastFn = -1000.0f;
-        if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(TB_P_S1_WT_UMODE)]);
+        if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(TB_P_M1_WT_UMODE)]);
         if (machine == M_FM) fm.start(vel, seed);
         updateEnvs(P, 0);
         fenv.reset(); fenv.noteOn();
@@ -355,7 +355,7 @@ public:
 
         float note = noteSmoother.getCurrentValue() * 127.0f;
         if (glissando) note = (float) (int) (note + 0.5f);
-        note += P[sp(TB_P_S1_TUNE)] + ms.pitchBendSemis + mo[MD_PITCH] * 24.0f;
+        note += P[sp(TB_P_M1_TUNE)] + ms.pitchBendSemis + mo[MD_PITCH] * 24.0f;
 
         float L[kBlock] = {}, R[kBlock] = {};
         if (machine == M_WAVETABLE) wt.render(t, P, slot, note, mo, L, R, n);
@@ -364,15 +364,15 @@ public:
 
         /* filter */
         const float filterWidth = 12.0f * std::log2(20000.0f / 440.0f) + 69.0f;
-        float fn = potFilterNote(P[sp(TB_P_S1_CUTOFF)]);
-        fn += ((float) midiNote - 60.0f) * pot01(P[sp(TB_P_S1_FKEY)]);
-        fn += fenv.getOutput() * potBipolar(P[sp(TB_P_S1_FENV)]) * filterWidth;
+        float fn = potFilterNote(P[sp(TB_P_M1_CUTOFF)]);
+        fn += ((float) midiNote - 60.0f) * pot01(P[sp(TB_P_M1_FKEY)]);
+        fn += fenv.getOutput() * potBipolar(P[sp(TB_P_M1_FENV)]) * filterWidth;
         fn += mo[MD_CUTOFF] * filterWidth;
         const float fmax = std::min(20000.0f, (float) (sampleRate / 2.0));
-        const float res = std::clamp(pot01(P[sp(TB_P_S1_RESO)]) + mo[MD_RESO], 0.0f, 1.0f);
+        const float res = std::clamp(pot01(P[sp(TB_P_M1_RESO)]) + mo[MD_RESO], 0.0f, 1.0f);
         static const Filter::Type kTypes[8] = { Filter::lowpass, Filter::lowpass, Filter::highpass, Filter::highpass,
                                                 Filter::bandpass, Filter::bandpass, Filter::notch, Filter::notch };
-        const int ft = (int) P[sp(TB_P_S1_FTYPE)] & 7;
+        const int ft = (int) P[sp(TB_P_M1_FTYPE)] & 7;
         if (lastFn < -999.0f) lastFn = fn;
         const bool open = ft <= 1 && midiNoteToHz(std::min(fn, lastFn)) >= 19000.0f && res < 0.01f;   /* LP fully open */
         if (!open) {
@@ -391,9 +391,9 @@ public:
         lastFn = fn; wasOpen = open;
 
         /* velocity, amp envelope, level, pan */
-        const float g = velocityToGain(velocity, pot01(P[sp(TB_P_S1_VEL)])) *
-                        std::clamp(potSquared(P[sp(TB_P_S1_LEVEL)]) + mo[MD_LEVEL], 0.0f, 1.0f);
-        const float pan = std::clamp(potBipolar(P[sp(TB_P_S1_PAN)]) + mo[MD_PAN], -1.0f, 1.0f);
+        const float g = velocityToGain(velocity, pot01(P[sp(TB_P_M1_VEL)])) *
+                        std::clamp(potSquared(P[sp(TB_P_M1_LEVEL)]) + mo[MD_LEVEL], 0.0f, 1.0f);
+        const float pan = std::clamp(potBipolar(P[sp(TB_P_M1_PAN)]) + mo[MD_PAN], -1.0f, 1.0f);
         amp.processMultiplying(L, R, n);
         const float gl = g * std::min(1.0f, 1.0f - pan), gr = g * std::min(1.0f, 1.0f + pan);
         for (int i = 0; i < n; i++) { outL[i] += L[i] * gl; outR[i] += R[i] * gr; }
@@ -410,11 +410,11 @@ private:
 
     void updateEnvs(const float *P, int n)
     {
-        amp.setAttack(potAttackTime(P[sp(TB_P_S1_AMP_A)]));
-        amp.setDecay(potEnvTime(P[sp(TB_P_S1_AMP_D)]));
-        amp.setSustainLevel(drum ? 0.0f : pot01(P[sp(TB_P_S1_AMP_S)]));
-        amp.setRelease(potEnvTime(P[sp(TB_P_S1_AMP_R)]));
-        const float fd = potEnvTime(P[sp(TB_P_S1_FDEC)]);
+        amp.setAttack(potAttackTime(P[sp(TB_P_M1_AMP_A)]));
+        amp.setDecay(potEnvTime(P[sp(TB_P_M1_AMP_D)]));
+        amp.setSustainLevel(drum ? 0.0f : pot01(P[sp(TB_P_M1_AMP_S)]));
+        amp.setRelease(potEnvTime(P[sp(TB_P_M1_AMP_R)]));
+        const float fd = potEnvTime(P[sp(TB_P_M1_FDEC)]);
         fenv.setAttack(0.002f); fenv.setDecay(fd); fenv.setSustainLevel(0.0f); fenv.setRelease(fd);
         if (n > 0) fenv.process(n);
     }

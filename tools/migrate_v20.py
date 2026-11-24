@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""NorthWest v2.0: rewrite a v1.x preset line (TBLR2;key=value;...) for the 4-slot surface.
+"""NorthWest v1.3: rewrite a v1.0-1.2 preset line (TBLR2;key=value;...) for the 4-machine surface.
 
     python3 tools/migrate_v20.py presets/wavetablor.tbl      (rewrites the file in place)
 
-Oscillator 1 becomes slot 1 (WAVETABLE), oscillator 2 becomes slot 2 (WAVETABLE) when its level was up; the
-amp envelope and filter 1 are copied to each slot used. SUB, NOISE, FILTER 2 and the filter envelope's
-attack/sustain have no place in v2.0 and are dropped. Matrix destinations are translated (with a target slot)."""
+Oscillator 1 becomes machine 1 (WAVETABLE), oscillator 2 becomes machine 2 (WAVETABLE) when its level was up; the
+amp envelope and filter 1 are copied to each machine used. SUB, NOISE, FILTER 2 and the filter envelope's
+attack/sustain have no place in v1.3 and are dropped. Matrix destinations are translated (with a target machine)."""
 import sys
 
 OLD_DST = ["None", "WT1 Pos", "WT2 Pos", "WT1 Level", "WT2 Level", "WT1 Tune", "WT2 Tune", "WT1 Pan", "WT2 Pan",
@@ -32,18 +32,18 @@ def migrate(blob):
     out = {}
     slots = [1] + ([2] if float(kv.get("wt2_level", 0)) > 0 else [])
     for o in slots:
-        out["s%d_machine" % o] = "0"
-        if o == 2: out["s2_level"] = kv["wt2_level"]
+        out["m%d_model" % o] = "0"
+        if o == 2: out["m2_level"] = kv["wt2_level"]
         for k, v in kv.items():
             if k.startswith("wt%d_" % o):
                 rest = k[4:]
                 if rest == "uni":
-                    out["s%d_k7" % o] = str(round((min(4, max(1, int(float(v)))) - 1) / 3 * 127))
+                    out["m%d_k7" % o] = str(round((min(4, max(1, int(float(v)))) - 1) / 3 * 127))
                 elif rest in OSC and not (o == 2 and rest == "level"):
-                    out["s%d_%s" % (o, OSC[rest])] = v
+                    out["m%d_%s" % (o, OSC[rest])] = v
             if k in COMMON:
-                out["s%d_%s" % (o, COMMON[k])] = v
-        out.setdefault("s%d_k7" % o, "0")          # v1 default was 1 voice
+                out["m%d_%s" % (o, COMMON[k])] = v
+        out.setdefault("m%d_k7" % o, "0")          # v1 default was 1 voice
     for k, v in kv.items():
         if k.startswith(KEEP): out[k] = v
     for m in range(1, 9):

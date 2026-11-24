@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""NorthWest v2.0: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
+"""NorthWest v1.3: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
 
-Pages (8, one per Fn key):  MIX   SLOT 1   SLOT 2   SLOT 3   SLOT 4   MOD   MATRIX   GLOBAL
+Pages (8, one per Fn key):  MIX   MACHINE 1   MACHINE 2   MACHINE 3   MACHINE 4   MOD   MATRIX   GLOBAL
 
-A slot page shows the controls of the machine chosen in that slot: the lines that differ carry
-when=sN_machine:<i> and MPC swaps them as the machine changes. Its machine knobs K1..K12 sit in
-the same places for every machine (row 1 = K1..K6, row 2 = K7..K12), so a Q-Link always turns the
-same knob; their names and values come from the DSP (dynamic_name / dynamic_display).
+A machine page shows the controls of the MODEL chosen for that machine: the lines that differ carry
+when=mN_model:<i> and MPC swaps them as the model changes. Its knobs K1..K12 sit in the same places
+for every model (row 1 = K1..K6, row 2 = K7..K12), so a Q-Link always turns the same knob; their
+names and values come from the DSP (dynamic_name / dynamic_display).
 The theme lines at the top come from layout.stitch6.conf.
 
 Run:  python3 tools/gen_layout.py"""
@@ -30,23 +30,23 @@ def meter(cx, cy, size, key, img, when=""):
 def stepper(cx, cy, w, key, get="", when=""):
     return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s style=dotmatrix' % (cx, cy, w, key, (" get=" + get) if get else ""), when)
 
-MACHINES = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
-# K1..K12 labels per machine ("" = the machine doesn't use it: no knob shown)
+MODELS = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
+# K1..K12 labels per model ("" = the model doesn't use it: no knob shown)
 K_LABELS = {
     0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "", "UNISON", "", "", "", "", ""],
     1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
 }
-KX = [120 + i * 205 for i in range(6)]      # knob columns of the machine area
+KX = [120 + i * 205 for i in range(6)]      # knob columns of the model area
 ROW1, ROW2 = 272, 398
 
-# ---- MIX: machine, level, pan, tune, mute for each slot -----------------------------------------------------
+# ---- MIX: model, level, pan, tune, mute for each machine -----------------------------------------------------
 L = ["[tab MIX]"]
 q = []
 for n in range(1, 5):
-    s = "s%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
-    L += [frame(x0, 92, 310, 616, "SLOT %d" % n),
-          popup(cx, 196, 250, "MACHINE", s + "machine"),
+    s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
+    L += [frame(x0, 92, 310, 616, "MACHINE %d" % n),
+          popup(cx, 196, 250, "MODEL", s + "model"),
           knob(cx - 70, 350, "LEVEL", s + "level", bw=120), knob(cx + 70, 350, "PAN", s + "pan", bw=120),
           knob(cx - 70, 520, "TUNE", s + "tune", bw=120),
           'toggle cx=%d cy=%d label="MUTE" key=%smute' % (cx + 70, 515, s)]
@@ -54,23 +54,23 @@ for n in range(1, 5):
 L.append('qlinks "MIX" = ' + ",".join(q))
 MIX = "\n".join(L) + "\n"
 
-# ---- SLOT n ----------------------------------------------------------------------------------------------------
+# ---- MACHINE n ----------------------------------------------------------------------------------------------------
 def slot_page(n):
-    s = "s%d_" % n; m = s + "machine"
-    L = ["[tab SLOT %d]" % n,
+    s = "m%d_" % n; m = s + "model"
+    L = ["[tab MACHINE %d]" % n,
          frame(10, 92, 1258, 108, ""),
-         text(80, 150, "SLOT %d" % n, 1.6),
+         text(90, 150, "MACHINE %d" % n, 1.5),
          stepper(330, 152, 300, m),
          popup(560, 154, 130, "", m)]
-    # machine-specific selectors in the top band
+    # model-specific selectors in the top band
     L += [stepper(880, 152, 360, s + "select", s + "tname", m + ":0"),
           popup(1160, 158, 170, "EFFECT", s + "wt_fx", m + ":0"),
           popup(800, 158, 230, "ALGORITHM", s + "fm_algo", m + ":1"),
           enumh(1100, 162, 110, "MODE", s + "fm_mode", m + ":1"),
-          text(900, 150, "WEST COAST: COMING IN v2.1", 1.3, m + ":2"),
-          text(900, 150, "ANALOG: COMING IN v2.2", 1.3, m + ":3")]
-    # machine area
-    for i, name in enumerate(MACHINES):
+          text(900, 150, "WEST COAST: COMING IN v1.4", 1.3, m + ":2"),
+          text(900, 150, "ANALOG: COMING IN v1.5", 1.3, m + ":3")]
+    # model area
+    for i, name in enumerate(MODELS):
         L.append(frame(10, 206, 1258, 270, name, "%s:%d" % (m, i)))
     for mi, labels in K_LABELS.items():
         for k, lab in enumerate(labels):
@@ -82,7 +82,8 @@ def slot_page(n):
     FS, ES = ART.FLT, ART.ENV
     L += [frame(10, 482, 690, 226, "FILTER"), popup(95, 632, 150, "TYPE", s + "ftype")]
     for i, t in enumerate(ART.FLT_TYPES):
-        L.append(meter(335, 538, FS, s + "cutoff", "flt_%s_%dx%d.png" % ((t,) + FS), s + "ftype:%d" % i))
+        L.append(W('meter cx=335 cy=538 w=%d h=%d key=%sfview strip=images/nw/flt_%s_%dx%d.png frames=128'
+                   % (FS[0], FS[1], s, t, FS[0], FS[1]), s + "ftype:%d" % i))
     L.append(meter(535, 538, ES, s + "fdec", "env_d_%dx%d.png" % ES))
     for i, (lab, k) in enumerate((("CUTOFF", "cutoff"), ("RESONANCE", "reso"), ("ENV", "fenv"), ("DECAY", "fdec"), ("KEY", "fkey"))):
         L.append(knob(235 + i * 100, 628, lab, s + k, bw=96))
@@ -95,7 +96,7 @@ def slot_page(n):
     # Q-Link columns of 4: row 1 left, row 2 left, the right 2x2, the filter
     L += ['qlinks "MACHINE" = ' + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
           ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
-          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in ("cutoff", "reso", "fenv", "fdec", "fkey", "ftype", "machine", "-",
+          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in ("cutoff", "reso", "fenv", "fdec", "fkey", "ftype", "model", "-",
                                                                "amp_a", "amp_d", "amp_s", "amp_r", "vel")) + ",-,-,-"]
     return "\n".join(L) + "\n"
 
@@ -117,9 +118,9 @@ L += ['qlinks "ENVS" = me1_a,me1_d,me1_s,me1_r,-,-,-,-,me2_a,me2_d,me2_s,me2_r,-
       'qlinks "LFOS" = lfo1_shape,lfo1_rate,lfo1_fade,lfo1_sync,lfo1_retrig,-,-,-,lfo2_shape,lfo2_rate,lfo2_fade,lfo2_sync,lfo2_retrig,-,-,-']
 MOD = "\n".join(L) + "\n"
 
-# ---- MATRIX (8 rows: source -> destination x amount, on one slot or all) ---------------------------------------
+# ---- MATRIX (8 rows: source -> destination x amount, on one machine or all) ---------------------------------------
 L = ["[tab MATRIX]", frame(10, 92, 1258, 616, "MODULATION MATRIX"),
-     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "SLOT", 1.2),
+     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "MACHINE", 1.2),
      text(1010, 160, "AMOUNT", 1.2)]
 for i in range(8):
     y = 200 + i * 62; n = i + 1

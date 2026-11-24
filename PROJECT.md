@@ -9,17 +9,22 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
-## Phase 3 (voices) - v2.0, branch v2.0 (built locally, not yet on the MPC)
-- Pages by slot, not by machine: MIX, SLOT 1-4, MOD, MATRIX, GLOBAL (8 Fn keys). Decided with the user 24-nov.
-- Generic machine knobs K1..K12 per slot with dynamic_name / dynamic_display (src/dsp/machines.h knobName/knobText).
-- Engine: src/dsp/machines.h (Slot, WtMachine, FmMachine), src/dsp/engine.cpp (note stack, shared modulation).
-  src/dsp/voice.h (v1) is gone.
+## Phase 3 (machines) - v1.3 (built locally, not yet on the MPC)
+- Numbered 1.3, not 2.0 (user, 24-nov). Names: MACHINE 1-4, each runs a MODEL (WAVETABLE, FM, WEST COAST, ANALOG).
+  Keys: mN_* (mN_model, mN_k1..k12, ...); matrix rows target ALL or M1-M4 (mmN_slot).
+- Pages by machine, not by model: MIX, MACHINE 1-4, MOD, MATRIX, GLOBAL (8 Fn keys).
+- Generic knobs K1..K12 per machine with dynamic_name / dynamic_display (src/dsp/machines.h knobName/knobText).
+- Engine: src/dsp/machines.h (Slot = a machine, WtMachine, FmMachine), src/dsp/engine.cpp (note stack, shared
+  modulation). src/dsp/voice.h (v1) is gone.
 - WAVETABLE slimmed (1 table, no sub/noise/filter 2) so 4 fit; filter envelope = decay only.
-- Factory presets: the 8 v1 presets migrated (slot 1 = osc 1, slot 2 = osc 2), plus FM Bass, FM Kick, FM Snare,
+- Filter picture reacts to RESONANCE: mN_fview (CUTOFF 32 steps x RESONANCE 4, worked out by the plugin) drives a
+  128-frame meter per filter type; HAS_DISPLAY_REV reports it (display_rev). Refreshes about 10 times a second.
+- Factory presets: the 8 v1 presets migrated (machine 1 = osc 1, machine 2 = osc 2), plus FM Bass, FM Kick, FM Snare,
   FM Hat, Layer WT + FM, Bajo y Percusion.
-- Checks (PC): all presets and a 4-slots-at-maximum patch render finite with clean tails; preset -> state ->
-  reload identical; dynamic names/values and table selection per slot through the plugin API; CPU 1.0-1.6 %.
-- Open: CPU on the MPC One; when= switching of whole machine areas on the device; Q-Link sub-pages on the device.
+- Checks (PC): framework host test PASSED (ASan); all presets and a 4-machines-at-maximum patch render finite with
+  clean tails; preset -> state -> reload identical; dynamic names/values and table selection per machine; CPU 1.0-1.6 %.
+- Open: CPU on the MPC One; when= switching of whole model areas on the device; Q-Link sub-pages on the device;
+  the engine-driven filter picture on the device.
 
 ## Phase 2 (look) - v1.2, done (built locally, not yet on the MPC)
 - tools/gen_art.py draws images/nw/: knob strip (128 frames), wavetable view (64 frames, follows wtN_pos), filter

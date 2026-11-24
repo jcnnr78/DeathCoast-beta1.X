@@ -2,8 +2,8 @@
  "name": "NorthWest",
  "params": [
   {
-   "key": "s1_machine",
-   "name": "S1 MACHINE",
+   "key": "m1_model",
+   "name": "M1 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -14,38 +14,38 @@
    "refresh_display": true
   },
   {
-   "key": "s1_machine_prev",
-   "name": "S1 MACHINE PREV",
+   "key": "m1_model_prev",
+   "name": "M1 MODEL PREV",
    "momentary": true,
-   "step_of": "s1_machine",
+   "step_of": "m1_model",
    "step_delta": -1
   },
   {
-   "key": "s1_machine_next",
-   "name": "S1 MACHINE NEXT",
+   "key": "m1_model_next",
+   "name": "M1 MODEL NEXT",
    "momentary": true,
-   "step_of": "s1_machine",
+   "step_of": "m1_model",
    "step_delta": 1
   },
   {
-   "key": "s1_level",
-   "name": "S1 LEVEL",
+   "key": "m1_level",
+   "name": "M1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 100,
    "display": "int"
   },
   {
-   "key": "s1_pan",
-   "name": "S1 PAN",
+   "key": "m1_pan",
+   "name": "M1 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s1_mute",
-   "name": "S1 MUTE",
+   "key": "m1_mute",
+   "name": "M1 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -53,72 +53,72 @@
    "default": 0
   },
   {
-   "key": "s1_tune",
-   "name": "S1 TUNE",
+   "key": "m1_tune",
+   "name": "M1 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s1_amp_a",
-   "name": "S1 ATTACK",
+   "key": "m1_amp_a",
+   "name": "M1 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s1_amp_d",
-   "name": "S1 DECAY",
+   "key": "m1_amp_d",
+   "name": "M1 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s1_amp_s",
-   "name": "S1 SUSTAIN",
+   "key": "m1_amp_s",
+   "name": "M1 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
    "display": "int"
   },
   {
-   "key": "s1_amp_r",
-   "name": "S1 RELEASE",
+   "key": "m1_amp_r",
+   "name": "M1 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
    "display": "int"
   },
   {
-   "key": "s1_vel",
-   "name": "S1 VELOCITY",
+   "key": "m1_vel",
+   "name": "M1 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
    "display": "int"
   },
   {
-   "key": "s1_cutoff",
-   "name": "S1 CUTOFF",
+   "key": "m1_cutoff",
+   "name": "M1 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
    "display": "int"
   },
   {
-   "key": "s1_reso",
-   "name": "S1 RESONANCE",
+   "key": "m1_reso",
+   "name": "M1 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s1_ftype",
-   "name": "S1 FILTER TYPE",
+   "key": "m1_ftype",
+   "name": "M1 FILTER TYPE",
    "options": [
     "LP 12",
     "LP 24",
@@ -132,32 +132,32 @@
    "default": 1
   },
   {
-   "key": "s1_fenv",
-   "name": "S1 FILTER ENV",
+   "key": "m1_fenv",
+   "name": "M1 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s1_fdec",
-   "name": "S1 FILTER DECAY",
+   "key": "m1_fdec",
+   "name": "M1 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s1_fkey",
-   "name": "S1 KEY TRACK",
+   "key": "m1_fkey",
+   "name": "M1 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s1_k1",
-   "name": "S1 K1",
+   "key": "m1_k1",
+   "name": "M1 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -166,8 +166,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k2",
-   "name": "S1 K2",
+   "key": "m1_k2",
+   "name": "M1 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -176,8 +176,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k3",
-   "name": "S1 K3",
+   "key": "m1_k3",
+   "name": "M1 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -186,8 +186,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k4",
-   "name": "S1 K4",
+   "key": "m1_k4",
+   "name": "M1 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -196,8 +196,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k5",
-   "name": "S1 K5",
+   "key": "m1_k5",
+   "name": "M1 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -206,8 +206,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k6",
-   "name": "S1 K6",
+   "key": "m1_k6",
+   "name": "M1 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -216,8 +216,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k7",
-   "name": "S1 K7",
+   "key": "m1_k7",
+   "name": "M1 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -226,8 +226,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k8",
-   "name": "S1 K8",
+   "key": "m1_k8",
+   "name": "M1 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -236,8 +236,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k9",
-   "name": "S1 K9",
+   "key": "m1_k9",
+   "name": "M1 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -246,8 +246,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k10",
-   "name": "S1 K10",
+   "key": "m1_k10",
+   "name": "M1 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -256,8 +256,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k11",
-   "name": "S1 K11",
+   "key": "m1_k11",
+   "name": "M1 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -266,8 +266,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_k12",
-   "name": "S1 K12",
+   "key": "m1_k12",
+   "name": "M1 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -276,8 +276,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s1_wt_fx",
-   "name": "S1 WT EFFECT",
+   "key": "m1_wt_fx",
+   "name": "M1 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -288,8 +288,8 @@
    "default": 0
   },
   {
-   "key": "s1_wt_umode",
-   "name": "S1 WT UNI MODE",
+   "key": "m1_wt_umode",
+   "name": "M1 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -301,8 +301,8 @@
    "default": 0
   },
   {
-   "key": "s1_fm_algo",
-   "name": "S1 FM ALGORITHM",
+   "key": "m1_fm_algo",
+   "name": "M1 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -316,8 +316,8 @@
    "default": 0
   },
   {
-   "key": "s1_fm_mode",
-   "name": "S1 FM MODE",
+   "key": "m1_fm_mode",
+   "name": "M1 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -325,8 +325,8 @@
    "default": 0
   },
   {
-   "key": "s1_osc_w1",
-   "name": "S1 OSC1 WAVE",
+   "key": "m1_osc_w1",
+   "name": "M1 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -336,8 +336,8 @@
    "default": 2
   },
   {
-   "key": "s1_osc_w2",
-   "name": "S1 OSC2 WAVE",
+   "key": "m1_osc_w2",
+   "name": "M1 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -347,8 +347,8 @@
    "default": 3
   },
   {
-   "key": "s1_osc_sync",
-   "name": "S1 OSC SYNC",
+   "key": "m1_osc_sync",
+   "name": "M1 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -356,9 +356,9 @@
    "default": 0
   },
   {
-   "key": "s1_select",
+   "key": "m1_select",
    "refresh_display": true,
-   "name": "S1 TABLE",
+   "name": "M1 TABLE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -366,30 +366,30 @@
    "type": "stepper"
   },
   {
-   "key": "s1_select_prev",
-   "name": "S1 TABLE PREV",
+   "key": "m1_select_prev",
+   "name": "M1 TABLE PREV",
    "momentary": true,
-   "step_of": "s1_select",
+   "step_of": "m1_select",
    "step_delta": -1
   },
   {
-   "key": "s1_select_next",
-   "name": "S1 TABLE NEXT",
+   "key": "m1_select_next",
+   "name": "M1 TABLE NEXT",
    "momentary": true,
-   "step_of": "s1_select",
+   "step_of": "m1_select",
    "step_delta": 1
   },
   {
-   "key": "s1_tname",
-   "name": "S1 TABLE NAME",
+   "key": "m1_tname",
+   "name": "M1 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
    "type": "readout"
   },
   {
-   "key": "s2_machine",
-   "name": "S2 MACHINE",
+   "key": "m2_model",
+   "name": "M2 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -400,38 +400,38 @@
    "refresh_display": true
   },
   {
-   "key": "s2_machine_prev",
-   "name": "S2 MACHINE PREV",
+   "key": "m2_model_prev",
+   "name": "M2 MODEL PREV",
    "momentary": true,
-   "step_of": "s2_machine",
+   "step_of": "m2_model",
    "step_delta": -1
   },
   {
-   "key": "s2_machine_next",
-   "name": "S2 MACHINE NEXT",
+   "key": "m2_model_next",
+   "name": "M2 MODEL NEXT",
    "momentary": true,
-   "step_of": "s2_machine",
+   "step_of": "m2_model",
    "step_delta": 1
   },
   {
-   "key": "s2_level",
-   "name": "S2 LEVEL",
+   "key": "m2_level",
+   "name": "M2 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s2_pan",
-   "name": "S2 PAN",
+   "key": "m2_pan",
+   "name": "M2 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s2_mute",
-   "name": "S2 MUTE",
+   "key": "m2_mute",
+   "name": "M2 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -439,72 +439,72 @@
    "default": 0
   },
   {
-   "key": "s2_tune",
-   "name": "S2 TUNE",
+   "key": "m2_tune",
+   "name": "M2 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s2_amp_a",
-   "name": "S2 ATTACK",
+   "key": "m2_amp_a",
+   "name": "M2 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s2_amp_d",
-   "name": "S2 DECAY",
+   "key": "m2_amp_d",
+   "name": "M2 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s2_amp_s",
-   "name": "S2 SUSTAIN",
+   "key": "m2_amp_s",
+   "name": "M2 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
    "display": "int"
   },
   {
-   "key": "s2_amp_r",
-   "name": "S2 RELEASE",
+   "key": "m2_amp_r",
+   "name": "M2 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
    "display": "int"
   },
   {
-   "key": "s2_vel",
-   "name": "S2 VELOCITY",
+   "key": "m2_vel",
+   "name": "M2 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
    "display": "int"
   },
   {
-   "key": "s2_cutoff",
-   "name": "S2 CUTOFF",
+   "key": "m2_cutoff",
+   "name": "M2 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
    "display": "int"
   },
   {
-   "key": "s2_reso",
-   "name": "S2 RESONANCE",
+   "key": "m2_reso",
+   "name": "M2 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s2_ftype",
-   "name": "S2 FILTER TYPE",
+   "key": "m2_ftype",
+   "name": "M2 FILTER TYPE",
    "options": [
     "LP 12",
     "LP 24",
@@ -518,32 +518,32 @@
    "default": 1
   },
   {
-   "key": "s2_fenv",
-   "name": "S2 FILTER ENV",
+   "key": "m2_fenv",
+   "name": "M2 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s2_fdec",
-   "name": "S2 FILTER DECAY",
+   "key": "m2_fdec",
+   "name": "M2 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s2_fkey",
-   "name": "S2 KEY TRACK",
+   "key": "m2_fkey",
+   "name": "M2 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s2_k1",
-   "name": "S2 K1",
+   "key": "m2_k1",
+   "name": "M2 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -552,8 +552,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k2",
-   "name": "S2 K2",
+   "key": "m2_k2",
+   "name": "M2 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -562,8 +562,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k3",
-   "name": "S2 K3",
+   "key": "m2_k3",
+   "name": "M2 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -572,8 +572,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k4",
-   "name": "S2 K4",
+   "key": "m2_k4",
+   "name": "M2 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -582,8 +582,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k5",
-   "name": "S2 K5",
+   "key": "m2_k5",
+   "name": "M2 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -592,8 +592,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k6",
-   "name": "S2 K6",
+   "key": "m2_k6",
+   "name": "M2 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -602,8 +602,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k7",
-   "name": "S2 K7",
+   "key": "m2_k7",
+   "name": "M2 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -612,8 +612,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k8",
-   "name": "S2 K8",
+   "key": "m2_k8",
+   "name": "M2 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -622,8 +622,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k9",
-   "name": "S2 K9",
+   "key": "m2_k9",
+   "name": "M2 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -632,8 +632,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k10",
-   "name": "S2 K10",
+   "key": "m2_k10",
+   "name": "M2 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -642,8 +642,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k11",
-   "name": "S2 K11",
+   "key": "m2_k11",
+   "name": "M2 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -652,8 +652,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_k12",
-   "name": "S2 K12",
+   "key": "m2_k12",
+   "name": "M2 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -662,8 +662,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s2_wt_fx",
-   "name": "S2 WT EFFECT",
+   "key": "m2_wt_fx",
+   "name": "M2 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -674,8 +674,8 @@
    "default": 0
   },
   {
-   "key": "s2_wt_umode",
-   "name": "S2 WT UNI MODE",
+   "key": "m2_wt_umode",
+   "name": "M2 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -687,8 +687,8 @@
    "default": 0
   },
   {
-   "key": "s2_fm_algo",
-   "name": "S2 FM ALGORITHM",
+   "key": "m2_fm_algo",
+   "name": "M2 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -702,8 +702,8 @@
    "default": 0
   },
   {
-   "key": "s2_fm_mode",
-   "name": "S2 FM MODE",
+   "key": "m2_fm_mode",
+   "name": "M2 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -711,8 +711,8 @@
    "default": 0
   },
   {
-   "key": "s2_osc_w1",
-   "name": "S2 OSC1 WAVE",
+   "key": "m2_osc_w1",
+   "name": "M2 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -722,8 +722,8 @@
    "default": 2
   },
   {
-   "key": "s2_osc_w2",
-   "name": "S2 OSC2 WAVE",
+   "key": "m2_osc_w2",
+   "name": "M2 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -733,8 +733,8 @@
    "default": 3
   },
   {
-   "key": "s2_osc_sync",
-   "name": "S2 OSC SYNC",
+   "key": "m2_osc_sync",
+   "name": "M2 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -742,9 +742,9 @@
    "default": 0
   },
   {
-   "key": "s2_select",
+   "key": "m2_select",
    "refresh_display": true,
-   "name": "S2 TABLE",
+   "name": "M2 TABLE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -752,30 +752,30 @@
    "type": "stepper"
   },
   {
-   "key": "s2_select_prev",
-   "name": "S2 TABLE PREV",
+   "key": "m2_select_prev",
+   "name": "M2 TABLE PREV",
    "momentary": true,
-   "step_of": "s2_select",
+   "step_of": "m2_select",
    "step_delta": -1
   },
   {
-   "key": "s2_select_next",
-   "name": "S2 TABLE NEXT",
+   "key": "m2_select_next",
+   "name": "M2 TABLE NEXT",
    "momentary": true,
-   "step_of": "s2_select",
+   "step_of": "m2_select",
    "step_delta": 1
   },
   {
-   "key": "s2_tname",
-   "name": "S2 TABLE NAME",
+   "key": "m2_tname",
+   "name": "M2 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
    "type": "readout"
   },
   {
-   "key": "s3_machine",
-   "name": "S3 MACHINE",
+   "key": "m3_model",
+   "name": "M3 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -786,38 +786,38 @@
    "refresh_display": true
   },
   {
-   "key": "s3_machine_prev",
-   "name": "S3 MACHINE PREV",
+   "key": "m3_model_prev",
+   "name": "M3 MODEL PREV",
    "momentary": true,
-   "step_of": "s3_machine",
+   "step_of": "m3_model",
    "step_delta": -1
   },
   {
-   "key": "s3_machine_next",
-   "name": "S3 MACHINE NEXT",
+   "key": "m3_model_next",
+   "name": "M3 MODEL NEXT",
    "momentary": true,
-   "step_of": "s3_machine",
+   "step_of": "m3_model",
    "step_delta": 1
   },
   {
-   "key": "s3_level",
-   "name": "S3 LEVEL",
+   "key": "m3_level",
+   "name": "M3 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s3_pan",
-   "name": "S3 PAN",
+   "key": "m3_pan",
+   "name": "M3 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s3_mute",
-   "name": "S3 MUTE",
+   "key": "m3_mute",
+   "name": "M3 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -825,72 +825,72 @@
    "default": 0
   },
   {
-   "key": "s3_tune",
-   "name": "S3 TUNE",
+   "key": "m3_tune",
+   "name": "M3 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s3_amp_a",
-   "name": "S3 ATTACK",
+   "key": "m3_amp_a",
+   "name": "M3 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s3_amp_d",
-   "name": "S3 DECAY",
+   "key": "m3_amp_d",
+   "name": "M3 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s3_amp_s",
-   "name": "S3 SUSTAIN",
+   "key": "m3_amp_s",
+   "name": "M3 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
    "display": "int"
   },
   {
-   "key": "s3_amp_r",
-   "name": "S3 RELEASE",
+   "key": "m3_amp_r",
+   "name": "M3 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
    "display": "int"
   },
   {
-   "key": "s3_vel",
-   "name": "S3 VELOCITY",
+   "key": "m3_vel",
+   "name": "M3 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
    "display": "int"
   },
   {
-   "key": "s3_cutoff",
-   "name": "S3 CUTOFF",
+   "key": "m3_cutoff",
+   "name": "M3 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
    "display": "int"
   },
   {
-   "key": "s3_reso",
-   "name": "S3 RESONANCE",
+   "key": "m3_reso",
+   "name": "M3 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s3_ftype",
-   "name": "S3 FILTER TYPE",
+   "key": "m3_ftype",
+   "name": "M3 FILTER TYPE",
    "options": [
     "LP 12",
     "LP 24",
@@ -904,32 +904,32 @@
    "default": 1
   },
   {
-   "key": "s3_fenv",
-   "name": "S3 FILTER ENV",
+   "key": "m3_fenv",
+   "name": "M3 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s3_fdec",
-   "name": "S3 FILTER DECAY",
+   "key": "m3_fdec",
+   "name": "M3 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s3_fkey",
-   "name": "S3 KEY TRACK",
+   "key": "m3_fkey",
+   "name": "M3 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s3_k1",
-   "name": "S3 K1",
+   "key": "m3_k1",
+   "name": "M3 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -938,8 +938,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k2",
-   "name": "S3 K2",
+   "key": "m3_k2",
+   "name": "M3 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -948,8 +948,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k3",
-   "name": "S3 K3",
+   "key": "m3_k3",
+   "name": "M3 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -958,8 +958,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k4",
-   "name": "S3 K4",
+   "key": "m3_k4",
+   "name": "M3 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -968,8 +968,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k5",
-   "name": "S3 K5",
+   "key": "m3_k5",
+   "name": "M3 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -978,8 +978,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k6",
-   "name": "S3 K6",
+   "key": "m3_k6",
+   "name": "M3 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -988,8 +988,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k7",
-   "name": "S3 K7",
+   "key": "m3_k7",
+   "name": "M3 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -998,8 +998,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k8",
-   "name": "S3 K8",
+   "key": "m3_k8",
+   "name": "M3 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1008,8 +1008,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k9",
-   "name": "S3 K9",
+   "key": "m3_k9",
+   "name": "M3 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1018,8 +1018,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k10",
-   "name": "S3 K10",
+   "key": "m3_k10",
+   "name": "M3 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1028,8 +1028,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k11",
-   "name": "S3 K11",
+   "key": "m3_k11",
+   "name": "M3 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1038,8 +1038,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_k12",
-   "name": "S3 K12",
+   "key": "m3_k12",
+   "name": "M3 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1048,8 +1048,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s3_wt_fx",
-   "name": "S3 WT EFFECT",
+   "key": "m3_wt_fx",
+   "name": "M3 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -1060,8 +1060,8 @@
    "default": 0
   },
   {
-   "key": "s3_wt_umode",
-   "name": "S3 WT UNI MODE",
+   "key": "m3_wt_umode",
+   "name": "M3 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -1073,8 +1073,8 @@
    "default": 0
   },
   {
-   "key": "s3_fm_algo",
-   "name": "S3 FM ALGORITHM",
+   "key": "m3_fm_algo",
+   "name": "M3 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -1088,8 +1088,8 @@
    "default": 0
   },
   {
-   "key": "s3_fm_mode",
-   "name": "S3 FM MODE",
+   "key": "m3_fm_mode",
+   "name": "M3 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -1097,8 +1097,8 @@
    "default": 0
   },
   {
-   "key": "s3_osc_w1",
-   "name": "S3 OSC1 WAVE",
+   "key": "m3_osc_w1",
+   "name": "M3 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1108,8 +1108,8 @@
    "default": 2
   },
   {
-   "key": "s3_osc_w2",
-   "name": "S3 OSC2 WAVE",
+   "key": "m3_osc_w2",
+   "name": "M3 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1119,8 +1119,8 @@
    "default": 3
   },
   {
-   "key": "s3_osc_sync",
-   "name": "S3 OSC SYNC",
+   "key": "m3_osc_sync",
+   "name": "M3 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -1128,9 +1128,9 @@
    "default": 0
   },
   {
-   "key": "s3_select",
+   "key": "m3_select",
    "refresh_display": true,
-   "name": "S3 TABLE",
+   "name": "M3 TABLE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1138,30 +1138,30 @@
    "type": "stepper"
   },
   {
-   "key": "s3_select_prev",
-   "name": "S3 TABLE PREV",
+   "key": "m3_select_prev",
+   "name": "M3 TABLE PREV",
    "momentary": true,
-   "step_of": "s3_select",
+   "step_of": "m3_select",
    "step_delta": -1
   },
   {
-   "key": "s3_select_next",
-   "name": "S3 TABLE NEXT",
+   "key": "m3_select_next",
+   "name": "M3 TABLE NEXT",
    "momentary": true,
-   "step_of": "s3_select",
+   "step_of": "m3_select",
    "step_delta": 1
   },
   {
-   "key": "s3_tname",
-   "name": "S3 TABLE NAME",
+   "key": "m3_tname",
+   "name": "M3 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
    "type": "readout"
   },
   {
-   "key": "s4_machine",
-   "name": "S4 MACHINE",
+   "key": "m4_model",
+   "name": "M4 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -1172,38 +1172,38 @@
    "refresh_display": true
   },
   {
-   "key": "s4_machine_prev",
-   "name": "S4 MACHINE PREV",
+   "key": "m4_model_prev",
+   "name": "M4 MODEL PREV",
    "momentary": true,
-   "step_of": "s4_machine",
+   "step_of": "m4_model",
    "step_delta": -1
   },
   {
-   "key": "s4_machine_next",
-   "name": "S4 MACHINE NEXT",
+   "key": "m4_model_next",
+   "name": "M4 MODEL NEXT",
    "momentary": true,
-   "step_of": "s4_machine",
+   "step_of": "m4_model",
    "step_delta": 1
   },
   {
-   "key": "s4_level",
-   "name": "S4 LEVEL",
+   "key": "m4_level",
+   "name": "M4 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s4_pan",
-   "name": "S4 PAN",
+   "key": "m4_pan",
+   "name": "M4 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s4_mute",
-   "name": "S4 MUTE",
+   "key": "m4_mute",
+   "name": "M4 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -1211,72 +1211,72 @@
    "default": 0
   },
   {
-   "key": "s4_tune",
-   "name": "S4 TUNE",
+   "key": "m4_tune",
+   "name": "M4 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s4_amp_a",
-   "name": "S4 ATTACK",
+   "key": "m4_amp_a",
+   "name": "M4 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s4_amp_d",
-   "name": "S4 DECAY",
+   "key": "m4_amp_d",
+   "name": "M4 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s4_amp_s",
-   "name": "S4 SUSTAIN",
+   "key": "m4_amp_s",
+   "name": "M4 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
    "display": "int"
   },
   {
-   "key": "s4_amp_r",
-   "name": "S4 RELEASE",
+   "key": "m4_amp_r",
+   "name": "M4 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
    "display": "int"
   },
   {
-   "key": "s4_vel",
-   "name": "S4 VELOCITY",
+   "key": "m4_vel",
+   "name": "M4 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
    "display": "int"
   },
   {
-   "key": "s4_cutoff",
-   "name": "S4 CUTOFF",
+   "key": "m4_cutoff",
+   "name": "M4 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
    "display": "int"
   },
   {
-   "key": "s4_reso",
-   "name": "S4 RESONANCE",
+   "key": "m4_reso",
+   "name": "M4 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s4_ftype",
-   "name": "S4 FILTER TYPE",
+   "key": "m4_ftype",
+   "name": "M4 FILTER TYPE",
    "options": [
     "LP 12",
     "LP 24",
@@ -1290,32 +1290,32 @@
    "default": 1
   },
   {
-   "key": "s4_fenv",
-   "name": "S4 FILTER ENV",
+   "key": "m4_fenv",
+   "name": "M4 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s4_fdec",
-   "name": "S4 FILTER DECAY",
+   "key": "m4_fdec",
+   "name": "M4 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
    "display": "int"
   },
   {
-   "key": "s4_fkey",
-   "name": "S4 KEY TRACK",
+   "key": "m4_fkey",
+   "name": "M4 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
    "display": "int"
   },
   {
-   "key": "s4_k1",
-   "name": "S4 K1",
+   "key": "m4_k1",
+   "name": "M4 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1324,8 +1324,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k2",
-   "name": "S4 K2",
+   "key": "m4_k2",
+   "name": "M4 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1334,8 +1334,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k3",
-   "name": "S4 K3",
+   "key": "m4_k3",
+   "name": "M4 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1344,8 +1344,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k4",
-   "name": "S4 K4",
+   "key": "m4_k4",
+   "name": "M4 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1354,8 +1354,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k5",
-   "name": "S4 K5",
+   "key": "m4_k5",
+   "name": "M4 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1364,8 +1364,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k6",
-   "name": "S4 K6",
+   "key": "m4_k6",
+   "name": "M4 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1374,8 +1374,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k7",
-   "name": "S4 K7",
+   "key": "m4_k7",
+   "name": "M4 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1384,8 +1384,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k8",
-   "name": "S4 K8",
+   "key": "m4_k8",
+   "name": "M4 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1394,8 +1394,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k9",
-   "name": "S4 K9",
+   "key": "m4_k9",
+   "name": "M4 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1404,8 +1404,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k10",
-   "name": "S4 K10",
+   "key": "m4_k10",
+   "name": "M4 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1414,8 +1414,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k11",
-   "name": "S4 K11",
+   "key": "m4_k11",
+   "name": "M4 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1424,8 +1424,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_k12",
-   "name": "S4 K12",
+   "key": "m4_k12",
+   "name": "M4 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1434,8 +1434,8 @@
    "dynamic_display": true
   },
   {
-   "key": "s4_wt_fx",
-   "name": "S4 WT EFFECT",
+   "key": "m4_wt_fx",
+   "name": "M4 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -1446,8 +1446,8 @@
    "default": 0
   },
   {
-   "key": "s4_wt_umode",
-   "name": "S4 WT UNI MODE",
+   "key": "m4_wt_umode",
+   "name": "M4 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -1459,8 +1459,8 @@
    "default": 0
   },
   {
-   "key": "s4_fm_algo",
-   "name": "S4 FM ALGORITHM",
+   "key": "m4_fm_algo",
+   "name": "M4 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -1474,8 +1474,8 @@
    "default": 0
   },
   {
-   "key": "s4_fm_mode",
-   "name": "S4 FM MODE",
+   "key": "m4_fm_mode",
+   "name": "M4 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -1483,8 +1483,8 @@
    "default": 0
   },
   {
-   "key": "s4_osc_w1",
-   "name": "S4 OSC1 WAVE",
+   "key": "m4_osc_w1",
+   "name": "M4 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1494,8 +1494,8 @@
    "default": 2
   },
   {
-   "key": "s4_osc_w2",
-   "name": "S4 OSC2 WAVE",
+   "key": "m4_osc_w2",
+   "name": "M4 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1505,8 +1505,8 @@
    "default": 3
   },
   {
-   "key": "s4_osc_sync",
-   "name": "S4 OSC SYNC",
+   "key": "m4_osc_sync",
+   "name": "M4 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -1514,9 +1514,9 @@
    "default": 0
   },
   {
-   "key": "s4_select",
+   "key": "m4_select",
    "refresh_display": true,
-   "name": "S4 TABLE",
+   "name": "M4 TABLE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1524,22 +1524,22 @@
    "type": "stepper"
   },
   {
-   "key": "s4_select_prev",
-   "name": "S4 TABLE PREV",
+   "key": "m4_select_prev",
+   "name": "M4 TABLE PREV",
    "momentary": true,
-   "step_of": "s4_select",
+   "step_of": "m4_select",
    "step_delta": -1
   },
   {
-   "key": "s4_select_next",
-   "name": "S4 TABLE NEXT",
+   "key": "m4_select_next",
+   "name": "M4 TABLE NEXT",
    "momentary": true,
-   "step_of": "s4_select",
+   "step_of": "m4_select",
    "step_delta": 1
   },
   {
-   "key": "s4_tname",
-   "name": "S4 TABLE NAME",
+   "key": "m4_tname",
+   "name": "M4 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
@@ -1752,13 +1752,13 @@
   },
   {
    "key": "mm1_slot",
-   "name": "MOD1 SLOT",
+   "name": "MOD1 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -1809,13 +1809,13 @@
   },
   {
    "key": "mm2_slot",
-   "name": "MOD2 SLOT",
+   "name": "MOD2 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -1866,13 +1866,13 @@
   },
   {
    "key": "mm3_slot",
-   "name": "MOD3 SLOT",
+   "name": "MOD3 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -1923,13 +1923,13 @@
   },
   {
    "key": "mm4_slot",
-   "name": "MOD4 SLOT",
+   "name": "MOD4 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -1980,13 +1980,13 @@
   },
   {
    "key": "mm5_slot",
-   "name": "MOD5 SLOT",
+   "name": "MOD5 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -2037,13 +2037,13 @@
   },
   {
    "key": "mm6_slot",
-   "name": "MOD6 SLOT",
+   "name": "MOD6 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -2094,13 +2094,13 @@
   },
   {
    "key": "mm7_slot",
-   "name": "MOD7 SLOT",
+   "name": "MOD7 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -2151,13 +2151,13 @@
   },
   {
    "key": "mm8_slot",
-   "name": "MOD8 SLOT",
+   "name": "MOD8 MACHINE",
    "options": [
     "ALL",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
+    "M1",
+    "M2",
+    "M3",
+    "M4"
    ],
    "default": 0
   },
@@ -2227,6 +2227,42 @@
    "max": 0,
    "display": "string",
    "type": "readout"
+  },
+  {
+   "key": "m1_fview",
+   "name": "M1 FILTER VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 124,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_fview",
+   "name": "M2 FILTER VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 124,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_fview",
+   "name": "M3 FILTER VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 124,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_fview",
+   "name": "M4 FILTER VIEW",
+   "min": 0,
+   "max": 127,
+   "default": 124,
+   "display": "int",
+   "clamped": true
   }
  ]
 }

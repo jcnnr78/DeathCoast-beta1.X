@@ -1,4 +1,4 @@
-// NorthWest v2.0 CPU bench: 4 s of audio, one held note, all 4 slots playing.
+// NorthWest v1.3 CPU bench: 4 s of audio, one held note, all 4 machines playing.
 //   ./bench t   typical: 4 x WAVETABLE unison 2, filter on
 //   ./bench h   heavy:   4 x WAVETABLE unison 4 + FM effect + resonant 24 dB filter
 //   ./bench f   4 x FM, 4 operators, feedback, DRUM off
@@ -18,10 +18,10 @@ int main(int argc, char **argv) {
   const char m = argc > 1 ? argv[1][0] : 't';
   Engine e;
   for (int s = 1; s <= 4; s++) {
-    std::string p = "s" + std::to_string(s) + "_";
+    std::string p = "m" + std::to_string(s) + "_";
     set(e, p + "level", 100); set(e, p + "amp_s", 127); set(e, p + "cutoff", 90); set(e, p + "reso", 40);
     int machine = m == 'f' ? 1 : m == 'm' ? (s % 2 == 0 ? 1 : 0) : 0;
-    set(e, p + "machine", machine);
+    set(e, p + "model", machine);
     if (machine == 0) {
       set(e, p + "k7", (m == 'h' || (m == 'm' && s == 3)) ? 127 : 43);
       set(e, p + "k4", 40);

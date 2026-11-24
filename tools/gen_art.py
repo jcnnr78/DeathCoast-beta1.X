@@ -107,7 +107,7 @@ def wave(w, h, n=64):
 # ---------------------------------------------------------------------------------------------- filters
 FLT_TYPES = ["lp12", "lp24", "hp12", "hp24", "bp12", "bp24", "notch12", "notch24"]
 
-def response(kind, f, fc, q=1.1):
+def response(kind, f, fc, q=0.7071):
     s = f / fc
     lp = 1 / np.sqrt((1 - s ** 2) ** 2 + (s / q) ** 2)
     hp = s ** 2 * lp
@@ -116,29 +116,32 @@ def response(kind, f, fc, q=1.1):
     base = {"lp": lp, "hp": hp, "bp": bp, "notch": nt}[kind.rstrip("0123456789")]
     return base ** (2 if kind.endswith("24") else 1)
 
-def filt(kind, w, h, n=64):
+def filt(kind, w, h):
+    """128 frames: CUTOFF in 32 steps x RESONANCE in 4 (frame = cut * 4 + res), the value the DSP reports as mN_fview.
+    Cutoff on the engine's scale (MIDI note 8..135); resonance with the engine's Q law at 0, 1/3, 2/3, 1 of the knob
+    (drawn up to Q 8: the top of the knob only gets louder, the picture would clip)."""
     frames = []
-    f = np.geomspace(20, 20000, 220)
-    for i in range(n):
-        v = i / (n - 1)
-        fc = 20 * 1000 ** (0.06 + 0.9 * v)      # the corner follows the knob, log-spaced like the engine's note scale
-        db = 20 * np.log10(np.maximum(response(kind, f, fc), 1e-6))
-        top, bot = 9.0, -42.0
+    f = np.geomspace(20, 20000, 240)
+    for i in range(128):
+        cut, res = i // 4, i % 4
+        fc = 440.0 * 2 ** ((8 + cut / 31 * 127 - 69) / 12)
+        q = min(8.0, 0.7071 / (1 - (res / 3) * 0.99))
+        r = response(kind, f, fc, q) * (response(kind, f, fc, 0.7071) if kind.endswith("24") else 1)
+        db = 20 * np.log10(np.maximum(r, 1e-6))
+        top, bot = 18.0, -42.0
         im = display(w, h); d = ImageDraw.Draw(im)
         for g in (100, 1000, 10000):             # faint decade lines
-            x = (12 + (w - 24) * math.log(g / 20) / math.log(1000)) * SS
-            d.line(((x, 8 * SS), (x, (h - 8) * SS)), fill=hexc("3d3d42", 120), width=SS)
-        y0 = (8 + (h - 16) * top / (top - bot)) * SS
-        d.line(((12 * SS, y0), ((w - 12) * SS, y0)), fill=hexc("3d3d42", 160), width=SS)
-        xs = 12 + (w - 24) * np.log(f / 20) / math.log(1000)
-        ys = 8 + (h - 16) * (top - np.clip(db, bot, top)) / (top - bot)
+            x = (10 + (w - 20) * math.log(g / 20) / math.log(1000)) * SS
+            d.line(((x, 6 * SS), (x, (h - 6) * SS)), fill=hexc("3d3d42", 120), width=SS)
+        y0 = (6 + (h - 12) * top / (top - bot)) * SS
+        d.line(((10 * SS, y0), ((w - 10) * SS, y0)), fill=hexc("3d3d42", 160), width=SS)
+        xs = 10 + (w - 20) * np.log(f / 20) / math.log(1000)
+        ys = 6 + (h - 12) * (top - np.clip(db, bot, top)) / (top - bot)
         pts = [(x * SS, y * SS) for x, y in zip(xs, ys)]
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
-        fd.polygon(pts + [(pts[-1][0], (h - 8) * SS), (pts[0][0], (h - 8) * SS)], fill=hexc("e8871e", 55))
+        fd.polygon(pts + [(pts[-1][0], (h - 6) * SS), (pts[0][0], (h - 6) * SS)], fill=hexc("e8871e", 55))
         im.alpha_composite(fill)
-        polyline(d, pts, ACC_HI, int(2.4 * SS))
-        xc = (12 + (w - 24) * math.log(fc / 20) / math.log(1000)) * SS    # corner marker
-        d.ellipse((xc - 4 * SS, y0 - 4 * SS, xc + 4 * SS, y0 + 4 * SS), outline=INK, width=int(1.5 * SS))
+        polyline(d, pts, ACC_HI, int(2.2 * SS))
         frames.append(down(im, w, h))
     strip(frames, "flt_%s_%dx%d.png" % (kind, w, h))
 

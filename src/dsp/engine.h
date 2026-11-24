@@ -36,7 +36,7 @@ private:
     void releaseAll();
     bool slotOn(int s) const
     {
-        return pots[slotParam(s, TB_P_S1_LEVEL)] > 0.0f && (int) pots[slotParam(s, TB_P_S1_MUTE)] == 0;
+        return pots[slotParam(s, TB_P_M1_LEVEL)] > 0.0f && (int) pots[slotParam(s, TB_P_M1_MUTE)] == 0;
     }
     void modStart(bool fresh);
     void updateMod(int n);

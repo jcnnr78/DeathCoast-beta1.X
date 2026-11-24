@@ -29,7 +29,7 @@
   "layout": "layout.conf",
   "art": "html",
   "defines": {
-    "QLINK_TRAVEL": 1, "SET_IF_CHANGED": 1,
+    "QLINK_TRAVEL": 1, "SET_IF_CHANGED": 1, "HAS_DISPLAY_REV": 1,
     "MODULE_DIR": "\"/sdcard/vst/northwest\"",
     "MODULE_SUBDIR": "\"northwest\""
   }

@@ -166,7 +166,7 @@ void Engine::renderBlock(int16_t *out, int frames)
         updateMod(n);
         for (int s = 0; s < TB_SLOTS; s++) {
             if (!slots[s].isActive()) continue;
-            if ((int) pots[slotParam(s, TB_P_S1_MUTE)] != 0) { slots[s].kill(); continue; }
+            if ((int) pots[slotParam(s, TB_P_M1_MUTE)] != 0) { slots[s].kill(); continue; }
             slots[s].render(pots, t[s].get(), ms, L, R, n);
         }
         const float master = potSquared(pots[TB_P_VOLUME]) * 0.8f;

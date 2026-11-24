@@ -35,5 +35,5 @@ jobs:
       user_data: northwest/wavetables
       plugin_id: northwest
       license: BSD-3-Clause
-      about: "Four monophonic slots in layers, each with its own machine (wavetable, FM; west coast and analog coming); after Tablor."
+      about: "Four monophonic machines in layers, each running its own model (wavetable, FM; west coast and analog coming); after Tablor."
       dry_run: ${{ inputs.dry_run }}

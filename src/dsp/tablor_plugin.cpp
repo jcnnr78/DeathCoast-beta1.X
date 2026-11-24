@@ -474,17 +474,24 @@ static int param_index(const char *key)
     return -1;
 }
 
-/* Which wavetable slot a param drives: s1_table -> 0 ... s4_table -> 3. */
-/* "sN_<suffix>" -> slot index 0..3, else -1 */
+/* Which machine's wavetable a param drives: m1_table -> 0 ... m4_table -> 3. */
+/* "mN_<suffix>" -> machine index 0..3, else -1 */
 static int slot_key(const char *k, const char *suffix)
 {
-    if (k[0] != 's' || k[1] < '1' || k[1] > '0' + TB_SLOTS || k[2] != '_') return -1;
+    if (k[0] != 'm' || k[1] < '1' || k[1] > '0' + TB_SLOTS || k[2] != '_') return -1;
     return strcmp(k + 3, suffix) == 0 ? k[1] - '1' : -1;
+}
+
+static int tb_fview(const float *P, int m)
+{
+    const int cut = (int) std::lround(P[TB_P_M1_CUTOFF + m * TB_SLOT_STRIDE] / 127.0f * 31.0f);
+    const int res = (int) std::lround(P[TB_P_M1_RESO + m * TB_SLOT_STRIDE] / 127.0f * 3.0f);
+    return std::clamp(cut, 0, 31) * 4 + std::clamp(res, 0, 3);
 }
 
 static int tb_path_slot(int param_idx)
 {
-    return std::clamp((param_idx - TB_P_S1_TABLE) / TB_SLOT_STRIDE, 0, TB_WT_SLOTS - 1);
+    return std::clamp((param_idx - TB_P_M1_TABLE) / TB_SLOT_STRIDE, 0, TB_WT_SLOTS - 1);
 }
 
 /* Store a path and post the background load. "" or "Init" = built-in. */
@@ -497,7 +504,7 @@ static void sync_table_index(tablor_instance *inst, int osc)
     int idx = 0;
     for (size_t i = 0; i < l.size(); i++)
         if (l[i] == inst->wt_path[osc]) { idx = (int) i; break; }
-    inst->params()[TB_P_S1_TABLE + osc * TB_SLOT_STRIDE] = (float) idx;
+    inst->params()[TB_P_M1_TABLE + osc * TB_SLOT_STRIDE] = (float) idx;
 }
 
 static void set_table_path(tablor_instance *inst, int osc, const char *path)
@@ -656,7 +663,7 @@ static void tb_publish_selection(tablor_instance *inst)
     for (int osc = 0; osc < TB_WT_SLOTS; osc++) {
         char head[96];
         snprintf(head, sizeof head,
-                 ",{\"key\":\"s%d_select\",\"name\":\"S%d Table\",\"type\":\"enum\",\"options\":[",
+                 ",{\"key\":\"m%d_select\",\"name\":\"M%d Table\",\"type\":\"enum\",\"options\":[",
                  osc + 1, osc + 1);
         out += head;
         for (size_t i = 0; i < snap->filtered.size(); i++) {
@@ -997,27 +1004,40 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
         return write_str(buf, buf_len, ps->items[n].name.c_str());
     }
 #endif
-    /* a slot's machine knob: its name and value text depend on the slot's machine (params.json
-     * dynamic_name / dynamic_display): "sN_kM_name" / "sN_kM_display" */
-    if (key[0] == 's' && key[1] >= '1' && key[1] <= '0' + TB_SLOTS && key[2] == '_' && key[3] == 'k') {
+    /* a machine's knob K1..K12: its name and value text depend on the machine's model (params.json
+     * dynamic_name / dynamic_display): "mN_kM_name" / "mN_kM_display" */
+    if (key[0] == 'm' && key[1] >= '1' && key[1] <= '0' + TB_SLOTS && key[2] == '_' && key[3] == 'k') {
         const int slot = key[1] - '1';
         char *end = nullptr;
         const long k = strtol(key + 4, &end, 10);
         if (end && end != key + 4 && k >= 1 && k <= TB_KNOBS) {
             const float *P = inst->params();
-            const int machine = (int) P[TB_P_S1_MACHINE + slot * TB_SLOT_STRIDE];
+            const int machine = (int) P[TB_P_M1_MODEL + slot * TB_SLOT_STRIDE];
             if (!strcmp(end, "_name")) {
                 char tmp[40];
-                snprintf(tmp, sizeof tmp, "S%d %s", slot + 1,
-                         tb::knobName(machine, (int) k - 1, (int) P[TB_P_S1_WT_FX + slot * TB_SLOT_STRIDE]));
+                snprintf(tmp, sizeof tmp, "M%d %s", slot + 1,
+                         tb::knobName(machine, (int) k - 1, (int) P[TB_P_M1_WT_FX + slot * TB_SLOT_STRIDE]));
                 return write_str(buf, buf_len, tmp);
             }
             if (!strcmp(end, "_display")) {
                 char tmp[32];
-                tb::knobText(tmp, sizeof tmp, machine, (int) k - 1, P[TB_P_S1_K1 + (k - 1) + slot * TB_SLOT_STRIDE]);
+                tb::knobText(tmp, sizeof tmp, machine, (int) k - 1, P[TB_P_M1_K1 + (k - 1) + slot * TB_SLOT_STRIDE]);
                 return write_str(buf, buf_len, tmp);
             }
         }
+    }
+    /* the filter picture: CUTOFF in 32 steps x RESONANCE in 4, as one value 0..127 (the meter's frame) */
+    if (int m = slot_key(key, "fview"); m >= 0) {
+        char tmp[8];
+        snprintf(tmp, sizeof tmp, "%d", tb_fview(inst->params(), m));
+        return write_str(buf, buf_len, tmp);
+    }
+    if (!strcmp(key, "display_rev")) {          /* changes whenever a filter picture does (HAS_DISPLAY_REV) */
+        unsigned v = 0;
+        for (int m = 0; m < TB_SLOTS; m++) v = v * 128u + (unsigned) tb_fview(inst->params(), m);
+        char tmp[16];
+        snprintf(tmp, sizeof tmp, "%u", v);
+        return write_str(buf, buf_len, tmp);
     }
     if (int osc = slot_key(key, "tname"); osc >= 0) {   /* MPC port: the loaded table's name, for a readout */
         const std::string &path = inst->wt_path[osc];
