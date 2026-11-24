@@ -129,10 +129,11 @@ def slot_page(n):
         if i < 4: L.append(meter(cx, 538, ES, s + k, "env_%s_%dx%d.png" % (("adsr"[i],) + ES)))
         L.append(knob(cx, 628, lab, s + k, bw=104))
     # Q-Link columns of 4: row 1 left, row 2 left, the right 2x2, the filter
-    L += ['qlinks "MACHINE" = ' + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
+    # the Q-Link set titles are what MPC shows as the page names: they carry the machine number
+    L += ['qlinks "MACHINE %d" = ' % n + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
           ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
           # left to right on screen = Q-Links top to bottom, 4 per column
-          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in (
+          'qlinks "M%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
               "ftype", "cutoff", "reso", "fenv", "fdec", "fkey", "-", "-", "amp_a", "amp_d", "amp_s", "amp_r", "vel", "-", "-", "-"))]
     return "\n".join(L) + "\n"
 
