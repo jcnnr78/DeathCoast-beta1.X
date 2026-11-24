@@ -86,8 +86,8 @@ public:
     {
         {
             std::lock_guard<std::mutex> lk(m);
-            pending[osc & 1] = entry;
-            hasPending[osc & 1] = true;
+            pending[osc & 3] = entry;
+            hasPending[osc & 3] = true;
         }
         cv.notify_all();
     }
@@ -95,7 +95,7 @@ public:
     bool busy() const
     {
         std::lock_guard<std::mutex> lk(m);
-        return hasPending[0] || hasPending[1] || working || !jobs.empty();
+        return hasPending[0] || hasPending[1] || hasPending[2] || hasPending[3] || working || !jobs.empty();
     }
 
 private:
@@ -114,7 +114,7 @@ private:
             {
                 std::unique_lock<std::mutex> lk(m);
                 cv.wait(lk, [this] {
-                    return quit || hasPending[0] || hasPending[1] || !jobs.empty();
+                    return quit || hasPending[0] || hasPending[1] || hasPending[2] || hasPending[3] || !jobs.empty();
                 });
                 if (quit) return;
                 if (!jobs.empty()) {            /* plain jobs first (init) */
@@ -124,7 +124,7 @@ private:
                 /* No settle delay: a table change loads the instant the pot
                  * moves. Deferring it to coalesce a fast spin was tried and
                  * rejected -- the lag is the whole feel of the control. */
-                for (int i = 0; i < 2 && !job; i++) {
+                for (int i = 0; i < TB_WT_SLOTS && !job; i++) {
                     if (hasPending[i]) {
                         entry = pending[i];
                         hasPending[i] = false;
@@ -291,9 +291,9 @@ private:
     std::condition_variable cv;
     pthread_t worker {};
     bool started = false;
-    WtEntry pending[2];
+    WtEntry pending[TB_WT_SLOTS];
     std::vector<std::function<void()>> jobs;
-    bool hasPending[2] = { false, false };
+    bool hasPending[TB_WT_SLOTS] = {};
     bool working = false;
     bool quit = false;
 

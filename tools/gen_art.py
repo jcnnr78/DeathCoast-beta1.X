@@ -77,7 +77,7 @@ def wave_shape(t, x):
     return max(-1.0, min(1.0, out))
 
 def wave(w, h, n=64):
-    depth = 14                                 # frames drawn behind, as a stack going up and to the right
+    depth = 10                                 # frames drawn behind, as a stack going up and to the right
     dx, dy = 1.6, 2.4                          # offset per stacked frame (px)
     pw, ph = w - 40 - depth * dx, (h - 34 - depth * dy) / 2
     frames = []
@@ -145,7 +145,7 @@ def filt(kind, w, h, n=64):
 # ---------------------------------------------------------------------------------------------- envelope stages
 def env(stage, w, h, n=64):
     frames = []
-    L, R, T, B = 12, w - 12, 10, h - 10
+    L, R, T, B = 8, w - 8, 7, h - 7
     mid = 0.5                                     # the generic sustain level drawn by DECAY and RELEASE
     for i in range(n):
         v = i / (n - 1)
@@ -195,9 +195,9 @@ def logo(size=64):
     print("  logo.png                   %dx%d" % im.size)
 
 # sizes used by tools/gen_layout.py
-WAVE = (600, 156)
-FLT = (260, 120)
-ENV = (170, 72)
+WAVE = (560, 110)     # v2.0: the slot pages' sizes
+FLT = (220, 56)
+ENV = (96, 50)
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)

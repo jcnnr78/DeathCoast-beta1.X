@@ -3,7 +3,7 @@
   "name": "NorthWest",
   "abbrev": "TBL",
   "version": "1.3.3",
-  "description": "NorthWest: monophonic 2-oscillator wavetable synth after Tablor - effect modes (FM/sync/fold/warp), unison modes, 2 LFOs, 8-slot mod matrix, second filter with serial/parallel/split routing.",
+  "description": "NorthWest: 4 monophonic slots in layers, each with its machine (wavetable, FM; west coast and analog coming), shared LFOs, envelopes and an 8-row mod matrix; after Tablor.",
   "author": "NorthWest project; based on Tablor by athousanddetails, after Wavetable (Roland Rabien / FigBug, BSD-3)",
   "dsp": "dsp.so",
   "api_version": 2,

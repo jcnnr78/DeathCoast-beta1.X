@@ -35,5 +35,5 @@ jobs:
       user_data: northwest/wavetables
       plugin_id: northwest
       license: BSD-3-Clause
-      about: "Two-oscillator wavetable synth with effect modes, LFOs, a modulation matrix and a second filter; after Tablor."
+      about: "Four monophonic slots in layers, each with its own machine (wavetable, FM; west coast and analog coming); after Tablor."
       dry_run: ${{ inputs.dry_run }}

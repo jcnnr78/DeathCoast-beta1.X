@@ -9,103 +9,123 @@ Engine::Engine()
 {
     for (int i = 0; i < TB_PARAM_COUNT; i++)
         pots[i] = tb_params[i].def;
-
-    /* NorthWest: one monophonic voice per slot (v1.1 has one slot). The
-     * vector stays so v2.0 can hold the four slots. */
-    voices.reserve(kVoices);
-    for (int i = 0; i < kVoices; i++) {
-        voices.emplace_back(analog);
-        voices.back().setSampleRate(44100.0);
-    }
-
+    for (auto &s : slots) s.setSampleRate(44100.0);
+    for (auto &e : modEnv) e.setSampleRate(44100.0);
+    for (auto &l : lfo) l.setSampleRate(44100.0);
     auto init = makeInitTable();
-    std::atomic_store(&table1, init);
-    std::atomic_store(&table2, init);
-
+    for (auto &t : tables) std::atomic_store(&t, init);
 }
 
-VoiceContext Engine::makeContext(const std::shared_ptr<Wavetable> &t1,
-                                 const std::shared_ptr<Wavetable> &t2)
+/* EG1/EG2, LFOs and the per-note random: started by a new note, retriggered unless LEGATO */
+void Engine::modStart(bool fresh)
 {
-    VoiceContext c;
-    c.pots = pots;
-    c.table1 = t1.get();
-    c.table2 = t2.get();
-    c.analog = &analog;
-    c.modWheel = modWheel;
-    c.aftertouch = aftertouch;
-    c.pitchBendSemis = pitchBendNorm * pots[TB_P_PB_RANGE];
-    c.bpm = hostBpm;
-    return c;
+    if (fresh) {
+        noteRand = (float) (nextRandBits() & 0xFFFFFF) / 16777216.0f * 2.0f - 1.0f;
+        for (int i = 0; i < 2; i++)
+            lfo[i].noteOn((int) pots[TB_P_LFO1_RETRIG + 5 * i] == 0, nextRandBits());
+        for (auto &e : modEnv) e.reset();
+    }
+    for (auto &e : modEnv) e.noteOn();
+}
+
+void Engine::updateMod(int n)
+{
+    const float *P = pots;
+    static const struct { int a, d, s, r; } k[kModEnvs] = {
+        { TB_P_ME1_A, TB_P_ME1_D, TB_P_ME1_S, TB_P_ME1_R }, { TB_P_ME2_A, TB_P_ME2_D, TB_P_ME2_S, TB_P_ME2_R } };
+    for (int i = 0; i < kModEnvs; i++) {
+        modEnv[i].setAttack(potAttackTime(P[k[i].a]));
+        modEnv[i].setDecay(potEnvTime(P[k[i].d]));
+        modEnv[i].setSustainLevel(pot01(P[k[i].s]));
+        modEnv[i].setRelease(potEnvTime(P[k[i].r]));
+        modEnv[i].process(n);
+    }
+    for (int i = 0; i < 2; i++) {
+        const int b = TB_P_LFO1_SHAPE + 5 * i;
+        const int shape = std::clamp((int) P[b], 0, LFO_SHAPES - 1);
+        float hz;
+        if ((int) P[b + 1] == 1) {
+            const int div = (int) (pot01(P[b + 2]) * (float) (kLfoDivs - 1) + 0.5f);
+            hz = (std::max(20.0f, hostBpm) / 60.0f) / lfoDivBeats(div);
+        } else {
+            hz = potLfoRate(P[b + 2]);
+        }
+        const float fade = P[b + 3] < 0.5f ? 0.0f : potAttackTime(P[b + 3]);
+        lfoVal[i] = lfo[i].process(n, hz, fade, shape);
+    }
+    const float pbr = P[TB_P_PB_RANGE];
+    ms.pitchBendSemis = pitchBendNorm * pbr;
+    ms.bpm = hostBpm;
+    ms.src[MS_NONE] = 0.0f;
+    ms.src[MS_EG1] = modEnv[0].getOutput();
+    ms.src[MS_EG2] = modEnv[1].getOutput();
+    ms.src[MS_LFO1] = lfoVal[0];
+    ms.src[MS_LFO2] = lfoVal[1];
+    ms.src[MS_MODWHEEL] = modWheel;
+    ms.src[MS_AFTERTOUCH] = aftertouch;
+    ms.src[MS_PITCHBEND] = pbr > 0.0f ? std::clamp(pitchBendNorm, -1.0f, 1.0f) : 0.0f;
+    ms.src[MS_RANDOM] = noteRand;
 }
 
 void Engine::noteOn(int note, float vel)
 {
-    auto t1 = std::atomic_load(&table1);
-    auto t2 = std::atomic_load(&table2);
-    VoiceContext c = makeContext(t1, t2);
-
-    /* glide from the last note: start() decides whether the mode uses it */
+    if (monoStackLen < kStackMax) monoStack[monoStackLen++] = note;
     const bool glideOn = (int) pots[TB_P_GLIDE_MODE] != 0;
-
-    if (monoStackLen < kStackMax)
-        monoStack[monoStackLen++] = note;
-
-    Voice &v = voices[0];
-    if (v.isActive() && !v.isReleasing()) {
-        v.retrigger(c, note, vel);              /* held: legato / retrig path */
-    } else {
-        float from = glideOn ? lastPlayedNote : -1.0f;
-        v.start(c, note, vel, ++serialCounter, from);
+    const bool legato = (int) pots[TB_P_GLIDE_MODE] == GM_LEGATO;
+    const bool wasHeld = held;
+    held = true; pedalHolds = false;
+    curNote = note; velocity = vel;
+    if (!wasHeld || !legato) modStart(!wasHeld);     /* LEGATO: EG1/EG2 keep running between overlapping notes */
+    for (int s = 0; s < TB_SLOTS; s++) {
+        if (!slotOn(s)) { if (slots[s].isActive()) slots[s].kill(); continue; }
+        auto t = std::atomic_load(&tables[s]);
+        if (wasHeld && slots[s].isActive())
+            slots[s].retrigger(pots, note, vel, ++serialCounter);
+        else
+            slots[s].start(s, pots, t.get(), note, vel, glideOn ? lastPlayedNote : -1.0f, ++serialCounter);
     }
-
     lastPlayedNote = (float) note;
+}
+
+void Engine::releaseAll()
+{
+    held = false;
+    for (auto &e : modEnv) e.noteOff();
+    for (auto &s : slots) if (s.isActive()) s.stop();
 }
 
 void Engine::noteOff(int note)
 {
-    if (sustainDown && note >= 0 && note < 128) sustained[note] = true;
-
-    /* drop it from the held-note stack */
-    for (int i = 0; i < monoStackLen; i++) {
+    for (int i = 0; i < monoStackLen; i++)
         if (monoStack[i] == note) {
-            for (int j = i; j < monoStackLen - 1; j++)
-                monoStack[j] = monoStack[j + 1];
+            for (int j = i; j < monoStackLen - 1; j++) monoStack[j] = monoStack[j + 1];
             monoStackLen--;
             break;
         }
-    }
-
-    Voice &v = voices[0];
-    if (v.isActive() && v.currentNote() == note) {
-        if (monoStackLen > 0) {
-            /* return to the most recent held note (last-note priority) */
-            auto t1 = std::atomic_load(&table1);
-            auto t2 = std::atomic_load(&table2);
-            VoiceContext c = makeContext(t1, t2);
-            v.retrigger(c, monoStack[monoStackLen - 1], 0.8f);
-        } else if (!sustainDown) {
-            v.stop(true);
-        } else {
-            sustained[note & 127] = true;
-        }
+    if (!held || note != curNote) return;
+    if (monoStackLen > 0) {                 /* back to the most recent held note */
+        const int prev = monoStack[monoStackLen - 1];
+        curNote = prev;
+        for (auto &s : slots) if (s.isActive()) s.retrigger(pots, prev, velocity, ++serialCounter);
+        if ((int) pots[TB_P_GLIDE_MODE] != GM_LEGATO) for (auto &e : modEnv) e.noteOn();
+    } else if (sustainDown) {
+        pedalHolds = true;
+    } else {
+        releaseAll();
     }
 }
 
 void Engine::allNotesOff(bool allowTail)
 {
-    for (auto &v : voices)
-        if (v.isActive())
-            allowTail ? v.stop(true) : v.kill();
-    monoStackLen = 0;
-    std::memset(sustained, 0, sizeof sustained);
+    for (auto &s : slots) if (s.isActive()) { if (allowTail) s.stop(); else s.kill(); }
+    for (auto &e : modEnv) allowTail ? e.noteOff() : e.reset();
+    monoStackLen = 0; held = false; pedalHolds = false;
 }
 
 void Engine::onMidi(const uint8_t *msg, int len)
 {
     if (len < 2) return;
     const uint8_t status = msg[0] & 0xF0;
-
     switch (status) {
     case 0x90:
         if (len >= 3 && msg[2] > 0) { noteOn(msg[1], (float) msg[2] / 127.0f); break; }
@@ -116,63 +136,43 @@ void Engine::onMidi(const uint8_t *msg, int len)
     case 0xB0:
         if (len >= 3) {
             switch (msg[1]) {
-            case 1:  modWheel = (float) msg[2] / 127.0f; break;
+            case 1: modWheel = (float) msg[2] / 127.0f; break;
             case 64: {
-                bool down = msg[2] >= 64;
-                if (sustainDown && !down) {
-                    /* release everything that was sustained */
-                    for (int n = 0; n < 128; n++) {
-                        if (sustained[n]) {
-                            sustained[n] = false;
-                            for (auto &v : voices)
-                                if (v.isActive() && !v.isReleasing() && v.currentNote() == n)
-                                    v.stop(true);
-                        }
-                    }
-                }
+                const bool down = msg[2] >= 64;
+                if (sustainDown && !down && pedalHolds) { pedalHolds = false; releaseAll(); }
                 sustainDown = down;
-                break;
-            }
-            case 120: case 123:
-                allNotesOff(msg[1] == 123);
-                break;
+                break; }
+            case 120: case 123: allNotesOff(msg[1] == 123); break;
             }
         }
         break;
-    case 0xD0:
-        aftertouch = (float) msg[1] / 127.0f;
-        break;
+    case 0xD0: aftertouch = (float) msg[1] / 127.0f; break;
     case 0xE0:
-        if (len >= 3) {
-            int v14 = (msg[2] << 7) | msg[1];
-            pitchBendNorm = (float) (v14 - 8192) / 8192.0f;
-        }
+        if (len >= 3) pitchBendNorm = (float) (((msg[2] << 7) | msg[1]) - 8192) / 8192.0f;
         break;
     }
 }
 
 void Engine::renderBlock(int16_t *out, int frames)
 {
-    auto t1 = std::atomic_load(&table1);
-    auto t2 = std::atomic_load(&table2);
-
+    std::shared_ptr<Wavetable> t[TB_SLOTS];
+    for (int s = 0; s < TB_SLOTS; s++) t[s] = std::atomic_load(&tables[s]);
     float L[kBlock], R[kBlock];
-
     int done = 0;
     while (done < frames) {
-        int n = std::min(frames - done, kBlock);
+        const int n = std::min(frames - done, kBlock);
         std::memset(L, 0, (size_t) n * sizeof(float));
         std::memset(R, 0, (size_t) n * sizeof(float));
-
-        VoiceContext c = makeContext(t1, t2);
-        for (auto &v : voices)
-            if (v.isActive())
-                v.render(c, L, R, n);
-
+        updateMod(n);
+        for (int s = 0; s < TB_SLOTS; s++) {
+            if (!slots[s].isActive()) continue;
+            if ((int) pots[slotParam(s, TB_P_S1_MUTE)] != 0) { slots[s].kill(); continue; }
+            slots[s].render(pots, t[s].get(), ms, L, R, n);
+        }
         const float master = potSquared(pots[TB_P_VOLUME]) * 0.8f;
         for (int i = 0; i < n; i++) {
-            float l = std::clamp(L[i] * master, -1.0f, 1.0f);
-            float r = std::clamp(R[i] * master, -1.0f, 1.0f);
+            const float l = std::clamp(L[i] * master, -1.0f, 1.0f);
+            const float r = std::clamp(R[i] * master, -1.0f, 1.0f);
             out[(done + i) * 2 + 0] = (int16_t) (l * 32767.0f);
             out[(done + i) * 2 + 1] = (int16_t) (r * 32767.0f);
         }

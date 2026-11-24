@@ -1,119 +1,105 @@
 #!/usr/bin/env python3
-"""NorthWest: builds layout.conf.
+"""NorthWest v2.0: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
 
-v1.2: every page is drawn here with framework frames (the Stitch backgrounds are gone; layout.stitch6.conf only
-gives the theme lines at its top), with NorthWest's own knob and the pictures that follow a parameter (meters)
-from tools/gen_art.py -- run that first. Page order:
+Pages (8, one per Fn key):  MIX   SLOT 1   SLOT 2   SLOT 3   SLOT 4   MOD   MATRIX   GLOBAL
 
-    MAIN   OSC   FILTER   UNISON   ENVELOPES   MOD   MATRIX   GLOBAL
+A slot page shows the controls of the machine chosen in that slot: the lines that differ carry
+when=sN_machine:<i> and MPC swaps them as the machine changes. Its machine knobs K1..K12 sit in
+the same places for every machine (row 1 = K1..K6, row 2 = K7..K12), so a Q-Link always turns the
+same knob; their names and values come from the DSP (dynamic_name / dynamic_display).
+The theme lines at the top come from layout.stitch6.conf.
 
-Run:  python3 tools/gen_layout.py   (writes layout.conf next to it)"""
-import os, re
+Run:  python3 tools/gen_layout.py"""
+import importlib.util, os, re
 here = os.path.dirname(os.path.abspath(__file__)); root = os.path.dirname(here)
-src = open(os.path.join(root, "layout.stitch6.conf")).read()
-head, *tabs = re.split(r"(?m)^\[tab ", src)
-old = {t.split("]", 1)[0]: "[tab " + t for t in tabs}
-import importlib.util
+head = re.split(r"(?m)^\[tab ", open(os.path.join(root, "layout.stitch6.conf")).read())[0]
 _spec = importlib.util.spec_from_file_location("gen_art", os.path.join(here, "gen_art.py"))
-ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)   # sizes of the pictures
+ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)
+
 STRIP = "strip=images/nw/knob.png frames=128"
-
+def W(s, when): return s + (" when=" + when if when else "")
 def knob(cx, cy, label, key, when="", bw=0, r=26):
-    return 'knob cx=%d cy=%d r=%d label="%s" key=%s %s%s%s' % (cx, cy, r, label, key, STRIP,
-            (" bw=%d" % bw) if bw else "", (" when=" + when) if when else "")
-def meter(cx, cy, size, key, img, when=""):
-    return 'meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64%s' % (
-        cx, cy, size[0], size[1], key, img, (" when=" + when) if when else "")
-def popup(cx, cy, w, label, key): return 'popup cx=%d cy=%d w=%d h=44 label="%s" key=%s' % (cx, cy, w, label, key)
-def enumh(cx, cy, sw, label, key): return 'enum_h cx=%d cy=%d sw=%d sh=34 label="%s" key=%s' % (cx, cy, sw, label, key)
+    return W('knob cx=%d cy=%d r=%d label="%s" key=%s %s%s' % (cx, cy, r, label, key, STRIP, (" bw=%d" % bw) if bw else ""), when)
+def popup(cx, cy, w, label, key, when=""): return W('popup cx=%d cy=%d w=%d h=44 label="%s" key=%s' % (cx, cy, w, label, key), when)
+def enumh(cx, cy, sw, label, key, when=""): return W('enum_h cx=%d cy=%d sw=%d sh=34 label="%s" key=%s' % (cx, cy, sw, label, key), when)
 def enumv(cx, cy, sw, label, key): return 'enum_v cx=%d cy=%d label="%s" key=%s sw=%d sh=22' % (cx, cy, label, key, sw)
-def frame(x, y, w, h, title): return 'frame x=%d y=%d w=%d h=%d title="%s"' % (x, y, w, h, title)
-def text(cx, cy, label, size=1.5): return 'text cx=%d cy=%d label="%s" size=%s' % (cx, cy, label, size)
+def frame(x, y, w, h, title, when=""): return W('frame x=%d y=%d w=%d h=%d title="%s"' % (x, y, w, h, title), when)
+def text(cx, cy, label, size=1.5, when=""): return W('text cx=%d cy=%d label="%s" size=%s' % (cx, cy, label, size), when)
+def meter(cx, cy, size, key, img, when=""):
+    return W('meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64' % (cx, cy, size[0], size[1], key, img), when)
+def stepper(cx, cy, w, key, get="", when=""):
+    return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s style=dotmatrix' % (cx, cy, w, key, (" get=" + get) if get else ""), when)
 
-# ---- MAIN: table, wave view following POSITION, level, tune, pan ------------------------------------------
-L = ["[tab MAIN]"]
-WV = ART.WAVE
-for o, y0 in ((1, 92), (2, 404)):
-    p = "wt%d" % o
-    L += [frame(10, y0, 1258, 304, "OSC %d" % o),
-          'stepper cx=331 cy=%d w=600 h=42 label="" key=%s_select get=%s_name style=dotmatrix' % (y0 + 86, p, p),
-          meter(331, y0 + 216, WV, p + "_pos", "wave_%dx%d.png" % WV)]
-    for i, (lab, k) in enumerate((("POSITION", "_pos"), ("LEVEL", "_level"), ("TUNE", "_tune"), ("PAN", "_pan"))):
-        L.append(knob(719 + i * 152, y0 + 160, "WT%d %s" % (o, lab), p + k, r=28))
-L.append('qlinks "MAIN" = wt1_select,-,-,-,wt1_pos,wt1_level,wt1_tune,wt1_pan,'
-         'wt2_select,-,-,-,wt2_pos,wt2_level,wt2_tune,wt2_pan')
-MAIN = "\n".join(L) + "\n"
+MACHINES = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
+# K1..K12 labels per machine ("" = the machine doesn't use it: no knob shown)
+K_LABELS = {
+    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SPREAD", "", "UNISON", "", "", "", "", ""],
+    1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
+        "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
+}
+KX = [120 + i * 205 for i in range(6)]      # knob columns of the machine area
+ROW1, ROW2 = 272, 398
 
-# ---- OSC: effect mode per oscillator, sub, noise ---------------------------------------------------------
-L = ["[tab OSC]"]
-FXN = {"fm": ("FM AMOUNT", "FM RATIO"), "sync": ("SYNC", "PULSE WIDTH"), "fold": ("ASYMMETRY", "FOLD"),
-       "warp": ("BEND", "FORMANT")}
-for o, y0 in ((1, 92), (2, 404)):
-    p = "wt%d" % o
-    # five options x 80 px = 400 px, centred at 230: 30..430, inside the frame
-    L += [frame(10, y0, 880, 304, "OSC %d  EFFECT" % o), enumh(230, y0 + 100, 80, "EFFECT", p + "_fx_mode")]
-    for m, (a, b) in FXN.items():
-        L += [knob(580, y0 + 150, a, p + "_fx1", "%s_fx_mode:%s" % (p, m), 130),
-              knob(760, y0 + 150, b, p + "_fx2", "%s_fx_mode:%s" % (p, m), 130)]
-L += [frame(896, 92, 372, 304, "SUB"),
-      knob(950, 237, "SUB LEVEL", "sub_level", bw=100), knob(1058, 237, "SUB TUNE", "sub_tune", bw=100),
-      popup(1190, 242, 120, "SUB WAVE", "sub_wave"),
-      frame(896, 404, 372, 304, "NOISE"),
-      knob(990, 549, "NOISE LEVEL", "noise_level"),
-      'enum_v cx=1170 cy=554 label="NOISE TYPE" key=noise_type sw=64 sh=22',
-      'qlinks "OSC" = wt1_fx_mode,wt1_fx1,wt1_fx2,-,wt2_fx_mode,wt2_fx1,wt2_fx2,-,'
-      'sub_level,sub_wave,sub_tune,-,noise_level,noise_type,-,-']
-OSC = "\n".join(L) + "\n"
+# ---- MIX: machine, level, pan, tune, mute for each slot -----------------------------------------------------
+L = ["[tab MIX]"]
+q = []
+for n in range(1, 5):
+    s = "s%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
+    L += [frame(x0, 92, 310, 616, "SLOT %d" % n),
+          popup(cx, 196, 250, "MACHINE", s + "machine"),
+          knob(cx - 70, 350, "LEVEL", s + "level", bw=120), knob(cx + 70, 350, "PAN", s + "pan", bw=120),
+          knob(cx - 70, 520, "TUNE", s + "tune", bw=120),
+          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (cx + 70, 515, s)]
+    q += [s + "level", s + "pan", s + "tune", s + "mute"]
+L.append('qlinks "MIX" = ' + ",".join(q))
+MIX = "\n".join(L) + "\n"
 
-# ---- FILTER (two filters + routing), each with its response curve following CUTOFF / FREQ ---------------------
-FS = ART.FLT
-L = ["[tab FILTER]", frame(10, 92, 1258, 304, "FILTER 1"), popup(120, 242, 150, "TYPE", "flt_type")]
-for i, t in enumerate(ART.FLT_TYPES):
-    L.append(meter(370, 244, FS, "flt_freq", "flt_%s_%dx%d.png" % ((t,) + FS), "flt_type:%d" % i))
-for i, (lab, key) in enumerate((("CUTOFF", "flt_freq"), ("RESONANCE", "flt_res"), ("FILTER ENV", "flt_env"),
-                                ("KEY TRACK", "flt_key"), ("VEL TRACK", "flt_vel"))):
-    L.append(knob(600 + i * 140, 237, lab, key))
-L += [frame(10, 404, 976, 304, "FILTER 2"), popup(120, 554, 150, "TYPE", "flt2_type"),
-      text(370, 556, "OFF", 1.4) + " when=flt2_type:0"]
-for i, t in enumerate(ART.FLT_TYPES):
-    L.append(meter(370, 556, FS, "flt2_freq", "flt_%s_%dx%d.png" % ((t,) + FS), "flt2_type:%d" % (i + 1)))
-for i, (lab, key) in enumerate((("FREQ", "flt2_freq"), ("RESONANCE", "flt2_res"), ("ENV", "flt2_env"),
-                                ("KEY TRACK", "flt2_key"))):
-    L.append(knob(570 + i * 115, 549, lab, key, bw=110))
-L += [frame(992, 404, 276, 304, "ROUTING"),
-      'enum_v cx=1130 cy=560 label="" key=flt_route sw=130 sh=34',
-      'qlinks "FILTER" = flt_freq,flt_res,flt_type,-,flt_env,flt_key,flt_vel,-,flt2_freq,flt2_res,flt2_type,-,flt2_env,flt2_key,flt_route,-']
-FILTER = "\n".join(L) + "\n"
+# ---- SLOT n ----------------------------------------------------------------------------------------------------
+def slot_page(n):
+    s = "s%d_" % n; m = s + "machine"
+    L = ["[tab SLOT %d]" % n,
+         frame(10, 92, 1258, 108, ""),
+         text(80, 150, "SLOT %d" % n, 1.6),
+         stepper(330, 152, 300, m),
+         popup(560, 154, 130, "", m)]
+    # machine-specific selectors in the top band
+    L += [stepper(880, 152, 360, s + "select", s + "tname", m + ":0"),
+          popup(1160, 158, 170, "EFFECT", s + "wt_fx", m + ":0"),
+          popup(800, 158, 230, "ALGORITHM", s + "fm_algo", m + ":1"),
+          enumh(1100, 162, 110, "MODE", s + "fm_mode", m + ":1"),
+          text(900, 150, "WEST COAST: COMING IN v2.1", 1.3, m + ":2"),
+          text(900, 150, "ANALOG: COMING IN v2.2", 1.3, m + ":3")]
+    # machine area
+    for i, name in enumerate(MACHINES):
+        L.append(frame(10, 206, 1258, 270, name, "%s:%d" % (m, i)))
+    for mi, labels in K_LABELS.items():
+        for k, lab in enumerate(labels):
+            if lab:
+                L.append(knob(KX[k % 6], ROW1 if k < 6 else ROW2, lab, s + "k%d" % (k + 1), "%s:%d" % (m, mi), bw=150))
+    L += [meter(KX[1] + 102 + 178, ROW2 + 6, ART.WAVE, s + "k1", "wave_%dx%d.png" % ART.WAVE, m + ":0"),
+          popup(KX[5], ROW2 + 6, 200, "UNISON MODE", s + "wt_umode", m + ":0")]
+    # filter
+    FS, ES = ART.FLT, ART.ENV
+    L += [frame(10, 482, 690, 226, "FILTER"), popup(95, 632, 150, "TYPE", s + "ftype")]
+    for i, t in enumerate(ART.FLT_TYPES):
+        L.append(meter(335, 538, FS, s + "cutoff", "flt_%s_%dx%d.png" % ((t,) + FS), s + "ftype:%d" % i))
+    L.append(meter(535, 538, ES, s + "fdec", "env_d_%dx%d.png" % ES))
+    for i, (lab, k) in enumerate((("CUTOFF", "cutoff"), ("RESONANCE", "reso"), ("ENV", "fenv"), ("DECAY", "fdec"), ("KEY", "fkey"))):
+        L.append(knob(235 + i * 100, 628, lab, s + k, bw=96))
+    # amp
+    L.append(frame(706, 482, 562, 226, "AMP"))
+    for i, (lab, k) in enumerate((("ATTACK", "amp_a"), ("DECAY", "amp_d"), ("SUSTAIN", "amp_s"), ("RELEASE", "amp_r"), ("VELOCITY", "vel"))):
+        cx = 770 + i * 108
+        if i < 4: L.append(meter(cx, 538, ES, s + k, "env_%s_%dx%d.png" % (("adsr"[i],) + ES)))
+        L.append(knob(cx, 628, lab, s + k, bw=104))
+    # Q-Link columns of 4: row 1 left, row 2 left, the right 2x2, the filter
+    L += ['qlinks "MACHINE" = ' + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
+          ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
+          'qlinks "FILTER AMP" = ' + ",".join((s + x if x != "-" else x) for x in ("cutoff", "reso", "fenv", "fdec", "fkey", "ftype", "machine", "-",
+                                                               "amp_a", "amp_d", "amp_s", "amp_r", "vel")) + ",-,-,-"]
+    return "\n".join(L) + "\n"
 
-# ---- ENVELOPES: amp + filter ADSR, a small picture of each stage over its knob -----------------------------------
-ES = ART.ENV
-L = ["[tab ENVELOPES]"]
-for title, p, y0 in (("AMP ENV", "vca", 92), ("FILTER ENV", "flt", 404)):
-    L.append(frame(10, y0, 900, 304, title))
-    for i, (st, lab) in enumerate((("a", "ATTACK"), ("d", "DECAY"), ("s", "SUSTAIN"), ("r", "RELEASE"))):
-        cx = 120 + i * 225
-        L += [meter(cx, y0 + 88, ES, "%s_%s" % (p, st), "env_%s_%dx%d.png" % ((st,) + ES)),
-              knob(cx, y0 + 200, "%s %s" % ("VCA" if p == "vca" else "FLT", lab), "%s_%s" % (p, st))]
-L += [frame(916, 92, 352, 304, "VELOCITY"), knob(1092, 245, "VELOCITY", "vca_vel"),
-      frame(916, 404, 352, 304, ""),
-      'art file=images/nw/logo.png x=%d y=%d w=%d h=%d' % ((1092 - 158, 556 - 30, 316, 60)),
-      'qlinks "ENVELOPES" = vca_a,vca_d,vca_s,vca_r,vca_vel,-,-,-,flt_a,flt_d,flt_s,flt_r']
-ENVELOPES = "\n".join(L) + "\n"
-
-# ---- UNISON: the whole stack of each oscillator in one block (was split over MAIN, SHAPE and OSC FX) ----
-L = ["[tab UNISON]"]
-for o, y0 in ((1, 92), (2, 404)):
-    p = "wt%d" % o
-    L += [frame(10, y0, 1258, 304, "OSC %d  UNISON" % o),
-          knob(160, y0 + 145, "VOICES", p + "_uni"),
-          knob(400, y0 + 145, "DETUNE", p + "_detune"),
-          knob(640, y0 + 145, "SPREAD", p + "_spread"),
-          popup(950, y0 + 150, 220, "MODE", p + "_uni_mode")]
-L += ['qlinks "UNISON" = wt1_uni,wt1_detune,wt1_spread,wt1_uni_mode,-,-,-,-,'
-      'wt2_uni,wt2_detune,wt2_spread,wt2_uni_mode,-,-,-,-']
-UNISON = "\n".join(L) + "\n"
-
-# ---- MOD: envelopes + LFOs (4 rows, two Q-Link sub-pages) --------------------------------------------------
+# ---- MOD: EG1/EG2 + LFOs (4 rows, two Q-Link sub-pages) --------------------------------------------------------
 def row(y0): return 'art file=images/row_panel.png x=10 y=%d w=1258 h=154' % y0
 L = ["[tab MOD]"]
 rows = [88 + i * 156 for i in range(4)]
@@ -131,30 +117,30 @@ L += ['qlinks "ENVS" = me1_a,me1_d,me1_s,me1_r,-,-,-,-,me2_a,me2_d,me2_s,me2_r,-
       'qlinks "LFOS" = lfo1_shape,lfo1_rate,lfo1_fade,lfo1_sync,lfo1_retrig,-,-,-,lfo2_shape,lfo2_rate,lfo2_fade,lfo2_sync,lfo2_retrig,-,-,-']
 MOD = "\n".join(L) + "\n"
 
-# ---- MATRIX (8 slots) ---------------------------------------------------------------------------------------
+# ---- MATRIX (8 rows: source -> destination x amount, on one slot or all) ---------------------------------------
 L = ["[tab MATRIX]", frame(10, 92, 1258, 616, "MODULATION MATRIX"),
-     text(190, 160, "SOURCE", 1.2), text(620, 160, "DESTINATION", 1.2), text(1000, 160, "AMOUNT", 1.2)]
+     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "SLOT", 1.2),
+     text(1010, 160, "AMOUNT", 1.2)]
 for i in range(8):
     y = 200 + i * 62; n = i + 1
-    L += [text(45, y, str(n), 1.4), popup(190, y, 260, "", "mm%d_src" % n), popup(620, y, 220, "", "mm%d_dst" % n),
-          'slider_h cx=1000 cy=%d w=420 h=34 label="" ns=0 key=mm%d_amt' % (y, n)]
+    L += [text(40, y, str(n), 1.4), popup(185, y, 240, "", "mm%d_src" % n), popup(470, y, 230, "", "mm%d_dst" % n),
+          popup(705, y, 130, "", "mm%d_slot" % n),
+          'slider_h cx=1010 cy=%d w=400 h=34 label="" ns=0 key=mm%d_amt' % (y, n)]
 L.append('qlinks "MATRIX" = ' + ",".join(["mm%d_amt" % n for n in range(1, 9)] + ["mm%d_dst" % n for n in range(1, 9)]))
 MATRIX = "\n".join(L) + "\n"
 
-# ---- GLOBAL: glide (monophonic voice), bend range, volume, preset ----------------------------------------------
+# ---- GLOBAL: glide, bend range, volume, preset, logo -----------------------------------------------------------
 L = ["[tab GLOBAL]",
-     frame(10, 92, 820, 304, "GLIDE"),
-     knob(200, 237, "GLIDE TIME", "glide"),
+     frame(10, 92, 820, 304, "GLIDE"), knob(200, 237, "GLIDE TIME", "glide"),
      enumv(560, 250, 150, "GLIDE MODE", "glide_mode"),
-     frame(836, 92, 432, 304, "MASTER"),
-     knob(950, 237, "BEND RANGE", "pb_range"),
-     knob(1150, 237, "VOLUME", "volume"),
+     frame(836, 92, 432, 304, "MASTER"), knob(950, 237, "BEND RANGE", "pb_range"), knob(1150, 237, "VOLUME", "volume"),
      frame(10, 404, 1258, 304, "PRESET"),
-     'stepper cx=639 cy=560 w=640 h=56 label="" key=preset get=preset_name style=dotmatrix',
+     'stepper cx=500 cy=560 w=640 h=56 label="" key=preset get=preset_name style=dotmatrix',
+     'art file=images/nw/logo.png x=%d y=%d w=316 h=60' % (1100 - 158, 560 - 30),
      'qlinks "GLOBAL" = glide,glide_mode,-,-,pb_range,volume,-,-,-,-,-,-,preset']
 GLOBAL = "\n".join(L) + "\n"
 
-order = [MAIN, OSC, FILTER, UNISON, ENVELOPES, MOD, MATRIX, GLOBAL]
-out = head.rstrip("\n") + "\n\n" + "\n".join(s.rstrip("\n") + "\n" for s in order)
+order = [MIX] + [slot_page(n) for n in range(1, 5)] + [MOD, MATRIX, GLOBAL]
+out = head.rstrip("\n") + "\n\n" + "\n".join(x.rstrip("\n") + "\n" for x in order)
 open(os.path.join(root, "layout.conf"), "w").write(out)
 print("layout.conf written:", len(order), "tabs")

@@ -100,7 +100,7 @@ struct tablor_instance {
      * audio thread only ever hands out the pointer. */
     std::shared_ptr<const std::string> wt_shape[TB_WT_SLOTS];
     std::shared_ptr<const std::string> shape(int osc) const
-    { return std::atomic_load(&wt_shape[osc & 1]); }
+    { return std::atomic_load(&wt_shape[osc & 3]); }
 
     float *params() { return engine.pots; }
 };
@@ -474,10 +474,17 @@ static int param_index(const char *key)
     return -1;
 }
 
-/* Which wavetable slot a param drives: wt1_table -> 0, wt2_table -> 1. */
+/* Which wavetable slot a param drives: s1_table -> 0 ... s4_table -> 3. */
+/* "sN_<suffix>" -> slot index 0..3, else -1 */
+static int slot_key(const char *k, const char *suffix)
+{
+    if (k[0] != 's' || k[1] < '1' || k[1] > '0' + TB_SLOTS || k[2] != '_') return -1;
+    return strcmp(k + 3, suffix) == 0 ? k[1] - '1' : -1;
+}
+
 static int tb_path_slot(int param_idx)
 {
-    return param_idx == TB_P_WT1_TABLE ? 0 : 1;
+    return std::clamp((param_idx - TB_P_S1_TABLE) / TB_SLOT_STRIDE, 0, TB_WT_SLOTS - 1);
 }
 
 /* Store a path and post the background load. "" or "Init" = built-in. */
@@ -490,7 +497,7 @@ static void sync_table_index(tablor_instance *inst, int osc)
     int idx = 0;
     for (size_t i = 0; i < l.size(); i++)
         if (l[i] == inst->wt_path[osc]) { idx = (int) i; break; }
-    inst->params()[osc == 0 ? TB_P_WT1_TABLE : TB_P_WT2_TABLE] = (float) idx;
+    inst->params()[TB_P_S1_TABLE + osc * TB_SLOT_STRIDE] = (float) idx;
 }
 
 static void set_table_path(tablor_instance *inst, int osc, const char *path)
@@ -646,10 +653,10 @@ static void tb_publish_selection(tablor_instance *inst)
     }
     out += "]}";
 
-    for (int osc = 0; osc < 2; osc++) {
+    for (int osc = 0; osc < TB_WT_SLOTS; osc++) {
         char head[96];
         snprintf(head, sizeof head,
-                 ",{\"key\":\"wt%d_select\",\"name\":\"WT%d Table\",\"type\":\"enum\",\"options\":[",
+                 ",{\"key\":\"s%d_select\",\"name\":\"S%d Table\",\"type\":\"enum\",\"options\":[",
                  osc + 1, osc + 1);
         out += head;
         for (size_t i = 0; i < snap->filtered.size(); i++) {
@@ -678,9 +685,7 @@ static void tb_publish_selection(tablor_instance *inst)
      *
      * They remain on no ui_hierarchy page deliberately: they are a data
      * channel for the web panel, not a control. */
-    out += ",{\"key\":\"wt1_shape\",\"name\":\"WT1 Shape\",\"type\":\"string\",\"access\":\"read\"}"
-           ",{\"key\":\"wt2_shape\",\"name\":\"WT2 Shape\",\"type\":\"string\",\"access\":\"read\"}"
-           ",{\"key\":\"wt_paths\",\"name\":\"WT Paths\",\"type\":\"string\",\"access\":\"read\"}";
+    out += ",{\"key\":\"wt_paths\",\"name\":\"WT Paths\",\"type\":\"string\",\"access\":\"read\"}";
     out += "]";
 
     std::atomic_store(&inst->sel,
@@ -745,7 +750,7 @@ static std::string tb_wt_digest(const tb::Wavetable &wt)
 static void tb_publish_shape(tablor_instance *inst, int osc, const tb::Wavetable &wt)
 {
     auto s = std::make_shared<const std::string>(tb_wt_digest(wt));
-    std::atomic_store(&inst->wt_shape[osc & 1], s);
+    std::atomic_store(&inst->wt_shape[osc & 3], s);
 }
 
 /* Select by index into the published snapshot. */
@@ -798,8 +803,7 @@ static void reset_to_defaults(tablor_instance *inst)
     for (int i = 0; i < TB_PARAM_COUNT; i++)
         if (tb_params[i].type != TB_PATH)
             inst->params()[i] = tb_params[i].def;
-    set_table_path(inst, 0, "");
-    set_table_path(inst, 1, "");
+    for (int osc = 0; osc < TB_WT_SLOTS; osc++) set_table_path(inst, osc, "");
 }
 
 /* Version-tagged blob: "TBLR1;…" or "TBLR2;…". Anything without a known
@@ -901,8 +905,7 @@ static void tb_set_param(void *instance, const char *key, const char *val)
         inst->loader.post([inst] { tb_publish_selection(inst); });
         return;
     }
-    if (!strcmp(k, "wt1_select") || !strcmp(k, "wt2_select")) {
-        int osc = (k[2] == '2') ? 1 : 0;
+    if (int osc = slot_key(k, "select"); osc >= 0) {
         auto snap = inst->selection();
         int n = atoi(val);
         if (n < 0 || n >= (int) snap->filtered.size()) return;
@@ -994,27 +997,48 @@ static int tb_get_param(void *instance, const char *key, char *buf, int buf_len)
         return write_str(buf, buf_len, ps->items[n].name.c_str());
     }
 #endif
-    if (!strcmp(key, "wt1_name") || !strcmp(key, "wt2_name")) {   /* MPC port: the loaded table's name, for a readout */
-        const std::string &path = inst->wt_path[key[2] == '2' ? 1 : 0];
+    /* a slot's machine knob: its name and value text depend on the slot's machine (params.json
+     * dynamic_name / dynamic_display): "sN_kM_name" / "sN_kM_display" */
+    if (key[0] == 's' && key[1] >= '1' && key[1] <= '0' + TB_SLOTS && key[2] == '_' && key[3] == 'k') {
+        const int slot = key[1] - '1';
+        char *end = nullptr;
+        const long k = strtol(key + 4, &end, 10);
+        if (end && end != key + 4 && k >= 1 && k <= TB_KNOBS) {
+            const float *P = inst->params();
+            const int machine = (int) P[TB_P_S1_MACHINE + slot * TB_SLOT_STRIDE];
+            if (!strcmp(end, "_name")) {
+                char tmp[40];
+                snprintf(tmp, sizeof tmp, "S%d %s", slot + 1,
+                         tb::knobName(machine, (int) k - 1, (int) P[TB_P_S1_WT_FX + slot * TB_SLOT_STRIDE]));
+                return write_str(buf, buf_len, tmp);
+            }
+            if (!strcmp(end, "_display")) {
+                char tmp[32];
+                tb::knobText(tmp, sizeof tmp, machine, (int) k - 1, P[TB_P_S1_K1 + (k - 1) + slot * TB_SLOT_STRIDE]);
+                return write_str(buf, buf_len, tmp);
+            }
+        }
+    }
+    if (int osc = slot_key(key, "tname"); osc >= 0) {   /* MPC port: the loaded table's name, for a readout */
+        const std::string &path = inst->wt_path[osc];
         if (path.empty()) return write_str(buf, buf_len, "Init");
         std::string leaf = path.substr(path.find_last_of('/') + 1);
         size_t dot = leaf.find_last_of('.');
         if (dot != std::string::npos && dot > 0) leaf.resize(dot);
         return write_str(buf, buf_len, leaf.c_str());
     }
-    if (!strcmp(key, "wt1_select") || !strcmp(key, "wt2_select")) {
+    if (int osc = slot_key(key, "select"); osc >= 0) {
         auto snap = inst->selection();
         char tmp[16];
-        snprintf(tmp, sizeof tmp, "%d",
-                 tb_select_index(*snap, inst->wt_path[key[2] == '2' ? 1 : 0]));
+        snprintf(tmp, sizeof tmp, "%d", tb_select_index(*snap, inst->wt_path[osc]));
         return write_str(buf, buf_len, tmp);
     }
 
     /* The table each oscillator has loaded, drawable: "frames,samples,data".
      * Served from a string the worker built when the table landed -- no walk
      * of the wavetable here, this is the SPI callback. */
-    if (!strcmp(key, "wt1_shape") || !strcmp(key, "wt2_shape")) {
-        auto sp = inst->shape(key[2] == '2' ? 1 : 0);
+    if (int osc = slot_key(key, "shape"); osc >= 0) {
+        auto sp = inst->shape(osc);
         return write_str(buf, buf_len, sp ? sp->c_str() : "");
     }
 
@@ -1135,10 +1159,10 @@ static void *tb_create_instance(const char *module_dir, const char *json_default
             tb_publish_shape(inst, osc, wt);
         };
         auto init0 = tb::makeInitTable();                  /* FFT + ~13 MB */
-        tb_publish_shape(inst, 0, *init0);
-        tb_publish_shape(inst, 1, *init0);
-        inst->engine.setTable(0, init0);
-        inst->engine.setTable(1, tb::makeInitTable());
+        for (int osc = 0; osc < TB_WT_SLOTS; osc++) {
+            tb_publish_shape(inst, osc, *init0);
+            inst->engine.setTable(osc, init0);
+        }
         /* a state restore may have landed while we were scanning: re-apply
          * whatever paths it stored, now that the list and loader are live */
         for (int osc = 0; osc < TB_WT_SLOTS; osc++)

@@ -10,6 +10,23 @@
 - Pages (8): MAIN (table, position, level, tune, pan) · OSC (effect, sub, noise) · FILTER · UNISON (voices, detune, spread, mode for each oscillator) · ENVELOPES · MOD · MATRIX · GLOBAL (glide, bend range, volume, preset).
 - 96 engine parameters (was 107), 106 VST parameters (was 117).
 
+## v2.0 (4 slots) - branch v2.0
+
+- **4 monophonic slots in layers**, all on the track's MIDI channel. Each slot picks its MACHINE (arrows or list):
+  WAVETABLE, FM, WEST COAST (v2.1) or ANALOG (v2.2). Machines can repeat. The preset keeps every slot.
+- **MIX**: machine, level, pan, tune and mute per slot. Slots at level 0 or muted cost nothing.
+- **SLOT 1..4**: the machine's own controls (they swap with the machine), its filter (type, cutoff, resonance,
+  envelope amount and decay, key) and its amp envelope (A, D, S, R, velocity). Each slot has 12 machine knobs whose
+  names and values change with the machine.
+- **WAVETABLE** (slimmer than v1): 1 table with unison (1-4), position, effect (FM, SYNC, FOLD, WARP), detune, spread.
+- **FM**: 4 operators, 8 algorithms, feedback on op 4, ratios per operator, a shared modulator decay, pitch envelope,
+  noise, velocity to FM index. Mode DRUM makes the note one-shot (it plays its decay out).
+- **MOD / MATRIX**: EG1/EG2 and LFO1/LFO2 are shared; each matrix row has a SLOT (ALL, S1..S4). Destinations: PITCH,
+  LEVEL, PAN, CUTOFF, RESONANCE, TIMBRE A-D (= the slot's K1-K4).
+- **GLOBAL**: glide (all slots), bend range, volume, presets, logo.
+- Parameters: `tools/gen_params_v2.py`; pages: `tools/gen_layout.py`; old presets: `tools/migrate_v20.py`.
+- CPU on the PC (4 slots all playing): 1.0-1.6 % of one core (`tools/offline/bench.cpp`). Not measured on the MPC yet.
+
 ## v1.2 (look)
 
 - Own knob: flat round disc, thin orange value ring, short pointer (`images/nw/knob.png`, drawn by `tools/gen_art.py`).
