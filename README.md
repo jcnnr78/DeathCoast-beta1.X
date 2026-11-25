@@ -19,7 +19,7 @@ level 0 or muted costs no CPU. Models can repeat: four FMs, four wavetables or a
 
 | Model | Sound | Controls |
 |---|---|---|
-| WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, unison, spread, unison mode; SUB (sliders): level, drive, octave, wave; a live scope of the frame POSITION is on |
+| WAVETABLE | 1 wavetable with unison (1-4) and a sub oscillator | position, effect (FM, SYNC, FOLD, WARP) with two amounts, detune, unison, spread, unison mode; SUB (sliders): level, drive, octave, wave; a picture of the loaded table with a line on the frame POSITION is on |
 | FM | 4 sine operators, 8 algorithms, feedback on operator 4 | levels and ratios of operators 2-4, a shared modulator decay, pitch envelope, noise, velocity to FM; mode TONE or DRUM (one-shot) |
 | WEST COAST | carrier phase-modulated by a second oscillator (sine, triangle, saw, pulse; sync), wavefolder, low pass gate (filter + VCA through a vactrol, driven by the amp envelope) | FM amount, fold, symmetry, osc mix, modulator ratio and fine; LPG (its panel): depth, response, mode (VCA, COMBO, LP), velocity to fold; a picture of the folded wave |
 | ANALOG | DFAM-style: 2 band-limited oscillators (sine, triangle, saw, pulse; sync), osc 1 modulates osc 2, noise, drive, a decay pitch envelope | FM 1>2, noise, drive, pulse width, level and frequency of each oscillator (±24 st); PITCH (sliders): pitch envelope amount, decay, target (osc 1, both, osc 2) and velocity, the fine tune of each oscillator |
@@ -54,7 +54,7 @@ master keeps the sum from clipping hard.
 
 The selectors (model, table, algorithm, mode, filter type, MIDI channel...) are steppers: tap the arrows, or touch the
 box and turn the MPC's data wheel or press -/+ (one option a click). On screen, left to right is a Q-Link column top
-to bottom. The wavetable scope draws the loaded table's frame at POSITION, live; the filter view follows CUTOFF,
+to bottom. The wavetable window draws the loaded table, with a line on the frame POSITION is on; the filter view follows CUTOFF,
 RESONANCE and SHAPE; the envelope views follow their knobs. CPU on MAIN is the engine's share of each audio block
 (the screen's own drawing is not in it).
 

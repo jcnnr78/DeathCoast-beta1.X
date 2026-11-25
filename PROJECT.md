@@ -14,9 +14,11 @@
 - MAIN: one column per machine (MODEL; MUTE + MIDI channel stepper; LEVEL, PAN, TUNE as side knobs; DELAY, REVERB,
   DIRT send sliders filling with the accent colour); Q-Links "MAIN" (mute, level, pan, tune per machine) and "SENDS".
 - Steppers: flat boxes (no dot matrix) on every page.
-- WAVETABLE: SUB as sliders on a panel; the moving table is a live scope (32 columns, mN_ws0..31, the plugin reads the
-  loaded table's frame at POSITION); the per-table picture stays in the header. (A table x position filmstrip would
-  need ~1350 frames: too many pixels for one strip and too much decoded memory.)
+- WAVETABLE: SUB as sliders on a panel; the table window (decided with the user, 25-nov, after trying a live dot
+  scope and rejecting it): the loaded table's own picture (as in 1.3), 440x112, in two strips (tablesa_/tablesb_, a
+  strip may not pass 12288 px; m<n>_wview / m<n>_wviewb, each strip's frame 0 blank), and the 1.5 POSITION line
+  over it (posmark, keyed to K1). A picture that deforms with POSITION for every table would need ~1350+ pictures.
+  Decoded size of the two strips: ~33 MB (1.5: 13 MB) -- watch the page's opening time on the MPC.
 - WEST COAST: tidied: K7 MOD RATIO (default x1), K8 MOD FINE, the fold picture after them; LPG panel: K5 DEPTH,
   K6 RESPONSE, K11 LPG MODE (VCA / COMBO / LP), K12 VEL > FOLD.
 - ANALOG: OSC FREQ names; PITCH as six sliders, two new knobs K13 VEL > P.ENV, K14 OSC 1 FINE (14 knobs now).

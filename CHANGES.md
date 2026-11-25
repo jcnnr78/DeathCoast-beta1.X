@@ -9,7 +9,7 @@
 | Effects | DIRT (drive, character, tone, grit) as a third send; the effects get their own page, FX |
 | MIDI | a MIDI channel per machine, through the plugin's own MIDI port (NorthWest MIDI In) |
 | Models | WEST COAST: LPG panel with LPG MODE (VCA, COMBO, LP), MOD RATIO's default is x1; ANALOG: OSC FREQ names, VEL > P.ENV back, OSC 1 FINE |
-| Screens | MAIN in columns (mute, MIDI channel, level, pan, tune, three send sliders; two Q-Link sets); flat stepper boxes; WAVETABLE: a live scope of the frame POSITION is on, SUB as sliders; ANALOG: PITCH as six sliders; CPU readout (beta) |
+| Screens | MAIN in columns (mute, MIDI channel, level, pan, tune, three send sliders; two Q-Link sets); flat stepper boxes; WAVETABLE: the table's picture bigger (440x112) with the POSITION line, SUB as sliders; ANALOG: PITCH as six sliders; CPU readout (beta) |
 | Presets | 41 test sounds, by kind (BASS, MELODY, DRUM, EFX, DRONE, STRESS), more West Coast ones |
 | Cleanup | Tablor's Move/Schwung code gone (user preset folder, Schwung preset export, Move UI data, pack lists); state tag NW1 (1.3-1.5 TBLR2 states still load); tables saved by their path inside the plugin; the table list reaches every table (was cut at 128); the old biquad filter library removed |
 
