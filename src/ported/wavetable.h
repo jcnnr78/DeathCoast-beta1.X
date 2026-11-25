@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace tb {
+namespace nw {
 
 inline float midiNoteToHz(float note)
 {
@@ -97,4 +97,4 @@ bool wtBuild(Wavetable &out, const float *samples, int nFrames, int frameSize,
              float playbackRate, float fileRate, int notesPerTable = 6,
              WtBuildStats *stats = nullptr);
 
-} // namespace tb
+} // namespace nw

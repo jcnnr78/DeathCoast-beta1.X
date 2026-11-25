@@ -40,6 +40,65 @@
    "clamped": true
   },
   {
+   "key": "m1_chan",
+   "name": "M1 MIDI CHANNEL",
+   "options": [
+    "TRACK",
+    "CH 1",
+    "CH 2",
+    "CH 3",
+    "CH 4",
+    "CH 5",
+    "CH 6",
+    "CH 7",
+    "CH 8",
+    "CH 9",
+    "CH 10",
+    "CH 11",
+    "CH 12",
+    "CH 13",
+    "CH 14",
+    "CH 15",
+    "CH 16"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m1_chan_prev",
+   "name": "M1 MIDI CHANNEL PREV",
+   "momentary": true,
+   "step_of": "m1_chan",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_chan_next",
+   "name": "M1 MIDI CHANNEL NEXT",
+   "momentary": true,
+   "step_of": "m1_chan",
+   "step_delta": 1
+  },
+  {
+   "key": "m1_chan_st",
+   "name": "M1 MIDI CHANNEL",
+   "min": 0,
+   "max": 16,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
+   "key": "m1_mute",
+   "name": "M1 MUTE",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
    "key": "m1_level",
    "name": "M1 LEVEL",
    "min": 0,
@@ -56,19 +115,34 @@
    "display": "int"
   },
   {
-   "key": "m1_mute",
-   "name": "M1 MUTE",
-   "options": [
-    "OFF",
-    "ON"
-   ],
-   "default": 0
-  },
-  {
    "key": "m1_tune",
    "name": "M1 TUNE",
    "min": -24,
    "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m1_dsend",
+   "name": "M1 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m1_rsend",
+   "name": "M1 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m1_xsend",
+   "name": "M1 DIRT SEND",
+   "min": 0,
+   "max": 127,
    "default": 0,
    "display": "int"
   },
@@ -113,6 +187,47 @@
    "display": "int"
   },
   {
+   "key": "m1_ftype",
+   "name": "M1 FILTER TYPE",
+   "options": [
+    "MULTI",
+    "LP 4",
+    "COMB -",
+    "COMB +",
+    "EQ",
+    "LEGACY LP",
+    "LEGACY HP"
+   ],
+   "default": 1,
+   "refresh_display": true
+  },
+  {
+   "key": "m1_ftype_prev",
+   "name": "M1 FILTER TYPE PREV",
+   "momentary": true,
+   "step_of": "m1_ftype",
+   "step_delta": -1
+  },
+  {
+   "key": "m1_ftype_next",
+   "name": "M1 FILTER TYPE NEXT",
+   "momentary": true,
+   "step_of": "m1_ftype",
+   "step_delta": 1
+  },
+  {
+   "key": "m1_ftype_st",
+   "name": "M1 FILTER TYPE",
+   "min": 0,
+   "max": 6,
+   "default": 1,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
    "key": "m1_cutoff",
    "name": "M1 CUTOFF",
    "min": 0,
@@ -129,19 +244,14 @@
    "display": "int"
   },
   {
-   "key": "m1_ftype",
-   "name": "M1 FILTER TYPE",
-   "options": [
-    "LP 12",
-    "LP 24",
-    "HP 12",
-    "HP 24",
-    "BP 12",
-    "BP 24",
-    "NOTCH 12",
-    "NOTCH 24"
-   ],
-   "default": 1
+   "key": "m1_fshape",
+   "name": "M1 FILTER SHAPE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
   },
   {
    "key": "m1_fenv",
@@ -166,6 +276,24 @@
    "max": 127,
    "default": 0,
    "display": "int"
+  },
+  {
+   "key": "m1_bwlo",
+   "name": "M1 BASE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "m1_bwhi",
+   "name": "M1 WIDTH",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "m1_k1",
@@ -280,6 +408,26 @@
   {
    "key": "m1_k12",
    "name": "M1 K12",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m1_k13",
+   "name": "M1 K13",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m1_k14",
+   "name": "M1 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -550,30 +698,16 @@
    "clamped": true
   },
   {
-   "key": "m1_dsend",
-   "name": "M1 DELAY SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
-   "key": "m1_rsend",
-   "name": "M1 REVERB SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
    "key": "m1_select",
    "refresh_display": true,
    "name": "M1 TABLE",
    "min": 0,
-   "max": 127,
+   "max": 167,
    "default": 0,
    "display": "int",
-   "type": "stepper"
+   "type": "stepper",
+   "nudge_pct": 50,
+   "clamped": true
   },
   {
    "key": "m1_select_prev",
@@ -636,6 +770,65 @@
    "clamped": true
   },
   {
+   "key": "m2_chan",
+   "name": "M2 MIDI CHANNEL",
+   "options": [
+    "TRACK",
+    "CH 1",
+    "CH 2",
+    "CH 3",
+    "CH 4",
+    "CH 5",
+    "CH 6",
+    "CH 7",
+    "CH 8",
+    "CH 9",
+    "CH 10",
+    "CH 11",
+    "CH 12",
+    "CH 13",
+    "CH 14",
+    "CH 15",
+    "CH 16"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m2_chan_prev",
+   "name": "M2 MIDI CHANNEL PREV",
+   "momentary": true,
+   "step_of": "m2_chan",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_chan_next",
+   "name": "M2 MIDI CHANNEL NEXT",
+   "momentary": true,
+   "step_of": "m2_chan",
+   "step_delta": 1
+  },
+  {
+   "key": "m2_chan_st",
+   "name": "M2 MIDI CHANNEL",
+   "min": 0,
+   "max": 16,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
+   "key": "m2_mute",
+   "name": "M2 MUTE",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
    "key": "m2_level",
    "name": "M2 LEVEL",
    "min": 0,
@@ -652,19 +845,34 @@
    "display": "int"
   },
   {
-   "key": "m2_mute",
-   "name": "M2 MUTE",
-   "options": [
-    "OFF",
-    "ON"
-   ],
-   "default": 0
-  },
-  {
    "key": "m2_tune",
    "name": "M2 TUNE",
    "min": -24,
    "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m2_dsend",
+   "name": "M2 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m2_rsend",
+   "name": "M2 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m2_xsend",
+   "name": "M2 DIRT SEND",
+   "min": 0,
+   "max": 127,
    "default": 0,
    "display": "int"
   },
@@ -709,6 +917,47 @@
    "display": "int"
   },
   {
+   "key": "m2_ftype",
+   "name": "M2 FILTER TYPE",
+   "options": [
+    "MULTI",
+    "LP 4",
+    "COMB -",
+    "COMB +",
+    "EQ",
+    "LEGACY LP",
+    "LEGACY HP"
+   ],
+   "default": 1,
+   "refresh_display": true
+  },
+  {
+   "key": "m2_ftype_prev",
+   "name": "M2 FILTER TYPE PREV",
+   "momentary": true,
+   "step_of": "m2_ftype",
+   "step_delta": -1
+  },
+  {
+   "key": "m2_ftype_next",
+   "name": "M2 FILTER TYPE NEXT",
+   "momentary": true,
+   "step_of": "m2_ftype",
+   "step_delta": 1
+  },
+  {
+   "key": "m2_ftype_st",
+   "name": "M2 FILTER TYPE",
+   "min": 0,
+   "max": 6,
+   "default": 1,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
    "key": "m2_cutoff",
    "name": "M2 CUTOFF",
    "min": 0,
@@ -725,19 +974,14 @@
    "display": "int"
   },
   {
-   "key": "m2_ftype",
-   "name": "M2 FILTER TYPE",
-   "options": [
-    "LP 12",
-    "LP 24",
-    "HP 12",
-    "HP 24",
-    "BP 12",
-    "BP 24",
-    "NOTCH 12",
-    "NOTCH 24"
-   ],
-   "default": 1
+   "key": "m2_fshape",
+   "name": "M2 FILTER SHAPE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
   },
   {
    "key": "m2_fenv",
@@ -762,6 +1006,24 @@
    "max": 127,
    "default": 0,
    "display": "int"
+  },
+  {
+   "key": "m2_bwlo",
+   "name": "M2 BASE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "m2_bwhi",
+   "name": "M2 WIDTH",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "m2_k1",
@@ -876,6 +1138,26 @@
   {
    "key": "m2_k12",
    "name": "M2 K12",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m2_k13",
+   "name": "M2 K13",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m2_k14",
+   "name": "M2 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1146,30 +1428,16 @@
    "clamped": true
   },
   {
-   "key": "m2_dsend",
-   "name": "M2 DELAY SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
-   "key": "m2_rsend",
-   "name": "M2 REVERB SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
    "key": "m2_select",
    "refresh_display": true,
    "name": "M2 TABLE",
    "min": 0,
-   "max": 127,
+   "max": 167,
    "default": 0,
    "display": "int",
-   "type": "stepper"
+   "type": "stepper",
+   "nudge_pct": 50,
+   "clamped": true
   },
   {
    "key": "m2_select_prev",
@@ -1232,6 +1500,65 @@
    "clamped": true
   },
   {
+   "key": "m3_chan",
+   "name": "M3 MIDI CHANNEL",
+   "options": [
+    "TRACK",
+    "CH 1",
+    "CH 2",
+    "CH 3",
+    "CH 4",
+    "CH 5",
+    "CH 6",
+    "CH 7",
+    "CH 8",
+    "CH 9",
+    "CH 10",
+    "CH 11",
+    "CH 12",
+    "CH 13",
+    "CH 14",
+    "CH 15",
+    "CH 16"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m3_chan_prev",
+   "name": "M3 MIDI CHANNEL PREV",
+   "momentary": true,
+   "step_of": "m3_chan",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_chan_next",
+   "name": "M3 MIDI CHANNEL NEXT",
+   "momentary": true,
+   "step_of": "m3_chan",
+   "step_delta": 1
+  },
+  {
+   "key": "m3_chan_st",
+   "name": "M3 MIDI CHANNEL",
+   "min": 0,
+   "max": 16,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
+   "key": "m3_mute",
+   "name": "M3 MUTE",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
    "key": "m3_level",
    "name": "M3 LEVEL",
    "min": 0,
@@ -1248,19 +1575,34 @@
    "display": "int"
   },
   {
-   "key": "m3_mute",
-   "name": "M3 MUTE",
-   "options": [
-    "OFF",
-    "ON"
-   ],
-   "default": 0
-  },
-  {
    "key": "m3_tune",
    "name": "M3 TUNE",
    "min": -24,
    "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m3_dsend",
+   "name": "M3 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m3_rsend",
+   "name": "M3 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m3_xsend",
+   "name": "M3 DIRT SEND",
+   "min": 0,
+   "max": 127,
    "default": 0,
    "display": "int"
   },
@@ -1305,6 +1647,47 @@
    "display": "int"
   },
   {
+   "key": "m3_ftype",
+   "name": "M3 FILTER TYPE",
+   "options": [
+    "MULTI",
+    "LP 4",
+    "COMB -",
+    "COMB +",
+    "EQ",
+    "LEGACY LP",
+    "LEGACY HP"
+   ],
+   "default": 1,
+   "refresh_display": true
+  },
+  {
+   "key": "m3_ftype_prev",
+   "name": "M3 FILTER TYPE PREV",
+   "momentary": true,
+   "step_of": "m3_ftype",
+   "step_delta": -1
+  },
+  {
+   "key": "m3_ftype_next",
+   "name": "M3 FILTER TYPE NEXT",
+   "momentary": true,
+   "step_of": "m3_ftype",
+   "step_delta": 1
+  },
+  {
+   "key": "m3_ftype_st",
+   "name": "M3 FILTER TYPE",
+   "min": 0,
+   "max": 6,
+   "default": 1,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
    "key": "m3_cutoff",
    "name": "M3 CUTOFF",
    "min": 0,
@@ -1321,19 +1704,14 @@
    "display": "int"
   },
   {
-   "key": "m3_ftype",
-   "name": "M3 FILTER TYPE",
-   "options": [
-    "LP 12",
-    "LP 24",
-    "HP 12",
-    "HP 24",
-    "BP 12",
-    "BP 24",
-    "NOTCH 12",
-    "NOTCH 24"
-   ],
-   "default": 1
+   "key": "m3_fshape",
+   "name": "M3 FILTER SHAPE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
   },
   {
    "key": "m3_fenv",
@@ -1358,6 +1736,24 @@
    "max": 127,
    "default": 0,
    "display": "int"
+  },
+  {
+   "key": "m3_bwlo",
+   "name": "M3 BASE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "m3_bwhi",
+   "name": "M3 WIDTH",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "m3_k1",
@@ -1472,6 +1868,26 @@
   {
    "key": "m3_k12",
    "name": "M3 K12",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m3_k13",
+   "name": "M3 K13",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m3_k14",
+   "name": "M3 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1742,30 +2158,16 @@
    "clamped": true
   },
   {
-   "key": "m3_dsend",
-   "name": "M3 DELAY SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
-   "key": "m3_rsend",
-   "name": "M3 REVERB SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
    "key": "m3_select",
    "refresh_display": true,
    "name": "M3 TABLE",
    "min": 0,
-   "max": 127,
+   "max": 167,
    "default": 0,
    "display": "int",
-   "type": "stepper"
+   "type": "stepper",
+   "nudge_pct": 50,
+   "clamped": true
   },
   {
    "key": "m3_select_prev",
@@ -1828,6 +2230,65 @@
    "clamped": true
   },
   {
+   "key": "m4_chan",
+   "name": "M4 MIDI CHANNEL",
+   "options": [
+    "TRACK",
+    "CH 1",
+    "CH 2",
+    "CH 3",
+    "CH 4",
+    "CH 5",
+    "CH 6",
+    "CH 7",
+    "CH 8",
+    "CH 9",
+    "CH 10",
+    "CH 11",
+    "CH 12",
+    "CH 13",
+    "CH 14",
+    "CH 15",
+    "CH 16"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m4_chan_prev",
+   "name": "M4 MIDI CHANNEL PREV",
+   "momentary": true,
+   "step_of": "m4_chan",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_chan_next",
+   "name": "M4 MIDI CHANNEL NEXT",
+   "momentary": true,
+   "step_of": "m4_chan",
+   "step_delta": 1
+  },
+  {
+   "key": "m4_chan_st",
+   "name": "M4 MIDI CHANNEL",
+   "min": 0,
+   "max": 16,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
+   "key": "m4_mute",
+   "name": "M4 MUTE",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
    "key": "m4_level",
    "name": "M4 LEVEL",
    "min": 0,
@@ -1844,19 +2305,34 @@
    "display": "int"
   },
   {
-   "key": "m4_mute",
-   "name": "M4 MUTE",
-   "options": [
-    "OFF",
-    "ON"
-   ],
-   "default": 0
-  },
-  {
    "key": "m4_tune",
    "name": "M4 TUNE",
    "min": -24,
    "max": 24,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m4_dsend",
+   "name": "M4 DELAY SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m4_rsend",
+   "name": "M4 REVERB SEND",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "m4_xsend",
+   "name": "M4 DIRT SEND",
+   "min": 0,
+   "max": 127,
    "default": 0,
    "display": "int"
   },
@@ -1901,6 +2377,47 @@
    "display": "int"
   },
   {
+   "key": "m4_ftype",
+   "name": "M4 FILTER TYPE",
+   "options": [
+    "MULTI",
+    "LP 4",
+    "COMB -",
+    "COMB +",
+    "EQ",
+    "LEGACY LP",
+    "LEGACY HP"
+   ],
+   "default": 1,
+   "refresh_display": true
+  },
+  {
+   "key": "m4_ftype_prev",
+   "name": "M4 FILTER TYPE PREV",
+   "momentary": true,
+   "step_of": "m4_ftype",
+   "step_delta": -1
+  },
+  {
+   "key": "m4_ftype_next",
+   "name": "M4 FILTER TYPE NEXT",
+   "momentary": true,
+   "step_of": "m4_ftype",
+   "step_delta": 1
+  },
+  {
+   "key": "m4_ftype_st",
+   "name": "M4 FILTER TYPE",
+   "min": 0,
+   "max": 6,
+   "default": 1,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
    "key": "m4_cutoff",
    "name": "M4 CUTOFF",
    "min": 0,
@@ -1917,19 +2434,14 @@
    "display": "int"
   },
   {
-   "key": "m4_ftype",
-   "name": "M4 FILTER TYPE",
-   "options": [
-    "LP 12",
-    "LP 24",
-    "HP 12",
-    "HP 24",
-    "BP 12",
-    "BP 24",
-    "NOTCH 12",
-    "NOTCH 24"
-   ],
-   "default": 1
+   "key": "m4_fshape",
+   "name": "M4 FILTER SHAPE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
   },
   {
    "key": "m4_fenv",
@@ -1954,6 +2466,24 @@
    "max": 127,
    "default": 0,
    "display": "int"
+  },
+  {
+   "key": "m4_bwlo",
+   "name": "M4 BASE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "m4_bwhi",
+   "name": "M4 WIDTH",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "m4_k1",
@@ -2068,6 +2598,26 @@
   {
    "key": "m4_k12",
    "name": "M4 K12",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m4_k13",
+   "name": "M4 K13",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_name": true,
+   "dynamic_display": true
+  },
+  {
+   "key": "m4_k14",
+   "name": "M4 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2338,30 +2888,16 @@
    "clamped": true
   },
   {
-   "key": "m4_dsend",
-   "name": "M4 DELAY SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
-   "key": "m4_rsend",
-   "name": "M4 REVERB SEND",
-   "min": 0,
-   "max": 127,
-   "default": 0,
-   "display": "int"
-  },
-  {
    "key": "m4_select",
    "refresh_display": true,
    "name": "M4 TABLE",
    "min": 0,
-   "max": 127,
+   "max": 167,
    "default": 0,
    "display": "int",
-   "type": "stepper"
+   "type": "stepper",
+   "nudge_pct": 50,
+   "clamped": true
   },
   {
    "key": "m4_select_prev",
@@ -3063,12 +3599,57 @@
    "display": "int"
   },
   {
+   "key": "drift",
+   "name": "DRIFT",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "oversample",
+   "name": "OVERSAMPLING",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 1
+  },
+  {
+   "key": "oversample_prev",
+   "name": "OVERSAMPLING PREV",
+   "momentary": true,
+   "step_of": "oversample",
+   "step_delta": -1
+  },
+  {
+   "key": "oversample_next",
+   "name": "OVERSAMPLING NEXT",
+   "momentary": true,
+   "step_of": "oversample",
+   "step_delta": 1
+  },
+  {
+   "key": "oversample_st",
+   "name": "OVERSAMPLING",
+   "min": 0,
+   "max": 1,
+   "default": 1,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
    "key": "fx_dtime",
    "name": "DELAY TIME",
    "min": 0,
    "max": 127,
    "default": 70,
-   "display": "int"
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "fx_dfb",
@@ -3154,6 +3735,40 @@
    "display": "int"
   },
   {
+   "key": "fx_xdrive",
+   "name": "DIRT DRIVE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "fx_xchar",
+   "name": "DIRT CHARACTER",
+   "min": 0,
+   "max": 127,
+   "default": 40,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "fx_xtone",
+   "name": "DIRT TONE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "fx_xgrit",
+   "name": "DIRT GRIT",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
    "key": "preset",
    "refresh_display": true,
    "name": "PRESET",
@@ -3161,7 +3776,9 @@
    "max": 127,
    "default": 0,
    "display": "int",
-   "type": "stepper"
+   "type": "stepper",
+   "nudge_pct": 50,
+   "clamped": true
   },
   {
    "key": "preset_prev",
@@ -3186,11 +3803,19 @@
    "type": "readout"
   },
   {
+   "key": "cpu",
+   "name": "CPU",
+   "min": 0,
+   "max": 0,
+   "display": "string",
+   "type": "readout"
+  },
+  {
    "key": "m1_fview",
    "name": "M1 FILTER VIEW",
    "min": 0,
-   "max": 127,
-   "default": 124,
+   "max": 191,
+   "default": 0,
    "display": "int",
    "clamped": true
   },
@@ -3198,8 +3823,8 @@
    "key": "m2_fview",
    "name": "M2 FILTER VIEW",
    "min": 0,
-   "max": 127,
-   "default": 124,
+   "max": 191,
+   "default": 0,
    "display": "int",
    "clamped": true
   },
@@ -3207,8 +3832,8 @@
    "key": "m3_fview",
    "name": "M3 FILTER VIEW",
    "min": 0,
-   "max": 127,
-   "default": 124,
+   "max": 191,
+   "default": 0,
    "display": "int",
    "clamped": true
   },
@@ -3216,8 +3841,8 @@
    "key": "m4_fview",
    "name": "M4 FILTER VIEW",
    "min": 0,
-   "max": 127,
-   "default": 124,
+   "max": 191,
+   "default": 0,
    "display": "int",
    "clamped": true
   },
@@ -3290,6 +3915,1158 @@
    "min": 0,
    "max": 168,
    "default": 1,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws0",
+   "name": "M1 SCOPE 1",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws1",
+   "name": "M1 SCOPE 2",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws2",
+   "name": "M1 SCOPE 3",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws3",
+   "name": "M1 SCOPE 4",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws4",
+   "name": "M1 SCOPE 5",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws5",
+   "name": "M1 SCOPE 6",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws6",
+   "name": "M1 SCOPE 7",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws7",
+   "name": "M1 SCOPE 8",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws8",
+   "name": "M1 SCOPE 9",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws9",
+   "name": "M1 SCOPE 10",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws10",
+   "name": "M1 SCOPE 11",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws11",
+   "name": "M1 SCOPE 12",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws12",
+   "name": "M1 SCOPE 13",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws13",
+   "name": "M1 SCOPE 14",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws14",
+   "name": "M1 SCOPE 15",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws15",
+   "name": "M1 SCOPE 16",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws16",
+   "name": "M1 SCOPE 17",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws17",
+   "name": "M1 SCOPE 18",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws18",
+   "name": "M1 SCOPE 19",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws19",
+   "name": "M1 SCOPE 20",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws20",
+   "name": "M1 SCOPE 21",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws21",
+   "name": "M1 SCOPE 22",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws22",
+   "name": "M1 SCOPE 23",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws23",
+   "name": "M1 SCOPE 24",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws24",
+   "name": "M1 SCOPE 25",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws25",
+   "name": "M1 SCOPE 26",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws26",
+   "name": "M1 SCOPE 27",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws27",
+   "name": "M1 SCOPE 28",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws28",
+   "name": "M1 SCOPE 29",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws29",
+   "name": "M1 SCOPE 30",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws30",
+   "name": "M1 SCOPE 31",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m1_ws31",
+   "name": "M1 SCOPE 32",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws0",
+   "name": "M2 SCOPE 1",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws1",
+   "name": "M2 SCOPE 2",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws2",
+   "name": "M2 SCOPE 3",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws3",
+   "name": "M2 SCOPE 4",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws4",
+   "name": "M2 SCOPE 5",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws5",
+   "name": "M2 SCOPE 6",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws6",
+   "name": "M2 SCOPE 7",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws7",
+   "name": "M2 SCOPE 8",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws8",
+   "name": "M2 SCOPE 9",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws9",
+   "name": "M2 SCOPE 10",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws10",
+   "name": "M2 SCOPE 11",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws11",
+   "name": "M2 SCOPE 12",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws12",
+   "name": "M2 SCOPE 13",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws13",
+   "name": "M2 SCOPE 14",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws14",
+   "name": "M2 SCOPE 15",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws15",
+   "name": "M2 SCOPE 16",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws16",
+   "name": "M2 SCOPE 17",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws17",
+   "name": "M2 SCOPE 18",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws18",
+   "name": "M2 SCOPE 19",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws19",
+   "name": "M2 SCOPE 20",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws20",
+   "name": "M2 SCOPE 21",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws21",
+   "name": "M2 SCOPE 22",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws22",
+   "name": "M2 SCOPE 23",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws23",
+   "name": "M2 SCOPE 24",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws24",
+   "name": "M2 SCOPE 25",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws25",
+   "name": "M2 SCOPE 26",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws26",
+   "name": "M2 SCOPE 27",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws27",
+   "name": "M2 SCOPE 28",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws28",
+   "name": "M2 SCOPE 29",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws29",
+   "name": "M2 SCOPE 30",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws30",
+   "name": "M2 SCOPE 31",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m2_ws31",
+   "name": "M2 SCOPE 32",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws0",
+   "name": "M3 SCOPE 1",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws1",
+   "name": "M3 SCOPE 2",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws2",
+   "name": "M3 SCOPE 3",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws3",
+   "name": "M3 SCOPE 4",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws4",
+   "name": "M3 SCOPE 5",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws5",
+   "name": "M3 SCOPE 6",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws6",
+   "name": "M3 SCOPE 7",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws7",
+   "name": "M3 SCOPE 8",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws8",
+   "name": "M3 SCOPE 9",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws9",
+   "name": "M3 SCOPE 10",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws10",
+   "name": "M3 SCOPE 11",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws11",
+   "name": "M3 SCOPE 12",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws12",
+   "name": "M3 SCOPE 13",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws13",
+   "name": "M3 SCOPE 14",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws14",
+   "name": "M3 SCOPE 15",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws15",
+   "name": "M3 SCOPE 16",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws16",
+   "name": "M3 SCOPE 17",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws17",
+   "name": "M3 SCOPE 18",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws18",
+   "name": "M3 SCOPE 19",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws19",
+   "name": "M3 SCOPE 20",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws20",
+   "name": "M3 SCOPE 21",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws21",
+   "name": "M3 SCOPE 22",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws22",
+   "name": "M3 SCOPE 23",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws23",
+   "name": "M3 SCOPE 24",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws24",
+   "name": "M3 SCOPE 25",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws25",
+   "name": "M3 SCOPE 26",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws26",
+   "name": "M3 SCOPE 27",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws27",
+   "name": "M3 SCOPE 28",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws28",
+   "name": "M3 SCOPE 29",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws29",
+   "name": "M3 SCOPE 30",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws30",
+   "name": "M3 SCOPE 31",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m3_ws31",
+   "name": "M3 SCOPE 32",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws0",
+   "name": "M4 SCOPE 1",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws1",
+   "name": "M4 SCOPE 2",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws2",
+   "name": "M4 SCOPE 3",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws3",
+   "name": "M4 SCOPE 4",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws4",
+   "name": "M4 SCOPE 5",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws5",
+   "name": "M4 SCOPE 6",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws6",
+   "name": "M4 SCOPE 7",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws7",
+   "name": "M4 SCOPE 8",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws8",
+   "name": "M4 SCOPE 9",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws9",
+   "name": "M4 SCOPE 10",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws10",
+   "name": "M4 SCOPE 11",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws11",
+   "name": "M4 SCOPE 12",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws12",
+   "name": "M4 SCOPE 13",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws13",
+   "name": "M4 SCOPE 14",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws14",
+   "name": "M4 SCOPE 15",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws15",
+   "name": "M4 SCOPE 16",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws16",
+   "name": "M4 SCOPE 17",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws17",
+   "name": "M4 SCOPE 18",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws18",
+   "name": "M4 SCOPE 19",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws19",
+   "name": "M4 SCOPE 20",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws20",
+   "name": "M4 SCOPE 21",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws21",
+   "name": "M4 SCOPE 22",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws22",
+   "name": "M4 SCOPE 23",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws23",
+   "name": "M4 SCOPE 24",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws24",
+   "name": "M4 SCOPE 25",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws25",
+   "name": "M4 SCOPE 26",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws26",
+   "name": "M4 SCOPE 27",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws27",
+   "name": "M4 SCOPE 28",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws28",
+   "name": "M4 SCOPE 29",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws29",
+   "name": "M4 SCOPE 30",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws30",
+   "name": "M4 SCOPE 31",
+   "min": 0,
+   "max": 23,
+   "default": 12,
+   "display": "int",
+   "clamped": true
+  },
+  {
+   "key": "m4_ws31",
+   "name": "M4 SCOPE 32",
+   "min": 0,
+   "max": 23,
+   "default": 12,
    "display": "int",
    "clamped": true
   }

@@ -1,12 +1,7 @@
-/* Wavetable scanner — builds the name-indexed table list that becomes the
- * WT1/WT2 enum options. Scans directory LISTINGS only (names, no audio
- * decode), so it is cheap enough to run at create_instance and on rescan.
- *
- * Sources, in order:
- *   0            "Init"  (the built-in table, always present)
- *   module dir   <module>/wavetables/** (factory packs, .wt2048 FLAC + .wav)
- *   user dir     /data/UserData/UserLibrary/Wavetables/** (.wav; what the
- *                user uploads via Move Manager / schwung-manager)
+/* Wavetable scanner -- the table list (the mN_select values): directory listings only, no audio decode.
+ *   0             "Init" (the built-in table, always there)
+ *   then          <module>/wavetables/** (.wt2048 FLAC and .wav; the shipped packs, and any the user adds in a
+ *                 folder of their own), sorted by "Pack/Name"
  */
 #pragma once
 
@@ -17,7 +12,7 @@
 #include <sys/stat.h>
 #include <vector>
 
-namespace tb {
+namespace nw {
 
 struct WtEntry {
     std::string name;     /* shown in the enum list: "Pack/Name" or "Name" */
@@ -28,39 +23,12 @@ struct WtEntry {
 
 class WtScanner {
 public:
-    static constexpr const char *kUserDir = "/data/UserData/UserLibrary/Wavetables";
-
-    /* One-time: copy the module's factory packs into the USER folder, so the
-     * user sees and manages everything in one place (Move Manager /
-     * schwung-manager both browse it). A marker file means "already seeded":
-     * a user who deletes a factory pack stays rid of it on reinstall. */
-    static void seedUserFolder(const std::string &moduleDir)
-    {
-        ::mkdir(kUserDir, 0755);
-        std::string marker = std::string(kUserDir) + "/.tablor-seeded";
-        struct stat st;
-        if (::stat(marker.c_str(), &st) == 0) return;
-        if (moduleDir.empty()) return;
-
-        copyTree(moduleDir + "/wavetables", kUserDir);
-
-        FILE *f = ::fopen(marker.c_str(), "w");
-        if (f) { ::fputs("v1\n", f); ::fclose(f); }
-    }
-
-    void scan(const std::string &moduleDir = std::string())
+    void scan(const std::string &moduleDir)
     {
         entries.clear();
         entries.push_back({ "Init", "", 0 });
 
-#ifdef MPC_PORT   /* MPC port: the wavetables live next to the plugin, in <module>/wavetables (the shipped packs; add
-                     yours in a subfolder), not in the Move's user library */
         scanDir(moduleDir + "/wavetables", "", 0);
-#else
-        (void) moduleDir;
-        ::mkdir(kUserDir, 0755);
-        scanDir(kUserDir, "", 0);
-#endif
 
         /* keep Init first, sort the rest by name */
         std::sort(entries.begin() + 1, entries.end(),
@@ -78,36 +46,6 @@ public:
     }
 
 private:
-    static void copyTree(const std::string &from, const std::string &to)
-    {
-        DIR *d = ::opendir(from.c_str());
-        if (!d) return;
-        while (dirent *e = ::readdir(d)) {
-            if (e->d_name[0] == '.') continue;
-            std::string src = from + "/" + e->d_name;
-            std::string dst = to + "/" + e->d_name;
-            struct stat st;
-            if (::stat(src.c_str(), &st) != 0) continue;
-            if (S_ISDIR(st.st_mode)) {
-                ::mkdir(dst.c_str(), 0755);
-                copyTree(src, dst);
-            } else if (::stat(dst.c_str(), &st) != 0) {   /* don't overwrite */
-                FILE *in = ::fopen(src.c_str(), "rb");
-                if (!in) continue;
-                FILE *out = ::fopen(dst.c_str(), "wb");
-                if (out) {
-                    char buf[64 * 1024];
-                    size_t n;
-                    while ((n = ::fread(buf, 1, sizeof buf, in)) > 0)
-                        ::fwrite(buf, 1, n, out);
-                    ::fclose(out);
-                }
-                ::fclose(in);
-            }
-        }
-        ::closedir(d);
-    }
-
     void scanDir(const std::string &dir, const std::string &prefix, int depth)
     {
         if (depth > 3) return;                     /* sanity bound */
@@ -160,4 +98,4 @@ private:
     std::vector<WtEntry> entries;
 };
 
-} // namespace tb
+} // namespace nw

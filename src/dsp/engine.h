@@ -1,6 +1,7 @@
-/* NorthWest engine (v2.0) -- 4 monophonic slots in layers. Note handling (last-note priority,
- * glide, sustain pedal), the shared modulation (EG1/EG2, LFO1/LFO2, random, controllers), the
- * four wavetables (one per slot), master out. The slots themselves are in machines.h.
+/* NorthWest engine -- 4 monophonic machines (slots), each played from the plugin's track or from its own MIDI
+ * channel on the plugin's MIDI port; per machine: last-note priority, glide, sustain pedal. Shared: the modulation
+ * (EG1/EG2, LFO1/LFO2, random, controllers), the effects (delay, reverb, DIRT) and the master limiter.
+ * The machines themselves are in machines.h.
  */
 #pragma once
 
@@ -10,71 +11,83 @@
 #include <atomic>
 #include <memory>
 
-namespace tb {
+namespace nw {
 
 class Engine {
 public:
     Engine();
 
-    /* Pots are written by set_param (UI thread) and read by the audio
-     * thread; aligned float stores are atomic. */
-    float pots[TB_PARAM_COUNT] = {};
+    /* Pots are written by set_param and read by the audio thread; aligned float stores are atomic. */
+    float pots[NW_PARAM_COUNT] = {};
 
     void setHostBpm(float bpm) { hostBpm = bpm; }
-    void onMidi(const uint8_t *msg, int len);
+    /* MIDI from the plugin's own track (the machines on TRACK) / from its MIDI port (the machines on CH n) */
+    void onTrackMidi(const uint8_t *msg, int len) { onMidi(0, msg, len); }
+    void onPortMidi(const uint8_t *msg, int len) { onMidi(1 + (msg[0] & 0x0F), msg, len); }
     void renderBlock(int16_t *outInterleavedLr, int frames);
 
-    /* slot n's wavetable (the loader thread swaps them) */
+    /* machine n's wavetable (the loader thread swaps them) */
     void setTable(int slot, std::shared_ptr<Wavetable> t)
     {
-        if (slot >= 0 && slot < TB_SLOTS) std::atomic_store(&tables[slot], std::move(t));
+        if (slot >= 0 && slot < NW_SLOTS) std::atomic_store(&tables[slot], std::move(t));
     }
-    void allNotesOff(bool allowTail);
+    std::shared_ptr<Wavetable> table(int slot) const
+    {
+        return slot >= 0 && slot < NW_SLOTS ? std::atomic_load(&tables[slot]) : nullptr;
+    }
+    void allNotesOff(int source, bool allowTail);
 
 private:
-    void noteOn(int note, float vel);
-    void noteOff(int note);
-    void releaseAll();
+    /* a machine's notes: the keys held for it, last-note priority */
+    struct Voice {
+        static constexpr int kStackMax = 32;
+        int stack[kStackMax];
+        int len = 0;
+        bool held = false, pedalHolds = false;
+        int curNote = 60;
+        float velocity = 0.0f, lastPlayed = -1.0f;
+    };
+
+    void onMidi(int source, const uint8_t *msg, int len);
+    int sourceOf(int s) const { return (int) pots[slotParam(s, NW_P_M1_CHAN)]; }
     bool slotOn(int s) const
     {
-        return pots[slotParam(s, TB_P_M1_LEVEL)] > 0.0f && (int) pots[slotParam(s, TB_P_M1_MUTE)] == 0;
+        return pots[slotParam(s, NW_P_M1_LEVEL)] > 0.0f && (int) pots[slotParam(s, NW_P_M1_MUTE)] == 0;
     }
+    void noteOn(int source, int note, float vel);
+    void noteOff(int source, int note);
+    void release(int s);
+    bool anyHeld() const;
     void modStart(bool fresh);
     void updateMod(int n);
 
     AnalogTables analog { 44100.0 };
-    Slot slots[TB_SLOTS] = { Slot(analog), Slot(analog), Slot(analog), Slot(analog) };
-    std::shared_ptr<Wavetable> tables[TB_SLOTS];
+    Slot slots[NW_SLOTS] = { Slot(analog), Slot(analog), Slot(analog), Slot(analog) };
+    Voice voices[NW_SLOTS];
+    std::shared_ptr<Wavetable> tables[NW_SLOTS];
 
     /* shared modulation */
     AnalogADSR modEnv[kModEnvs];
     Lfo lfo[2];
     float lfoVal[2] = {};
     ModShared ms;
-    nw::Delay delay;
-    nw::Reverb reverb;
-    float noteRand = 0.0f, velocity = 0.0f;
-    int curNote = 60;
+    float noteRand = 0.0f;
     uint32_t rs = 1;
     uint32_t nextRandBits() { rs ^= rs << 13; rs ^= rs >> 17; rs ^= rs << 5; return rs; }
-
-    /* held-note stack, last-note priority */
-    static constexpr int kStackMax = 32;
-    int  monoStack[kStackMax];
-    int  monoStackLen = 0;
-    bool held = false;            /* a key (or the pedal) is holding the current note */
-    float lastPlayedNote = -1.0f;
     uint32_t serialCounter = 0;
 
-    /* controller state */
-    float modWheel = 0.0f, aftertouch = 0.0f;
-    float pitchBendNorm = 0.0f;
-    float hostBpm = 120.0f;
-    bool  sustainDown = false, pedalHolds = false;
+    /* effects and master */
+    Delay delay;
+    Reverb reverb;
+    Dirt dirt;
+    Limiter limiter;
+
+    /* controller state; the sustain pedal per source (0 = track, 1..16 = port channels) */
+    float modWheel = 0.0f, aftertouch = 0.0f, pitchBendNorm = 0.0f, hostBpm = 120.0f;
+    bool sustainDown[17] = {};
 };
 
-/* Built-in "Init" wavetable: 64-frame PWM morph, generated in memory so the
- * synth makes sound with no files installed. */
+/* Built-in "Init" wavetable: 64-frame PWM morph, generated in memory so the synth makes sound with no files. */
 std::shared_ptr<Wavetable> makeInitTable();
 
-} // namespace tb
+} // namespace nw

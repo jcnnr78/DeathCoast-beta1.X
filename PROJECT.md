@@ -9,6 +9,31 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 6 - v1.6, branch v1.6 (built locally, not yet on the MPC)
+1.5 is main (the root release). The user's notes for 1.6 (25-nov), all in:
+- MAIN: one column per machine (MODEL; MUTE + MIDI channel stepper; LEVEL, PAN, TUNE as side knobs; DELAY, REVERB,
+  DIRT send sliders filling with the accent colour); Q-Links "MAIN" (mute, level, pan, tune per machine) and "SENDS".
+- Steppers: flat boxes (no dot matrix) on every page.
+- WAVETABLE: SUB as sliders on a panel; the moving table is a live scope (32 columns, mN_ws0..31, the plugin reads the
+  loaded table's frame at POSITION); the per-table picture stays in the header. (A table x position filmstrip would
+  need ~1350 frames: too many pixels for one strip and too much decoded memory.)
+- WEST COAST: tidied: K7 MOD RATIO (default x1), K8 MOD FINE, the fold picture after them; LPG panel: K5 DEPTH,
+  K6 RESPONSE, K11 LPG MODE (VCA / COMBO / LP), K12 VEL > FOLD.
+- ANALOG: OSC FREQ names; PITCH as six sliders, two new knobs K13 VEL > P.ENV, K14 OSC 1 FINE (14 knobs now).
+- FX page (9 tabs: MPC shows 5 and a pager): DIRT (DRIVE, CHARACTER warm>hard>fold, TONE tilt, GRIT erosion then
+  crush; 2x oversampled shaper; output follows the input's loudness), DELAY, REVERB.
+- MIDI channel per machine (TRACK or CH 1-16): the plugin opens an ALSA sequencer port (dlopen of libasound, no build
+  dependency); unverified on 2.15.1.
+- Engine: filters.h (ZDF SVF, ZDF ladder, comb, RBJ biquads), oversample.h (31-tap half-band), kBlock 32, Limiter,
+  DRIFT, OVERSAMPLING switch (GLOBAL). 24-bit output: dropped for now (the wrapper is 16-bit throughout).
+- CPU readout on MAIN (beta): render time / block time, peak-held, whole percent twice a second.
+- Presets: 41, tagged; STRESS ones for the CPU test on the device.
+- Cleanup: northwest.cpp replaces northwest_plugin.cpp (MPC only), gen_params.py replaces gen_params_v2.py; tb_/TB_ ->
+  nw_/NW_; removed UPSTREAM, upstream-changes.diff, the root bench.cpp, design/stitch.html, migrate_v20.py, help.json,
+  src/ported/audiofilter and filter.h. src/ported keeps its origin notes (licence).
+- Checks (PC): host test PASSED; 41 presets render finite, state round trip identical; CPU x86: mixed 4 machines
+  ~2.7 % of a core, STRESS presets 3-5 %.
+
 ## Phase 5 (analog + effects) - v1.5, branch v1.5 (built locally, not yet on the MPC)
 - ANALOG model (src/dsp/machines.h AnMachine), DFAM style: OscPair waves (pulse with PULSE WIDTH), osc 1 phase-modulates
   osc 2 (FM 1>2), sync, white noise, tanh-like DRIVE (Pade, cheaper than tanh), decay pitch envelope (amount up to

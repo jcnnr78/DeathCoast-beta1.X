@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""NorthWest v1.2: draws the skin's own images into images/nw/ (run before gen_layout.py; needs Pillow + numpy).
+"""NorthWest: draws the skin's own images into images/nw/ (run before gen_layout.py; needs Pillow + numpy).
 
-    knob.png            the knob filmstrip: flat round disc, thin value ring, short pointer (128 frames, 72 px)
-    wave_WxH.png        MAIN: the wavetable view that follows POSITION (64 frames; a generic morph, not the
-                        selected table's real shape: MPC can only show pre-drawn pictures)
-    flt_<type>_WxH.png  FILTER: the response of each filter type, its corner following CUTOFF / FREQ (64 frames;
-                        resonance not drawn)
-    env_<a|d|s|r>_WxH.png  ENVELOPES: one small picture per stage, each following its own knob (64 frames)
-    logo.png            "NorthWest" in thin letters
+    knob.png              the knob filmstrip: flat round disc, thin value ring, short pointer (128 frames)
+    bar_WxH.png           a slider: a long box that fills with the accent colour (128 frames)
+    scope_WxH.png         one column of the WAVETABLE scope: a bar from the centre line to its level (24 frames)
+    scopebg_WxH.png       the scope's box
+    flt_<type>_WxH.png    FILTER: the response of each type, following CUTOFF, RESONANCE and SHAPE as the plugin
+                          encodes them (src/dsp/filters.h filterView)
+    env_<a|d|s|r>_WxH.png AMP / FILTER: one small picture per envelope stage, each following its own knob (64 frames)
+    fold_WxH.png          WEST COAST: a cycle through the wavefolder (FOLD x SYMMETRY)
+    panel_<name>.png      the panels that set a group of controls apart (SUB, PITCH, LPG)
+    logo.png              "NorthWest" in thin letters
 
 Run:  python3 tools/gen_art.py"""
 import math, os
@@ -62,58 +65,64 @@ def knob(n=128, size=72):
         frames.append(down(im, size, size))
     strip(frames, "knob.png")
 
-# ---------------------------------------------------------------------------------------------- wavetable
-def wave_shape(t, x):
-    """A generic table: sine -> triangle-ish -> saw -> narrowing pulse with formant ripple, as t goes 0..1."""
-    ph = 2 * math.pi * x
-    h = [1.0]
-    out = math.sin(ph)
-    saw = sum(math.sin(k * ph) / k for k in range(1, 12)) * 0.6
-    tri = sum(((-1) ** ((k - 1) // 2)) * math.sin(k * ph) / (k * k) for k in range(1, 12, 2)) * 0.85
-    pul = sum(math.sin(k * ph) * math.sin(k * math.pi * (0.5 - 0.4 * t)) / k for k in range(1, 16)) * 0.7
-    if t < 0.33:   u = t / 0.33;           out = (1 - u) * out + u * tri
-    elif t < 0.66: u = (t - 0.33) / 0.33;  out = (1 - u) * tri + u * saw
-    else:          u = (t - 0.66) / 0.34;  out = (1 - u) * saw + u * pul
-    return max(-1.0, min(1.0, out))
-
-def wave(w, h, n=64):
-    depth = 10                                 # frames drawn behind, as a stack going up and to the right
-    dx, dy = 1.6, 2.4                          # offset per stacked frame (px)
-    pw, ph = w - 40 - depth * dx, (h - 34 - depth * dy) / 2
-    frames = []
-    for i in range(n):
-        t = i / (n - 1)
-        im = display(w, h); d = ImageDraw.Draw(im)
-        def curve(tt, k):
-            ox, oy = 20 + k * dx, h / 2 + depth * dy / 2 - k * dy + 4
-            return [((ox + pw * x) * SS, (oy - ph * wave_shape(tt, x)) * SS) for x in np.linspace(0, 1, 120)]
-        for k in range(depth, -1, -1):          # back to front
-            tt = k / depth
-            dist = abs(tt - t)
-            a = int(26 + 50 * max(0.0, 1 - dist * 3))
-            polyline(d, curve(tt, k), hexc("8c8a85", a), int(1.2 * SS))
-        cur = curve(t, t * depth)
-        glow = canvas(w, h); gd = ImageDraw.Draw(glow)
-        polyline(gd, cur, hexc("e8871e", 150), int(7 * SS))
-        im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(4 * SS)))
-        polyline(d, cur, ACC_HI, int(2.6 * SS))
-        # position bar along the bottom
-        y = (h - 9) * SS
-        d.line(((14 * SS, y), ((w - 14) * SS, y)), fill=LINE, width=2 * SS)
-        d.line(((14 * SS, y), ((14 + (w - 28) * t) * SS, y)), fill=ACC, width=2 * SS)
-        frames.append(down(im, w, h))
-    strip(frames, "wave_%dx%d.png" % (w, h))
-
-def subpanel(w=418, h=240, label="SUB", name="subpanel.png"):
-    """WAVETABLE: the panel that sets the SUB knobs apart (one Q-Link column: level, drive, octave, wave)"""
+def panel(name, label, w, h):
+    """a panel that sets a group of controls apart (one Q-Link column), its name in the accent colour"""
     from PIL import ImageFont
     im = canvas(w, h); d = ImageDraw.Draw(im)
     d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("323236"), outline=hexc("4a4a50"), width=SS)
     try: f = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 15 * SS)
     except OSError: f = ImageFont.load_default(size=15 * SS)
     d.text((12 * SS, 8 * SS), label, font=f, fill=ACC)
-    im = down(im, w, h); im.save(os.path.join(OUT, name), optimize=True)
-    print("  %-26s %dx%d" % (name, w, h))
+    im = down(im, w, h); im.save(os.path.join(OUT, "panel_%s.png" % name), optimize=True)
+    print("  %-26s %dx%d" % ("panel_%s.png" % name, w, h))
+
+def bar(w, h, n=128):
+    """a slider as a box that fills from the left with the accent colour (the MPC's own sliders)"""
+    frames = []
+    for i in range(n):
+        v = i / (n - 1)
+        im = canvas(w, h); d = ImageDraw.Draw(im)
+        r = 5 * SS
+        d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), r, fill=hexc("121214"), outline=hexc("4a4a50"), width=SS)
+        if v > 0.003:
+            x1 = max(2 * r, int((w * SS - 2 * SS) * v))
+            d.rounded_rectangle((SS, SS, x1, h * SS - 1 - SS), r - SS, fill=ACC)
+        frames.append(down(im, w, h))
+    strip(frames, "bar_%dx%d.png" % (w, h))
+
+def scope(w, h, levels):
+    """one scope column: a thin bar from the centre line to the level, a bright cap at the level"""
+    frames = []
+    for i in range(levels):
+        v = i / (levels - 1) * 2 - 1
+        im = canvas(w, h); d = ImageDraw.Draw(im)
+        top, bot = 8, h - 8
+        yc = (top + bot) / 2; yv = yc - (bot - top) / 2 * v
+        x0, x1 = (w / 2 - 2.2) * SS, (w / 2 + 2.2) * SS
+        d.rectangle((x0, min(yc, yv) * SS, x1, max(yc, yv) * SS), fill=hexc("e8871e", 150))
+        d.ellipse(((w / 2 - 3.6) * SS, (yv - 3.6) * SS, (w / 2 + 3.6) * SS, (yv + 3.6) * SS), fill=ACC_HI)
+        frames.append(down(im, w, h))
+    strip(frames, "scope_%dx%d.png" % (w, h))
+
+def arrows():
+    """the arrows of the steppers shown for one model only (gen_layout.py fix_arrows draws them on the page), as the
+    skin draws a stepper's own: an accent triangle on the panel; and the patch that hides one"""
+    for side in ("prev", "next"):
+        im = canvas(44, 44); d = ImageDraw.Draw(im)
+        c, hw, hh = 22 * SS, 6 * SS, 10 * SS
+        pts = [(c + hw, c - hh), (c + hw, c + hh), (c - hw, c)] if side == "prev" else [(c - hw, c - hh), (c - hw, c + hh), (c + hw, c)]
+        d.polygon(pts, fill=hexc("ffb347"))
+        im = down(im, 44, 44); im.save(os.path.join(OUT, "arrow_%s.png" % side), optimize=True)
+    Image.new("RGBA", (44, 44), hexc("28282b")).save(os.path.join(OUT, "patch.png"))
+    print("  arrow_prev.png, arrow_next.png, patch.png")
+
+def scopebg(w, h):
+    im = display(w, h, 10); d = ImageDraw.Draw(im)
+    d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 200), width=SS)
+    for q in (0.25, 0.75):
+        d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("3d3d42", 90), width=SS)
+    im = down(im, w, h); im.save(os.path.join(OUT, "scopebg_%dx%d.png" % (w, h)), optimize=True)
+    print("  %-26s %dx%d" % ("scopebg_%dx%d.png" % (w, h), w, h))
 
 def fold(w, h):
     """WEST COAST: one cycle of the carrier through the wavefolder. 128 frames = FOLD in 16 steps x SYMMETRY in 8
@@ -135,28 +144,51 @@ def fold(w, h):
     strip(frames, "fold_%dx%d.png" % (w, h))
 
 # ---------------------------------------------------------------------------------------------- filters
-FLT_TYPES = ["lp12", "lp24", "hp12", "hp24", "bp12", "bp24", "notch12", "notch24"]
+# the plugin's filter types, in its order (tools/gen_params.py FLT_TYPES); a strip each
+FLT_TYPES = ["multi", "lp4", "combneg", "combpos", "eq", "legacylp", "legacyhp"]
 
-def response(kind, f, fc, q=0.7071):
+def _svf(f, fc, q):
     s = f / fc
     lp = 1 / np.sqrt((1 - s ** 2) ** 2 + (s / q) ** 2)
-    hp = s ** 2 * lp
-    bp = (s / q) * lp
-    nt = np.abs(1 - s ** 2) * lp
-    base = {"lp": lp, "hp": hp, "bp": bp, "notch": nt}[kind.rstrip("0123456789")]
-    return base ** (2 if kind.endswith("24") else 1)
+    return lp, (s / q) * lp, s ** 2 * lp                       # low, band (unity peak), high
+
+def _curve(kind, f, cut, res, shape, fs=44100.0):
+    """the magnitude, same laws as src/dsp/filters.h (cut, res, shape on 0..1)"""
+    fc = 440.0 * 2 ** ((8 + cut * 127 - 69) / 12)
+    if kind == "multi":
+        q = 0.6 * 40 ** res; lp, bp, hp = _svf(f, fc, q)
+        wl = 1 - 2 * shape if shape < 0.5 else 0.0; wb = 2 * shape if shape < 0.5 else 2 - 2 * shape
+        wh = 0.0 if shape < 0.5 else 2 * shape - 1
+        return np.abs(wl * lp + wb * bp + wh * hp)
+    if kind == "lp4":
+        k = res * 4.3
+        s = 1j * f / fc
+        h = 1 / ((1 + s) ** 4 + k)
+        return np.abs(h) * (1 + 0.45 * k) * (1 + k) / (1 + k)
+    if kind in ("combneg", "combpos"):
+        fb = (1 if kind == "combpos" else -1) * 0.985 * res ** 0.6
+        D = fs / max(fc, 12.0)
+        w = 2 * np.pi * f / fs
+        h = 1 / (1 - fb * np.exp(-1j * w * D))
+        return np.abs(h) * np.sqrt(1 - abs(fb))
+    if kind == "eq":
+        A = 10 ** (((shape * 127 - 64) / 63 * 18) / 40); q = 0.5 * 16 ** res
+        s = 1j * f / fc
+        return np.abs((s ** 2 + s * (A / q) + 1) / (s ** 2 + s / (A * q) + 1))
+    q = min(8.0, 0.7071 / (1 - res * 0.99)); lp, bp, hp = _svf(f, fc, q)
+    return lp if kind == "legacylp" else hp
 
 def filt(kind, w, h):
-    """128 frames: CUTOFF in 32 steps x RESONANCE in 4 (frame = cut * 4 + res), the value the DSP reports as mN_fview.
-    Cutoff on the engine's scale (MIDI note 8..135); resonance with the engine's Q law at 0, 1/3, 2/3, 1 of the knob
-    (drawn up to Q 8: the top of the knob only gets louder, the picture would clip)."""
+    """frames as src/dsp/filters.h filterView encodes them: MULTI 192 (CUTOFF 16 x MORPH 4 x RESONANCE 3), EQ 128
+    (CUTOFF 16 x GAIN 8), the others 128 (CUTOFF 32 x RESONANCE 4)"""
     frames = []
-    f = np.geomspace(20, 20000, 240)
-    for i in range(128):
-        cut, res = i // 4, i % 4
-        fc = 440.0 * 2 ** ((8 + cut / 31 * 127 - 69) / 12)
-        q = min(8.0, 0.7071 / (1 - (res / 3) * 0.99))
-        r = response(kind, f, fc, q) * (response(kind, f, fc, 0.7071) if kind.endswith("24") else 1)
+    f = np.geomspace(20, 20000, 260)
+    if kind == "multi": combos = [(c / 15, m / 3, r / 2) for c in range(16) for m in range(4) for r in range(3)]
+    elif kind == "eq": combos = [(c / 15, 0.5, g / 7) for c in range(16) for g in range(8)]
+    else: combos = [(c / 31, r / 3, 0.0) for c in range(32) for r in range(4)]
+    for cut, res, shape in combos:
+        if kind == "eq": res, shape = 0.4, shape
+        r = _curve(kind, f, cut, min(res, 0.97 if kind.startswith("comb") else 1.0), shape)
         db = 20 * np.log10(np.maximum(r, 1e-6))
         top, bot = 18.0, -42.0
         im = display(w, h); d = ImageDraw.Draw(im)
@@ -228,16 +260,24 @@ def logo(size=64):
     print("  logo.png                   %dx%d" % im.size)
 
 # sizes used by tools/gen_layout.py
-FOLD = (380, 96)
+FOLD = (360, 96)
 FLT = (220, 56)
 ENV = (96, 50)
+BARS = [(186, 22), (130, 20), (92, 18)]       # MAIN sends; SUB / PITCH panels; FILTER base-width
+SCOPE = (460, 106)                            # the WAVETABLE scope box
+SCOPE_COL = (14, 106)                         # one of its columns
+SCOPE_LEVELS = 24                             # src/dsp/params.h NW_SCOPE_LEVELS
+PANELS = {"sub": ("SUB", 472, 128), "pitch": ("PITCH", 472, 240), "lpg": ("LPG", 472, 240)}
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
+    for b in BARS: bar(*b)
+    scope(*SCOPE_COL, SCOPE_LEVELS)
+    scopebg(*SCOPE)
+    arrows()
     fold(*FOLD)
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
-    subpanel()
-    subpanel(label="PITCH", name="penvpanel.png")
+    for name, (label, w, h) in PANELS.items(): panel(name, label, w, h)
     logo()

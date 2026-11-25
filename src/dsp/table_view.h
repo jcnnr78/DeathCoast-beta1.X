@@ -2,7 +2,7 @@
  * frame 0 = a table not listed here, 1 = Init, 2 + i = kTableViewNames[i]. */
 #pragma once
 
-#define TB_TABLE_VIEW_FRAMES 169
+#define NW_TABLE_VIEW_FRAMES 169
 
 static const char *const kTableViewNames[] = {
     "AKWP 0001",

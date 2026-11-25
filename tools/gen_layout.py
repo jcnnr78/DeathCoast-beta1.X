@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""NorthWest v1.3: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
+"""NorthWest: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
 
-Pages (8, one per Fn key):  MIX   MACHINE 1   MACHINE 2   MACHINE 3   MACHINE 4   MOD   MATRIX   GLOBAL
+Pages (9; MPC shows 5 at a time and a ">" for the rest):
+    MAIN   MACHINE 1   MACHINE 2   MACHINE 3   MACHINE 4   MOD   MATRIX   FX   GLOBAL
 
 A machine page shows the controls of the MODEL chosen for that machine: the lines that differ carry
-when=mN_model:<i> and MPC swaps them as the model changes. Its knobs K1..K12 sit in the same places
-for every model (row 1 = K1..K6, row 2 = K7..K12), so a Q-Link always turns the same knob; their
-names and values come from the DSP (dynamic_name / dynamic_display).
+when=mN_model:<i> and MPC swaps them as the model changes. Knob names and values come from the plugin
+(dynamic_name / dynamic_display). Left to right on screen = Q-Links top to bottom, 4 per column.
 
 Run:  python3 tools/gen_layout.py"""
 import importlib.util, os, re
@@ -45,7 +45,7 @@ _spec = importlib.util.spec_from_file_location("gen_art", os.path.join(here, "ge
 ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)
 
 STRIP = "strip=images/nw/knob.png frames=128"
-TABLE_FRAMES = int(re.search(r"TB_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(root, "src/dsp/table_view.h")).read()).group(1))
+TABLE_FRAMES = int(re.search(r"NW_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(root, "src/dsp/table_view.h")).read()).group(1))
 def W(s, when): return s + (" when=" + when if when else "")
 def knob(cx, cy, label, key, when="", bw=0, r=26):
     return W('knob cx=%d cy=%d r=%d label="%s" key=%s %s%s' % (cx, cy, r, label, key, STRIP, (" bw=%d" % bw) if bw else ""), when)
@@ -56,8 +56,8 @@ def frame(x, y, w, h, title, when=""): return W('frame x=%d y=%d w=%d h=%d title
 def text(cx, cy, label, size=1.5, when=""): return W('text cx=%d cy=%d label="%s" size=%s' % (cx, cy, label, size), when)
 def meter(cx, cy, size, key, img, when=""):
     return W('meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64' % (cx, cy, size[0], size[1], key, img), when)
-STEP_KEYS = ("_model", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2", "_osc_sync", "fx_dmode",
-             "glide_mode")
+STEP_KEYS = ("_model", "_chan", "_ftype", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2",
+             "_osc_sync", "fx_dmode", "glide_mode", "oversample")     # tools/gen_params.py STEPPERS
 def stepper(cx, cy, w, key, get="", when=""):
     """the box's key is "<key>_st" for an option list (a whole-number twin the wheel steps one option a click); the
     arrows stay "<key>_prev" / "<key>_next" (prev= / next=)"""
@@ -65,103 +65,147 @@ def stepper(cx, cy, w, key, get="", when=""):
     if key.endswith(STEP_KEYS):
         extra = " prev=%s_prev next=%s_next" % (key, key)
         key = key + "_st"
-    return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s%s style=dotmatrix'
+    return W('stepper cx=%d cy=%d w=%d h=44 label="" key=%s%s%s'
              % (cx, cy, w, key, (" get=" + get) if get else "", extra), when)
+def bar(cx, cy, size, key, when="", label="", lw=0):
+    """a slider drawn as a box that fills with the accent colour, its value under it; label: its name, lw px to the
+    left of the box"""
+    w, h = size
+    out = [W('slider_h cx=%d cy=%d w=%d h=%d label="" ns=0 key=%s strip=images/nw/bar_%dx%d.png frames=128 bw=%d'
+             % (cx, cy, w, h, key, w, h, w), when)]
+    if label: out.insert(0, W(text(cx - w // 2 - lw // 2 - 4, cy, label, 0.75), when))
+    return out
 
 MODELS = ["WAVETABLE", "FM", "WEST COAST", "ANALOG"]
-# K1..K12 labels per model ("" = the model doesn't use it: no knob shown)
-K_LABELS = {
-    0: ["POSITION", "FX 1", "FX 2", "DETUNE", "SUB LEVEL", "SUB DRIVE", "UNISON", "SPREAD", "", "", "SUB OCTAVE", "SUB WAVE"],
-    1: ["OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
-        "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
-    2: ["FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "", "LPG RESPONSE", "MOD RATIO", "MOD FINE", "", "",
-        "VEL > FOLD"],
-    3: ["FM 1>2", "NOISE", "DRIVE", "PULSE WIDTH", "PITCH ENV", "PITCH DECAY", "OSC 1 LEVEL", "OSC 1 TUNE",
-        "OSC 2 LEVEL", "OSC 2 TUNE", "P.ENV TARGET", "OSC 2 FINE"],
-}
-KX = [120 + i * 205 for i in range(6)]      # knob columns of the model area
+KX = [110, 300, 490, 680]                   # the four knob columns of the model area
+RX = [910, 1145]                            # the right-hand block (one Q-Link column: K5, K6, K11, K12)
 ROW1, ROW2 = 272, 398
+RIGHT = (792, 232, 472, 240)                # x, y, w, h of the right-hand block
+# per model: (knob, label) in the four columns, rows 1 and 2 ("" = not used)
+COLS = {
+    0: [("k1", "POSITION"), ("k2", "FX 1"), ("k3", "FX 2"), ("k4", "DETUNE"), ("k7", "UNISON"), ("k8", "SPREAD")],
+    1: [("k1", "OP2 LEVEL"), ("k2", "OP3 LEVEL"), ("k3", "OP4 LEVEL"), ("k4", "FEEDBACK"),
+        ("k7", "MOD DECAY"), ("k8", "OP2 RATIO"), ("k9", "OP3 RATIO"), ("k10", "OP4 RATIO")],
+    2: [("k1", "FM AMOUNT"), ("k2", "FOLD"), ("k3", "SYMMETRY"), ("k4", "OSC MIX"), ("k7", "MOD RATIO"), ("k8", "MOD FINE")],
+    3: [("k1", "FM 1>2"), ("k2", "NOISE"), ("k3", "DRIVE"), ("k4", "PULSE WIDTH"),
+        ("k7", "OSC 1 LEVEL"), ("k8", "OSC 1 FREQ"), ("k9", "OSC 2 LEVEL"), ("k10", "OSC 2 FREQ")],
+}
+# the right-hand block: knobs (FM, WEST COAST) or sliders (WAVETABLE's SUB, ANALOG's PITCH)
+RIGHT_KNOBS = {1: [("k5", "PITCH ENV"), ("k6", "NOISE"), ("k11", "PITCH DECAY"), ("k12", "VEL > FM")],
+               2: [("k5", "LPG DEPTH"), ("k6", "LPG RESPONSE"), ("k11", "LPG MODE"), ("k12", "VEL > FOLD")]}
+SUB_BARS = [("k5", "LEVEL"), ("k6", "DRIVE"), ("k11", "OCTAVE"), ("k12", "WAVE")]
+PITCH_BARS = [("k5", "AMOUNT"), ("k6", "DECAY"), ("k11", "TARGET"), ("k12", "OSC 2 FINE"),
+              ("k13", "VELOCITY"), ("k14", "OSC 1 FINE")]
 
-# ---- MIX: per machine model, level, pan, delay and reverb sends, tune, mute -------------------------------------
-L = ["[tab MIX]"]
-q = []
+# ---- MAIN: a column per machine, top to bottom: model; mute and MIDI channel; level, pan, tune; the three sends --
+L = ["[tab MAIN]"]
+q1, q2 = [], []
+BS = ART.BARS[0]
 for n in range(1, 5):
-    s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155; a, b = cx - 76, cx + 76
+    s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
     L += [frame(x0, 92, 310, 616, "MACHINE %d" % n),
-          popup(cx, 170, 250, "MODEL", s + "model"),
-          # left to right, top to bottom = the machine's Q-Links (level, pan, delay, reverb); then tune and mute
-          knob(a, 262, "LEVEL", s + "level", bw=140), knob(b, 262, "PAN", s + "pan", bw=140),
-          knob(a, 400, "DELAY", s + "dsend", bw=140), knob(b, 400, "REVERB", s + "rsend", bw=140),
-          knob(a, 538, "TUNE", s + "tune", bw=140),
-          'toggle cx=%d cy=%d label="MUTE" key=%smute' % (b, 548, s)]
-    q += [s + "level", s + "pan", s + "dsend", s + "rsend"]
-L.append('qlinks "MIX" = ' + ",".join(q))
+          popup(cx, 150, 270, "", s + "model"),
+          'toggle cx=%d cy=%d label="MUTE" key=%smute bw=100' % (x0 + 58, 212, s),
+          stepper(x0 + 205, 206, 180, s + "chan")]
+    # level, pan, tune: the knob at the left of its value, the name in front
+    for i, (k, lab) in enumerate((("level", "LEVEL"), ("pan", "PAN"), ("tune", "TUNE"))):
+        cy = 290 + i * 64
+        L += [text(x0 + 52, cy, lab, 0.9),
+              'knob cx=%d cy=%d r=22 label="" key=%s%s %s lay=side bw=190 bh=54 vs=22' % (x0 + 200, cy, s, k, STRIP)]
+    # the sends: a slider each, its value under it
+    for i, (k, lab) in enumerate((("dsend", "DELAY"), ("rsend", "REVERB"), ("xsend", "DIRT"))):
+        cy = 494 + i * 62
+        L += [text(x0 + 52, cy, lab, 0.9)] + bar(x0 + 200, cy, BS, s + k)
+    q1 += [s + "mute", s + "level", s + "pan", s + "tune"]
+    q2 += [s + "dsend", s + "rsend", s + "xsend", "-"]
+# beta: the engine's share of each audio block, in a corner
+L.append('readout cx=1222 cy=110 w=80 h=22 label="" key=cpu')
+L += ['qlinks "MAIN" = ' + ",".join(q1), 'qlinks "SENDS" = ' + ",".join(q2)]
 MIX = "\n".join(L) + "\n"
 
 # ---- MACHINE n ----------------------------------------------------------------------------------------------------
 def slot_page(n):
     s = "m%d_" % n; m = s + "model"
+    def when(i): return "%s:%d" % (m, i)
     L = ["[tab MACHINE %d]" % n,
          frame(10, 92, 1258, 108, ""),
          text(85, 150, "MACHINE %d" % n, 1.5),
          text(320, 124, "MODEL", 1.0), stepper(320, 164, 270, m),
          popup(535, 166, 130, "", m)]
-    # model-specific selectors in the top band: steppers (arrows; once touched, the MPC data wheel turns them)
+    # model-specific selectors in the top band: steppers in three places shared by every model (see fix_arrows)
     TV = (320, 60)
-    # three stepper places shared by every model (A, B, C), so their arrows line up (see fix_arrows)
     A, B, C = (750, 250), (990, 210), (1180, 160)
-    L += [text(A[0], 124, "TABLE", 1.0, m + ":0"), stepper(A[0], 164, A[1], s + "select", s + "tname", m + ":0"),
+    L += [text(A[0], 124, "TABLE", 1.0, when(0)), stepper(A[0], 164, A[1], s + "select", s + "tname", when(0)),
           W('meter cx=1100 cy=150 w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
-            % (TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), m + ":0"),
-          W('meter cx=1100 cy=150 w=%d h=%d key=%sk1 strip=images/nw/posmark_%dx%d.png frames=64'
-            % (TV[0], TV[1], s, TV[0], TV[1]), m + ":0"),
-          text(A[0], 124, "ALGORITHM", 1.0, m + ":1"), stepper(A[0], 164, A[1], s + "fm_algo", "", m + ":1"),
-          text(B[0], 124, "MODE", 1.0, m + ":1"), stepper(B[0], 164, B[1], s + "fm_mode", "", m + ":1"),
-          text(A[0], 124, "MOD WAVE", 1.0, m + ":2"), stepper(A[0], 164, A[1], s + "osc_w1", "", m + ":2"),
-          text(B[0], 124, "CARRIER WAVE", 1.0, m + ":2"), stepper(B[0], 164, B[1], s + "osc_w2", "", m + ":2"),
-          text(C[0], 124, "SYNC", 1.0, m + ":2"), stepper(C[0], 164, C[1], s + "osc_sync", "", m + ":2"),
-          text(A[0], 124, "OSC 1 WAVE", 1.0, m + ":3"), stepper(A[0], 164, A[1], s + "osc_w1", "", m + ":3"),
-          text(B[0], 124, "OSC 2 WAVE", 1.0, m + ":3"), stepper(B[0], 164, B[1], s + "osc_w2", "", m + ":3"),
-          text(C[0], 124, "SYNC", 1.0, m + ":3"), stepper(C[0], 164, C[1], s + "osc_sync", "", m + ":3"),
-          ]
-    # model area
+            % (TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), when(0)),
+          text(A[0], 124, "ALGORITHM", 1.0, when(1)), stepper(A[0], 164, A[1], s + "fm_algo", "", when(1)),
+          text(B[0], 124, "MODE", 1.0, when(1)), stepper(B[0], 164, B[1], s + "fm_mode", "", when(1)),
+          text(A[0], 124, "MOD WAVE", 1.0, when(2)), stepper(A[0], 164, A[1], s + "osc_w1", "", when(2)),
+          text(B[0], 124, "CARRIER WAVE", 1.0, when(2)), stepper(B[0], 164, B[1], s + "osc_w2", "", when(2)),
+          text(C[0], 124, "SYNC", 1.0, when(2)), stepper(C[0], 164, C[1], s + "osc_sync", "", when(2)),
+          text(A[0], 124, "OSC 1 WAVE", 1.0, when(3)), stepper(A[0], 164, A[1], s + "osc_w1", "", when(3)),
+          text(B[0], 124, "OSC 2 WAVE", 1.0, when(3)), stepper(B[0], 164, B[1], s + "osc_w2", "", when(3)),
+          text(C[0], 124, "SYNC", 1.0, when(3)), stepper(C[0], 164, C[1], s + "osc_sync", "", when(3))]
     for i, name in enumerate(MODELS):
-        L.append(frame(10, 206, 1258, 270, name, "%s:%d" % (m, i)))
-    # the right-hand 2x2 block on a panel of its own: SUB (WAVETABLE), PITCH (ANALOG)
-    L.append(W('art file=images/nw/subpanel.png x=846 y=232 w=418 h=240', m + ":0"))
-    L.append(W('art file=images/nw/penvpanel.png x=846 y=232 w=418 h=240', m + ":3"))
-    for mi, labels in K_LABELS.items():
-        for k, lab in enumerate(labels):
-            if lab:
-                L.append(knob(KX[k % 6], ROW1 if k < 6 else ROW2, lab, s + "k%d" % (k + 1), "%s:%d" % (m, mi), bw=150))
-    # WAVETABLE: EFFECT and UNISON MODE (steppers) between UNISON/SPREAD and the SUB block; SUB on its own panel
-    L += [text(520, ROW2 - 40, "EFFECT", 1.0, m + ":0"), stepper(520, ROW2 - 4, 160, s + "wt_fx", "", m + ":0"),
-          text(727, ROW2 - 40, "UNISON MODE", 1.0, m + ":0"), stepper(727, ROW2 - 4, 230, s + "wt_umode", "", m + ":0")]
-    # WEST COAST: one cycle through the wavefolder (FOLD x SYMMETRY, mN_cview from the plugin)
+        L.append(frame(10, 206, 1258, 270, name, when(i)))
+    # the knob columns
+    for mi, items in COLS.items():
+        for j, (k, lab) in enumerate(items):
+            L.append(knob(KX[j % 4], ROW1 if j < 4 else ROW2, lab, s + k, when(mi), bw=170))
+    # WAVETABLE: EFFECT and UNISON MODE in row 2; the scope of the frame POSITION is on (live, from the plugin);
+    # SUB as sliders on its panel under it
+    L += [text(KX[2], ROW2 - 40, "EFFECT", 1.0, when(0)), stepper(KX[2], ROW2 - 4, 170, s + "wt_fx", "", when(0)),
+          text(KX[3], ROW2 - 40, "UNISON MODE", 1.0, when(0)), stepper(KX[3], ROW2 - 4, 190, s + "wt_umode", "", when(0))]
+    SX, SY = RIGHT[0] + RIGHT[2] // 2, RIGHT[1] + 2 + ART.SCOPE[1] // 2
+    L.append(W('art file=images/nw/scopebg_%dx%d.png x=%d y=%d w=%d h=%d'
+               % (ART.SCOPE + (SX - ART.SCOPE[0] // 2, SY - ART.SCOPE[1] // 2) + ART.SCOPE), when(0)))
+    cols = 32; cw = ART.SCOPE_COL[0]; span = ART.SCOPE[0] - 20
+    for c in range(cols):
+        x = SX - span // 2 + int((c + 0.5) * span / cols)
+        L.append(W('meter cx=%d cy=%d w=%d h=%d key=%sws%d strip=images/nw/scope_%dx%d.png frames=%d'
+                   % (x, SY, cw, ART.SCOPE_COL[1], s, c, cw, ART.SCOPE_COL[1], ART.SCOPE_LEVELS), when(0)))
+    PY = RIGHT[1] + RIGHT[3] - ART.PANELS["sub"][2]
+    L.append(W('art file=images/nw/panel_sub.png x=%d y=%d w=%d h=%d' % (RIGHT[0], PY, RIGHT[2], ART.PANELS["sub"][2]), when(0)))
+    BW = ART.BARS[1]
+    for j, (k, lab) in enumerate(SUB_BARS):
+        L += bar(RX[j % 2] + 34, PY + 40 + (j // 2) * 50, BW, s + k, when(0), lab, 96)
+    # FM and WEST COAST: knobs in the right-hand block (WEST COAST's on the LPG panel)
+    L.append(W('art file=images/nw/panel_lpg.png x=%d y=%d w=%d h=%d' % RIGHT, when(2)))
+    for mi, items in RIGHT_KNOBS.items():
+        for j, (k, lab) in enumerate(items):
+            L.append(knob(RX[j % 2], ROW1 if j < 2 else ROW2, lab, s + k, when(mi), bw=200))
+    # WEST COAST: one cycle through the wavefolder (FOLD x SYMMETRY) where row 2's last two columns would be
     L.append(W('meter cx=%d cy=%d w=%d h=%d key=%scview strip=images/nw/fold_%dx%d.png frames=128'
-               % ((KX[3] + KX[4]) // 2, ROW2, ART.FOLD[0], ART.FOLD[1], s, ART.FOLD[0], ART.FOLD[1]), m + ":2"))
-    # filter
+               % ((KX[2] + KX[3]) // 2, ROW2, ART.FOLD[0], ART.FOLD[1], s, ART.FOLD[0], ART.FOLD[1]), when(2)))
+    # ANALOG: the PITCH panel, six sliders
+    L.append(W('art file=images/nw/panel_pitch.png x=%d y=%d w=%d h=%d' % RIGHT, when(3)))
+    for j, (k, lab) in enumerate(PITCH_BARS):
+        L += bar(RX[j % 2] + 40, RIGHT[1] + 52 + (j // 2) * 66, BW, s + k, when(3), lab, 96)
+    # FILTER: type, the curve, the decay envelope, base-width; CUTOFF RESONANCE SHAPE ENV DECAY KEY
     FS, ES = ART.FLT, ART.ENV
-    L += [frame(10, 482, 690, 226, "FILTER"), popup(95, 632, 150, "TYPE", s + "ftype")]
+    L += [frame(10, 482, 690, 226, "FILTER"), stepper(110, 548, 180, s + "ftype")]
     for i, t in enumerate(ART.FLT_TYPES):
-        L.append(W('meter cx=335 cy=538 w=%d h=%d key=%sfview strip=images/nw/flt_%s_%dx%d.png frames=128'
-                   % (FS[0], FS[1], s, t, FS[0], FS[1]), s + "ftype:%d" % i))
-    L.append(meter(535, 538, ES, s + "fdec", "env_d_%dx%d.png" % ES))
-    for i, (lab, k) in enumerate((("CUTOFF", "cutoff"), ("RESONANCE", "reso"), ("ENV", "fenv"), ("DECAY", "fdec"), ("KEY", "fkey"))):
-        L.append(knob(235 + i * 100, 628, lab, s + k, bw=96))
-    # amp
+        frames = 192 if t == "multi" else 128
+        L.append(W('meter cx=305 cy=546 w=%d h=%d key=%sfview strip=images/nw/flt_%s_%dx%d.png frames=%d'
+                   % (FS[0], FS[1], s, t, FS[0], FS[1], frames), s + "ftype:%d" % i))
+    L.append(meter(470, 546, ES, s + "fdec", "env_d_%dx%d.png" % ES))
+    BB = ART.BARS[2]
+    L += bar(640, 524, BB, s + "bwlo", label="BASE", lw=50) + bar(640, 572, BB, s + "bwhi", label="WIDTH", lw=50)
+    for i, (lab, k) in enumerate((("CUTOFF", "cutoff"), ("RESONANCE", "reso"), ("SHAPE", "fshape"), ("ENV", "fenv"),
+                                  ("DECAY", "fdec"), ("KEY", "fkey"))):
+        L.append(knob(70 + i * 112, 640, lab, s + k, bw=106))
+    # AMP
     L.append(frame(706, 482, 562, 226, "AMP"))
     for i, (lab, k) in enumerate((("ATTACK", "amp_a"), ("DECAY", "amp_d"), ("SUSTAIN", "amp_s"), ("RELEASE", "amp_r"), ("VELOCITY", "vel"))):
         cx = 770 + i * 108
-        if i < 4: L.append(meter(cx, 538, ES, s + k, "env_%s_%dx%d.png" % (("adsr"[i],) + ES)))
-        L.append(knob(cx, 628, lab, s + k, bw=104))
-    # Q-Link columns of 4: row 1 left, row 2 left, the right 2x2, the filter
-    # the Q-Link set titles are what MPC shows as the page names: they carry the machine number
+        if i < 4: L.append(meter(cx, 546, ES, s + k, "env_%s_%dx%d.png" % (("adsr"[i],) + ES)))
+        L.append(knob(cx, 640, lab, s + k, bw=104))
+    # Q-Link columns of 4: row 1, row 2, the right-hand block, the filter; the titles are the MPC page names
     L += ['qlinks "MACHINE %d" = ' % n + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
           ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
-          # left to right on screen = Q-Links top to bottom, 4 per column
           'qlinks "M%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
-              "ftype", "cutoff", "reso", "fenv", "fdec", "fkey", "-", "-", "amp_a", "amp_d", "amp_s", "amp_r", "vel", "-", "-", "-"))]
+              "ftype", "cutoff", "reso", "fshape", "fenv", "fdec", "fkey", "-", "amp_a", "amp_d", "amp_s", "amp_r",
+              "vel", "bwlo", "bwhi", "-"))]
     return "\n".join(fix_arrows(L, m)) + "\n"
 
 
@@ -220,27 +264,38 @@ for i in range(8):
 L.append('qlinks "MATRIX" = ' + ",".join(["mm%d_amt" % n for n in range(1, 9)] + ["mm%d_dst" % n for n in range(1, 9)]))
 MATRIX = "\n".join(L) + "\n"
 
-# ---- GLOBAL: glide, master, delay, reverb, preset, logo ---------------------------------------------------------
+# ---- FX: DIRT, DELAY, REVERB (fed by each machine's sends on MAIN) -------------------------------------------------
+L = ["[tab FX]",
+     frame(10, 92, 1258, 200, "DIRT"),
+     knob(160, 196, "DRIVE", "fx_xdrive", bw=200), knob(420, 196, "CHARACTER", "fx_xchar", bw=220),
+     knob(680, 196, "TONE", "fx_xtone", bw=200), knob(940, 196, "GRIT", "fx_xgrit", bw=200),
+     frame(10, 298, 1258, 200, "DELAY"),
+     knob(160, 402, "TIME", "fx_dtime", bw=200), knob(420, 402, "FEEDBACK", "fx_dfb", bw=200),
+     knob(680, 402, "TONE", "fx_dtone", bw=200), knob(940, 402, "LEVEL", "fx_dlevel", bw=200),
+     text(1150, 362, "MODE", 1.0), stepper(1150, 402, 210, "fx_dmode"),
+     frame(10, 504, 1258, 204, "REVERB"),
+     knob(160, 608, "SIZE", "fx_rsize", bw=200), knob(420, 608, "DAMP", "fx_rdamp", bw=200),
+     knob(680, 608, "LEVEL", "fx_rlevel", bw=200),
+     'qlinks "FX" = fx_xdrive,fx_xchar,fx_xtone,fx_xgrit,fx_dtime,fx_dfb,fx_dtone,fx_dlevel,'
+     'fx_rsize,fx_rdamp,fx_rlevel,-,-,-,-,-']
+FX = "\n".join(L) + "\n"
+
+# ---- GLOBAL: glide, master, engine, preset, logo -----------------------------------------------------------------
 L = ["[tab GLOBAL]",
      frame(10, 92, 620, 200, "GLIDE"), knob(140, 196, "GLIDE TIME", "glide", bw=140),
      text(420, 132, "GLIDE MODE", 1.0), stepper(420, 172, 300, "glide_mode"),
      frame(636, 92, 632, 200, "MASTER"), knob(800, 196, "BEND RANGE", "pb_range", bw=140),
      knob(1000, 196, "VOLUME", "volume", bw=140),
-     frame(10, 298, 820, 200, "DELAY"),
-     knob(110, 400, "TIME", "fx_dtime", bw=130), knob(255, 400, "FEEDBACK", "fx_dfb", bw=130),
-     knob(400, 400, "TONE", "fx_dtone", bw=130), knob(545, 400, "LEVEL", "fx_dlevel", bw=130),
-     text(715, 360, "MODE", 1.0), stepper(715, 400, 210, "fx_dmode"),
-     frame(836, 298, 432, 200, "REVERB"),
-     knob(930, 400, "SIZE", "fx_rsize", bw=120), knob(1052, 400, "DAMP", "fx_rdamp", bw=120),
-     knob(1174, 400, "LEVEL", "fx_rlevel", bw=120),
+     frame(10, 298, 1258, 200, "ENGINE"), knob(140, 402, "DRIFT", "drift", bw=160),
+     text(420, 362, "OVERSAMPLING", 1.0), stepper(420, 402, 220, "oversample"),
+     text(860, 402, "OVERSAMPLING: WEST COAST, ANALOG AND HARD FM AT TWICE THE RATE", 0.8),
      frame(10, 504, 1258, 204, "PRESET"),
-     'stepper cx=500 cy=606 w=640 h=56 label="" key=preset get=preset_name style=dotmatrix',
+     'stepper cx=500 cy=606 w=640 h=56 label="" key=preset get=preset_name',
      'art file=images/nw/logo.png x=%d y=%d w=316 h=60' % (1100 - 158, 606 - 30),
-     'qlinks "GLOBAL" = glide,glide_mode,pb_range,volume,fx_dtime,fx_dfb,fx_dtone,fx_dlevel,'
-     'fx_rsize,fx_rdamp,fx_rlevel,-,preset,-,-,-']
+     'qlinks "GLOBAL" = glide,glide_mode,pb_range,volume,drift,oversample,-,-,preset,-,-,-,-,-,-,-']
 GLOBAL = "\n".join(L) + "\n"
 
-order = [MIX] + [slot_page(n) for n in range(1, 5)] + [MOD, MATRIX, GLOBAL]
+order = [MIX] + [slot_page(n) for n in range(1, 5)] + [MOD, MATRIX, FX, GLOBAL]
 out = head.rstrip("\n") + "\n\n" + "\n".join(x.rstrip("\n") + "\n" for x in order)
 open(os.path.join(root, "layout.conf"), "w").write(out)
 print("layout.conf written:", len(order), "tabs")

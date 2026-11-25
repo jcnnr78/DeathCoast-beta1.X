@@ -12,9 +12,9 @@
 #include <cstring>
 #include <string>
 #include <vector>
-using namespace tb;
+using namespace nw;
 static void set(Engine &e, std::string k, float v) {
-  for (int i = 0; i < TB_PARAM_COUNT; i++) if (k == tb_params[i].key) { e.pots[i] = v; return; }
+  for (int i = 0; i < NW_PARAM_COUNT; i++) if (k == nw_params[i].key) { e.pots[i] = v; return; }
   fprintf(stderr, "no param %s\n", k.c_str());
 }
 int main(int argc, char **argv) {
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
       if ((m == 'm' || m == 'x') && s == 4) { set(e, p + "fm_mode", 1); set(e, p + "k7", 90); set(e, p + "amp_d", 127); }
     }
   }
-  uint8_t on[3] = {0x90, 48, 100}; e.onMidi(on, 3);
+  uint8_t on[3] = {0x90, 48, 100}; e.onTrackMidi(on, 3);
   std::vector<int16_t> b(128 * 2); int blocks = 44100 * 4 / 128;
   auto t0 = std::chrono::steady_clock::now();
   for (int i = 0; i < blocks; i++) e.renderBlock(b.data(), 128);

@@ -7,22 +7,21 @@
   "module": "src/module.json",
   "build": {
     "sources": [
-      "src/dsp/northwest_plugin.cpp",
+      "src/dsp/northwest.cpp",
       "src/dsp/engine.cpp",
       "src/dsp/wt/loader.cpp",
-      "src/ported/wavetable.cpp",
-      "src/ported/audiofilter/ParametricCreator.cpp"
+      "src/ported/wavetable.cpp"
     ],
     "cflags": [
       "-Isrc",
       "-Isrc/dsp",
       "-Isrc/host",
       "-Isrc/ported",
-      "-std=c++17",
-      "-DMPC_PORT"
+      "-std=c++17"
     ],
     "libs": [
-      "-lm"
+      "-lm",
+      "-ldl"
     ]
   },
   "params": "params.json",

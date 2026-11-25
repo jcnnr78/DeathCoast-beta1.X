@@ -22,7 +22,7 @@
 #include <map>
 #include <mutex>
 
-namespace tb {
+namespace nw {
 
 /* implemented in loader.cpp (dr_flac lives there) */
 bool wtDecodeFlac(const char *path, std::vector<float> &samples,
@@ -44,7 +44,7 @@ public:
     {
         std::lock_guard<std::mutex> lk(m);
         if (started) return;
-        started = rtStartWorker(&worker, &trampoline, this, "tablor-wtload") == 0;
+        started = rtStartWorker(&worker, &trampoline, this, "northwest-load") == 0;
     }
 
     /* Queue arbitrary off-thread work (file I/O, allocation, scans).
@@ -124,7 +124,7 @@ private:
                 /* No settle delay: a table change loads the instant the pot
                  * moves. Deferring it to coalesce a fast spin was tried and
                  * rejected -- the lag is the whole feel of the control. */
-                for (int i = 0; i < TB_WT_SLOTS && !job; i++) {
+                for (int i = 0; i < NW_SLOTS && !job; i++) {
                     if (hasPending[i]) {
                         entry = pending[i];
                         hasPending[i] = false;
@@ -291,9 +291,9 @@ private:
     std::condition_variable cv;
     pthread_t worker {};
     bool started = false;
-    WtEntry pending[TB_WT_SLOTS];
+    WtEntry pending[NW_SLOTS];
     std::vector<std::function<void()>> jobs;
-    bool hasPending[TB_WT_SLOTS] = {};
+    bool hasPending[NW_SLOTS] = {};
     bool working = false;
     bool quit = false;
 
@@ -301,4 +301,4 @@ private:
     std::map<std::string, std::weak_ptr<Wavetable>> cache;
 };
 
-} // namespace tb
+} // namespace nw

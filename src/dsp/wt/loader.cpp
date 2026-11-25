@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace tb {
+namespace nw {
 
 bool wtDecodeFlac(const char *path, std::vector<float> &samples, float &sampleRate)
 {
@@ -27,4 +27,4 @@ bool wtDecodeFlac(const char *path, std::vector<float> &samples, float &sampleRa
     return frameCount > 0;
 }
 
-} // namespace tb
+} // namespace nw

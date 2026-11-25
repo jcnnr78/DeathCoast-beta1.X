@@ -7,7 +7,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-using namespace tb;
+using namespace nw;
 static void walk(const std::string&d,std::vector<std::string>&o){DIR*x=opendir(d.c_str());if(!x)return;while(dirent*e=readdir(x)){if(e->d_name[0]=='.')continue;std::string f=d+"/"+e->d_name;struct stat st;stat(f.c_str(),&st);if(S_ISDIR(st.st_mode))walk(f,o);else if(strstr(e->d_name,".wav"))o.push_back(f);}closedir(x);}
 int main(int argc,char**argv){
   std::vector<std::string> files; walk(argv[1],files); std::sort(files.begin(),files.end()); int bad=0;
@@ -18,8 +18,8 @@ int main(int argc,char**argv){
     auto wt=std::make_shared<Wavetable>(); if(!wtBuild(*wt,s.data(),nf,fs,44100.f,(float)w.sampleRate)){printf("BUILD FAIL %s\n",f.c_str());bad++;continue;}
     float worst=0, minrms=1, cent[3]={0,0,0};
     for(int pi=0;pi<3;pi++){
-      Engine e; e.setTable(0,wt); static int idx=-1; for(int i=0;i<TB_PARAM_COUNT;i++){ if(!strcmp(tb_params[i].key,"wt1_pos"))e.pots[i]=pi*63.5f; if(!strcmp(tb_params[i].key,"vca_a"))e.pots[i]=0;if(!strcmp(tb_params[i].key,"vca_s"))e.pots[i]=127;}
-      uint8_t m[3]={0x90,(uint8_t)(pi==0?36:pi==1?48:72),100}; e.onMidi(m,3);
+      Engine e; e.setTable(0,wt); static int idx=-1; for(int i=0;i<NW_PARAM_COUNT;i++){ if(!strcmp(nw_params[i].key,"wt1_pos"))e.pots[i]=pi*63.5f; if(!strcmp(nw_params[i].key,"vca_a"))e.pots[i]=0;if(!strcmp(nw_params[i].key,"vca_s"))e.pots[i]=127;}
+      uint8_t m[3]={0x90,(uint8_t)(pi==0?36:pi==1?48:72),100}; e.onTrackMidi(m,3);
       std::vector<int16_t> b(128*2*200); for(int i=0;i<200;i++)e.renderBlock(b.data()+i*256,128);
       double sq=0; float pkk=0; bool fin=true; for(size_t i=20000;i<b.size();i+=2){float v=b[i]/32768.f;sq+=v*v;pkk=std::max(pkk,std::fabs(v));}
       float rms=std::sqrt(sq/((b.size()-20000)/2)); worst=std::max(worst,pkk); minrms=std::min(minrms,rms);
