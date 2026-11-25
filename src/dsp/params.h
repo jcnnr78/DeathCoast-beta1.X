@@ -301,7 +301,8 @@ static const char *const dc_opts_12[] = { "NONE", "EG1", "EG2", "LFO1", "LFO2", 
 static const char *const dc_opts_13[] = { "NONE", "PITCH", "LEVEL", "PAN", "CUTOFF", "RESONANCE", "TIMBRE A", "TIMBRE B", "TIMBRE C", "TIMBRE D" };
 static const char *const dc_opts_14[] = { "ALL", "M1", "M2", "M3", "M4" };
 static const char *const dc_opts_15[] = { "OFF", "GLISSANDO", "PORTAMENTO", "LEGATO" };
-static const char *const dc_opts_16[] = { "STEREO", "PING PONG" };
+static const char *const dc_opts_16[] = { "OFF", "AUTO", "ON" };
+static const char *const dc_opts_17[] = { "STEREO", "PING PONG" };
 
 static const dc_param_t dc_params[DC_PARAM_COUNT] = {
     { "m1_model", DC_ENUM, 0, 3, 0, 4, dc_opts_0 },
@@ -543,7 +544,7 @@ static const dc_param_t dc_params[DC_PARAM_COUNT] = {
     { "pb_range", DC_INT, 0, 24, 2, 0, 0 },
     { "volume", DC_INT, 0, 127, 100, 0, 0 },
     { "drift", DC_INT, 0, 127, 0, 0, 0 },
-    { "oversample", DC_ENUM, 0, 1, 1, 2, dc_opts_2 },
+    { "oversample", DC_ENUM, 0, 2, 1, 3, dc_opts_16 },
     { "fx_dtime", DC_INT, 0, 127, 70, 0, 0 },
     { "fx_dsync", DC_ENUM, 0, 1, 0, 2, dc_opts_10 },
     { "fx_dfb", DC_INT, 0, 127, 50, 0, 0 },
@@ -551,7 +552,7 @@ static const dc_param_t dc_params[DC_PARAM_COUNT] = {
     { "fx_ddrive", DC_INT, 0, 127, 20, 0, 0 },
     { "fx_dmod", DC_INT, 0, 127, 10, 0, 0 },
     { "fx_dduck", DC_INT, 0, 127, 0, 0, 0 },
-    { "fx_dmode", DC_ENUM, 0, 1, 1, 2, dc_opts_16 },
+    { "fx_dmode", DC_ENUM, 0, 1, 1, 2, dc_opts_17 },
     { "fx_dlevel", DC_INT, 0, 127, 100, 0, 0 },
     { "fx_drev", DC_INT, 0, 127, 0, 0, 0 },
     { "fx_rdecay", DC_INT, 0, 127, 64, 0, 0 },

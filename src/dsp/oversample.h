@@ -47,6 +47,11 @@ public:
         }
     }
     void reset() { std::memset(hist, 0, sizeof hist); p = 0; }
+    /* fill the history from 16 samples at the plain rate, oldest first, each held for two (a step, not a jump) */
+    void prime(const float *last16)
+    {
+        for (int i = 0; i < 16; i++) { push(last16[i]); push(last16[i]); }
+    }
 
 private:
     inline void push(float x) { hist[p] = x; hist[p + kN] = x; p = (p + 1) & (kN - 1); }

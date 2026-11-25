@@ -14,6 +14,7 @@ From the project folder (the one holding `vst.json`):
     python3 release/fetch-library.py library          # the wavetables (needs internet)
     mkdir -p library/presets && cp presets/deathcoast.tbl library/presets/ && mkdir -p library/wavetables && cp -R wavetables/. library/wavetables/
     bash "$MPC_VST/tools/build_port.sh" vst.json      # -> build/: deathcoast.so, screen, plugin-list entry
+    python3 tools/check_abi.py build/deathcoast.so    # would it load on the MPC? (system library versions)
     bash "$MPC_VST/tools/test_port.sh" vst.json       # offline test, must print PASSED
 
 If `build_port.sh` fails, send me the last 30 lines of its output.
@@ -26,7 +27,8 @@ It builds the same thing and attaches a zip to a draft release.
 ## C. Installing on the MPC
 
 The build produces a zip with `install.sh` (installed over SSH). For MPC OS 2.15.1 the screen has to be converted
-(`TUI.json` to the 2.x format, `os_compat` to 2.15.1); the `.so` itself already fits that system (GLIBC <= 2.29).
+(`TUI.json` to the 2.x format, `os_compat` to 2.15.1); the `.so` must fit that system: GLIBC <= 2.29 and libstdc++ GLIBCXX <= 3.4.21 (`tools/check_abi.py`, run by the
+workflow; 1.6.0 asked for GLIBCXX_3.4.29 and did not load).
 
 ## Tablas de onda
 `wavetables/DeathCoast/` (52 tablas originales, 6 categorías) se copia a `library/wavetables/` en la compilación. Para regenerarlas: `python3 tools/make_wavetables.py`.

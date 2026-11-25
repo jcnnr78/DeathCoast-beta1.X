@@ -29,7 +29,7 @@ jobs:
       tools_ref: e3a0af4e8cb7eacd4bfcc2fbcbcde834aef50fa4
       vst_dir: .
       # its library into library/, shipped as the plugin folder's deathcoast/ (MODULE_SUBDIR)
-      build: python3 release/fetch-library.py library && mkdir -p library/presets && cp presets/deathcoast.tbl library/presets/ && mkdir -p library/wavetables && cp -R wavetables/. library/wavetables/ && bash "$MPC_VST/tools/build_port.sh" vst.json
+      build: python3 release/fetch-library.py library && mkdir -p library/presets && cp presets/deathcoast.tbl library/presets/ && mkdir -p library/wavetables && cp -R wavetables/. library/wavetables/ && bash "$MPC_VST/tools/build_port.sh" vst.json && python3 tools/check_abi.py build/deathcoast.so
       host_test: 'rm -rf build/deathcoast && cp -R library build/deathcoast && "$MPC_VST/tools/test_port.sh" vst.json'
       extra: library:deathcoast
       user_data: deathcoast/wavetables

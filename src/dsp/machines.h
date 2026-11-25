@@ -573,7 +573,7 @@ public:
             noteSmoother.setValueUnsmoothed((float) note / 127.0f);
         }
         filter.reset(); lastFn = -1000.0f; wasOpen = false;
-        dec.reset();
+        dec.reset(); osAuto = -1;                         /* AUTO decides afresh on the first block */
         if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(DC_P_M1_WT_UMODE)]);
         if (machine == M_FM) fm.start(vel, seed);
         if (machine == M_WESTCOAST) wc.start(vel);
@@ -636,9 +636,17 @@ public:
         if (machine == M_WAVETABLE) {
             wt.render(t, P, slot, note, mo, L, R, n);
         } else {
-            /* FM, WEST COAST, ANALOG: mono, at twice the rate with OVERSAMPLING on */
-            const int os = (int) P[DC_P_OVERSAMPLE] != 0 && needsOversampling(P) ? 2 : 1;
-            if (os != lastOs) { dec.reset(); lastOs = os; }
+            /* FM, WEST COAST, ANALOG: mono, at twice the rate (OVERSAMPLING: OFF / AUTO / ON) */
+            const int os = chooseOversampling(P, mo);
+            if (os != lastOs) {
+                if (os == 2) {                        /* going up: the filter starts from what was playing, not 0 */
+                    float ordered[kLast];
+                    for (int i = 0; i < kLast; i++) ordered[i] = last1x[(lastPos + i) & (kLast - 1)];
+                    dec.prime(ordered);
+                }
+                else dec.reset();
+                lastOs = os;
+            }
             float M[2 * kBlock];
             if (machine == M_FM) fm.render(P, slot, note, mo, M, n, os);
             else if (machine == M_WESTCOAST) {
@@ -652,6 +660,7 @@ public:
             }
             if (os == 2) dec.process(M, L, n);
             else std::memcpy(L, M, (size_t) n * sizeof(float));
+            for (int i = std::max(0, n - kLast); i < n; i++) last1x[(lastPos++) & (kLast - 1)] = L[i];
             std::memcpy(R, L, (size_t) n * sizeof(float));
         }
 
@@ -702,16 +711,31 @@ private:
     }
 
     /* where the 2x rate earns its cost: the fold, sync and phase modulation, drive; FM only at a high index or with
-     * much feedback (a soft FM bell gains nothing and would cost twice) */
-    bool needsOversampling(const float *P) const
+     * much feedback (a soft FM bell gains nothing and would cost twice). Knobs plus what the matrix adds to them. */
+    bool needsOversampling(const float *P, const float *mo) const
     {
         const float *K = P + sp(DC_P_M1_K1);
+        auto k = [&](int i, int md) { return K[i] + mo[md] * 127.0f; };
         switch (machine) {
-        case M_WESTCOAST: return true;
-        case M_ANALOG: return (int) P[sp(DC_P_M1_OSC_SYNC)] != 0 || K[0] > 0.5f || K[2] > 0.5f;
-        case M_FM: return K[0] > 80.0f || K[1] > 80.0f || K[2] > 80.0f || K[3] > 50.0f;
+        case M_WESTCOAST: return (int) P[sp(DC_P_M1_OSC_SYNC)] != 0 || k(0, MD_TA) > 20.0f || k(1, MD_TB) > 20.0f;
+        case M_ANALOG: return (int) P[sp(DC_P_M1_OSC_SYNC)] != 0 || k(0, MD_TA) > 0.5f || k(2, MD_TC) > 0.5f;
+        case M_FM: return k(0, MD_TA) > 80.0f || k(1, MD_TB) > 80.0f || k(2, MD_TC) > 80.0f || k(3, MD_TD) > 50.0f;
         default: return false;
         }
+    }
+
+    /* OFF: 1x. ON: 2x. AUTO: 2x as soon as the sound needs it; back to 1x only after it has not needed it for about
+     * half a second and then only while the note is quiet or at the next note, so the switch is never heard */
+    int chooseOversampling(const float *P, const float *mo)
+    {
+        const int mode = (int) P[DC_P_OVERSAMPLE];
+        if (mode <= 0) return 1;
+        if (mode >= 2) return 2;
+        const bool need = needsOversampling(P, mo);
+        if (osAuto < 0) { osAuto = need ? 2 : 1; calm = 0; return osAuto; }
+        if (need) { osAuto = 2; calm = 0; }
+        else if (osAuto == 2 && ++calm > kCalmBlocks && amp.getOutput() < 0.01f) osAuto = 1;
+        return osAuto;
     }
 
     /* DRIFT: a slow random walk of pitch (up to 15 cents) and cutoff (up to 1 semitone), its own per machine */
@@ -735,7 +759,10 @@ private:
     AnalogADSR amp, fenv;
     ValueSmoother<float> noteSmoother;
     double sampleRate = 44100.0;
-    int slot = 0, machine = 0, midiNote = 60, lastOs = 1;
+    int slot = 0, machine = 0, midiNote = 60, lastOs = 1, osAuto = -1, calm = 0, lastPos = 0;
+    static constexpr int kCalmBlocks = 690;              /* 0.5 s of 32-sample blocks */
+    static constexpr int kLast = 16;
+    float last1x[kLast] = {};                             /* the last output samples, to prime the decimator */
     float velocity = 0.0f, lastFn = -1000.0f;
     float driftPitch = 0.0f, driftCutoff = 0.0f, tgtPitch = 0.0f, tgtCutoff = 0.0f;
     uint32_t drs = 1;

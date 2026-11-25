@@ -2,7 +2,15 @@
 
 NorthWest is called DeathCoast from 1.7 (after the Costa da Morte). The entries below 1.7 keep the old name.
 
-## DeathCoast 1.7 (in progress)
+## DeathCoast 1.7
+
+- OVERSAMPLING: OFF, AUTO (default), ON. AUTO runs a machine at twice the rate only while its sound needs it (fold,
+  sync, drive, hard FM, counting the matrix), and steps down only while the note is quiet, so it is not heard.
+- 61 new presets: INIT, BASS, LEAD, KEYS, PAD, DRUM, KIT (one machine per MIDI channel), EFX, DRONE, BUCHLA, MOOG,
+  STRESS, mixing the four models and the new delay and reverb.
+- The workflow checks the plugin against the MPC's system libraries (tools/check_abi.py) and stops before making a
+  zip that would not load.
+- Cleaner: no compiler warnings; reverb and delay cheaper per sample.
 
 - The name: DeathCoast everywhere (plugin, MIDI port "DeathCoast MIDI In", folder, presets, wavetable pack, code).
   The VST id stays "NWst" and NorthWest's states ("NW1;") and table paths ("NorthWest/...") are still read.

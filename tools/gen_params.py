@@ -97,7 +97,7 @@ E("glide_mode", "GLIDE MODE", GLIDE_MODES, 0)
 I("pb_range", "BEND RANGE", 0, 24, 2)
 I("volume", "VOLUME", 0, 127, 100)
 I("drift", "DRIFT", 0, 127, 0, dynamic_display=True)          # analog drift of pitch and cutoff, every machine
-E("oversample", "OVERSAMPLING", OFF_ON, 1)                     # 2x in WEST COAST, ANALOG and FM
+E("oversample", "OVERSAMPLING", ["OFF", "AUTO", "ON"], 1)      # 2x in WEST COAST, ANALOG and FM: AUTO when needed
 # FX: a delay, a reverb and a distortion (DIRT), fed by each machine's sends
 I("fx_dtime", "DELAY TIME", 0, 127, 70, dynamic_display=True)   # FREE: ms; SYNC: a note value
 E("fx_dsync", "DELAY SYNC", ["FREE", "SYNC"], 0)

@@ -9,6 +9,23 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin DeathCoast logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 7 - DeathCoast 1.7 (main)
+NorthWest becomes DeathCoast (Costa da Morte): every name in plugin, code and repository; the VST id stays "NWst"
+and NorthWest's states ("NW1;") and table paths ("NorthWest/...") are still read. Parameters keep their 1.6 VST
+index (new ones appended; the framework's params.lock refuses inserts), the reverb's old DAMP key carries TONE.
+- 1.6.1 fix kept: std::__throw_bad_array_new_length defined in the plugin (GLIBCXX_3.4.29 is not on the MPC);
+  tools/check_abi.py now fails the workflow on any such import.
+- FILTER pictures: 192 frames for every type (the view value is the frame; 128-frame strips showed wrong curves).
+- FM: OP1 LEVEL (m<n>_op1) and OP1 RATIO (K14); page = levels over ratios, right block 3 x 2.
+- REVERB: 8-line FDN (Householder), pre-delay, 4 allpass diffusers a side, DECAY 0.3-20 s + FREEZE (lossless,
+  whole-sample reads), SIZE, TONE, MOD. DELAY: SYNC, tape saturation, FEEDBACK 110 %, wow/flutter, two-way TONE,
+  DUCK, into the reverb. x86: delay + reverb 0.30 % (1.6: 0.13 %).
+- OVERSAMPLING OFF / AUTO / ON: AUTO goes up at once when the sound needs it (knob + matrix), down after 0.5 s and
+  only while the note is quiet; the decimator is primed going up.
+- 61 new presets (INIT, BASS, LEAD, KEYS, PAD, DRUM, KIT, EFX, DRONE, BUCHLA, MOOG, STRESS), checked offline for
+  level, clipping and tails. x86 STRESS 5-8 % of a core (tables loading included).
+- Next (1.8): 4 LFO + 4 EG, matrix 16 rows; then a visual pass on the whole screen.
+
 ## Phase 6 - v1.6, branch v1.6 (built locally, not yet on the MPC)
 1.5 is main (the root release). The user's notes for 1.6 (25-nov), all in:
 - MAIN: one column per machine (MODEL; MUTE + MIDI channel stepper; LEVEL, PAN, TUNE as side knobs; DELAY, REVERB,

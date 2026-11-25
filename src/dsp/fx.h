@@ -99,13 +99,19 @@ public:
         const float wowInc = 2.0f * (float) M_PI * 0.6f / sampleRate, flutInc = 2.0f * (float) M_PI * 7.0f / sampleRate;
         const float att = 1.0f - std::exp(-1.0f / (0.005f * sampleRate)), rel = 1.0f - std::exp(-1.0f / (0.25f * sampleRate));
         const int mask = size - 1;
+        /* wow and flutter: worked out at the block's ends, eased across it */
+        const float tw0 = wowD * (1.0f + std::sin(wow)) + flutD * (1.0f + std::sin(flut));
+        wow += wowInc * (float) n; if (wow > 2.0f * (float) M_PI) wow -= 2.0f * (float) M_PI;
+        flut += flutInc * (float) n; if (flut > 2.0f * (float) M_PI) flut -= 2.0f * (float) M_PI;
+        const float tw1 = wowD * (1.0f + std::sin(wow)) + flutD * (1.0f + std::sin(flut));
+        const float twStep = (tw1 - tw0) / (float) n;
+        float tw = tw0;
         for (int i = 0; i < n; i++) {
             timeS += (target - timeS) * glide;
-            wow += wowInc; if (wow > 2.0f * (float) M_PI) wow -= 2.0f * (float) M_PI;
-            flut += flutInc; if (flut > 2.0f * (float) M_PI) flut -= 2.0f * (float) M_PI;
-            const float d = std::max(timeS + wowD * (1.0f + std::sin(wow)) + flutD * (1.0f + std::sin(flut)), 1.0f);
-            const float rp = (float) pos - d;
-            const int i0 = (int) std::floor(rp); const float fr = rp - (float) i0;
+            const float d = std::max(timeS + tw, 1.0f);
+            tw += twStep;
+            const float rp = (float) (pos + size) - d;                  /* kept positive: (int) floors */
+            const int i0 = (int) rp; const float fr = rp - (float) i0;
             const int a = i0 & mask, b = (i0 + 1) & mask;
             const float dl = bufL[a] + (bufL[b] - bufL[a]) * fr;
             const float dr = bufR[a] + (bufR[b] - bufR[a]) * fr;
@@ -211,7 +217,7 @@ public:
             preL[(size_t) prePos] = inL[s]; preR[(size_t) prePos] = inR[s];
             float xl, xr;
             {
-                const float rp = (float) prePos - preS; const int i0 = (int) std::floor(rp); const float fr = rp - (float) i0;
+                const float rp = (float) (prePos + preSize) - preS; const int i0 = (int) rp; const float fr = rp - (float) i0;
                 const int a = i0 & pm, b = (i0 + 1) & pm;
                 xl = preL[(size_t) a] + (preL[(size_t) b] - preL[(size_t) a]) * fr;
                 xr = preR[(size_t) a] + (preR[(size_t) b] - preR[(size_t) a]) * fr;
@@ -224,9 +230,9 @@ public:
             float v[kLines], sum = 0.0f;
             for (int i = 0; i < kLines; i++) {
                 const float d = base[i] * sizeS + m0[i] + (m1[i] - m0[i]) * t + 2.0f;
-                float rp = (float) pos - d;
-                if (whole) rp = std::floor(rp + 0.5f);
-                const int i0 = (int) std::floor(rp); const float fr = rp - (float) i0;
+                float rp = (float) (pos + lineSize) - d;              /* kept positive: (int) floors */
+                if (whole) rp = (float) (int) (rp + 0.5f);
+                const int i0 = (int) rp; const float fr = rp - (float) i0;
                 const float *L = line[i].data();
                 const float a = L[i0 & lm], b = L[(i0 + 1) & lm];
                 lp[i] += dampC * (a + (b - a) * fr - lp[i]);
@@ -313,7 +319,7 @@ public:
             xl[i] = l * gain; xr[i] = r * gain;
         }
         /* the shaper at twice the rate */
-        float ul[2 * kMax], ur[2 * kMax];
+        float ul[2 * kMax] = {}, ur[2 * kMax] = {};
         up[0].process(xl, ul, n); up[1].process(xr, ur, n);
         for (int i = 0; i < 2 * n; i++) { ul[i] = shape(ul[i], char01); ur[i] = shape(ur[i], char01); }
         down[0].process(ul, xl, n); down[1].process(ur, xr, n);

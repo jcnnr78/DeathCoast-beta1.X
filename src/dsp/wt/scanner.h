@@ -1,6 +1,6 @@
 /* Wavetable scanner -- the table list (the mN_select values): directory listings only, no audio decode.
  *   0             "Init" (the built-in table, always there)
- *   then          <module>/wavetables/** (.wt2048 FLAC and .wav; the shipped packs, and any the user adds in a
+ *   then          <module>/wavetables/ and its folders (.wt2048 FLAC and .wav; the shipped packs, and any the user adds in a
  *                 folder of their own), sorted by "Pack/Name"
  */
 #pragma once
