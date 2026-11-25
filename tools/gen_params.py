@@ -10,7 +10,7 @@ Run:  python3 tools/gen_params.py"""
 import json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "1.6.1"
+VERSION = "1.6.2"
 SLOTS = 4
 KNOBS = 14
 

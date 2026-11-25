@@ -164,13 +164,14 @@ def _curve(kind, f, cut, res, shape, fs=44100.0):
     return lp if kind == "legacylp" else hp
 
 def filt(kind, w, h):
-    """frames as src/dsp/filters.h filterView encodes them: MULTI 192 (CUTOFF 16 x MORPH 4 x RESONANCE 3), EQ 128
-    (CUTOFF 16 x GAIN 8), the others 128 (CUTOFF 32 x RESONANCE 4)"""
+    """frames as src/dsp/filters.h filterView encodes them, 192 for every type so the frame is the FILTER VIEW value
+    itself (a meter spreads its parameter's 0..191 over the strip): MULTI (CUTOFF 16 x MORPH 4 x RESONANCE 3), EQ
+    (CUTOFF 24 x GAIN 8), the others (CUTOFF 48 x RESONANCE 4)"""
     frames = []
     f = np.geomspace(20, 20000, 260)
     if kind == "multi": combos = [(c / 15, m / 3, r / 2) for c in range(16) for m in range(4) for r in range(3)]
-    elif kind == "eq": combos = [(c / 15, 0.5, g / 7) for c in range(16) for g in range(8)]
-    else: combos = [(c / 31, r / 3, 0.0) for c in range(32) for r in range(4)]
+    elif kind == "eq": combos = [(c / 23, 0.5, g / 7) for c in range(24) for g in range(8)]
+    else: combos = [(c / 47, r / 3, 0.0) for c in range(48) for r in range(4)]
     for cut, res, shape in combos:
         if kind == "eq": res, shape = 0.4, shape
         r = _curve(kind, f, cut, min(res, 0.97 if kind.startswith("comb") else 1.0), shape)

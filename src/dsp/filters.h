@@ -68,8 +68,8 @@ inline int filterView(int type, float cutoff, float reso, float shape)
     auto q = [](float v, int steps) { return std::clamp((int) std::lround(v / 127.0f * (float) (steps - 1)), 0, steps - 1); };
     switch (std::clamp(type, 0, FT_COUNT - 1)) {
     case FT_MULTI: return (q(cutoff, 16) * 4 + q(shape, 4)) * 3 + q(reso, 3);
-    case FT_EQ: return q(cutoff, 16) * 8 + q(shape, 8);
-    default: return q(cutoff, 32) * 4 + q(reso, 4);
+    case FT_EQ: return q(cutoff, 24) * 8 + q(shape, 8);
+    default: return q(cutoff, 48) * 4 + q(reso, 4);
     }
 }
 

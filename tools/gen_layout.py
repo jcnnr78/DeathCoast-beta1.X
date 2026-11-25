@@ -187,7 +187,7 @@ def slot_page(n):
     FS, ES = ART.FLT, ART.ENV
     L += [frame(10, 482, 690, 226, "FILTER"), stepper(110, 548, 180, s + "ftype")]
     for i, t in enumerate(ART.FLT_TYPES):
-        frames = 192 if t == "multi" else 128
+        frames = 192                                # every type: the frame is m<n>_fview itself
         L.append(W('meter cx=305 cy=546 w=%d h=%d key=%sfview strip=images/nw/flt_%s_%dx%d.png frames=%d'
                    % (FS[0], FS[1], s, t, FS[0], FS[1], frames), s + "ftype:%d" % i))
     L.append(meter(470, 546, ES, s + "fdec", "env_d_%dx%d.png" % ES))
