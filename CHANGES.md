@@ -1,6 +1,6 @@
 # Changes
 
-## NorthWest 1.6.2
+## 1.7 (in progress)
 
 - Fix: the FILTER picture showed the wrong frame for every type but MULTI (e.g. LP 4 with RESONANCE at 0 drew a resonant peak). The view parameter runs 0..191 but those strips had 128 frames, so the MPC spread the value over the wrong frames. Every filter strip now has 192 frames: LP 4, COMB, LEGACY follow CUTOFF in 48 steps x RESONANCE 4, EQ CUTOFF 24 x GAIN 8.
 
