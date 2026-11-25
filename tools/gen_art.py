@@ -3,8 +3,7 @@
 
     knob.png              the knob filmstrip: flat round disc, thin value ring, short pointer (128 frames)
     bar_WxH.png           a slider: a long box that fills with the accent colour (128 frames)
-    scope_WxH.png         one column of the WAVETABLE scope: a bar from the centre line to its level (24 frames)
-    scopebg_WxH.png       the scope's box
+    wavebox_WxH.png       the WAVETABLE window's box
     flt_<type>_WxH.png    FILTER: the response of each type, following CUTOFF, RESONANCE and SHAPE as the plugin
                           encodes them (src/dsp/filters.h filterView)
     env_<a|d|s|r>_WxH.png AMP / FILTER: one small picture per envelope stage, each following its own knob (64 frames)
@@ -90,19 +89,6 @@ def bar(w, h, n=128):
         frames.append(down(im, w, h))
     strip(frames, "bar_%dx%d.png" % (w, h))
 
-def scope(w, h, levels):
-    """one point of the wave line drawn over the table picture: a bright dot at its level (the frame POSITION is on)"""
-    frames = []
-    for i in range(levels):
-        v = i / (levels - 1) * 2 - 1
-        im = canvas(w, h); d = ImageDraw.Draw(im)
-        top, bot = 6, h - 6
-        yv = (top + bot) / 2 - (bot - top) / 2 * v
-        d.ellipse(((w / 2 - 4.2) * SS, (yv - 4.2) * SS, (w / 2 + 4.2) * SS, (yv + 4.2) * SS), fill=hexc("1b1b1e"))
-        d.ellipse(((w / 2 - 3.0) * SS, (yv - 3.0) * SS, (w / 2 + 3.0) * SS, (yv + 3.0) * SS), fill=ACC_HI)
-        frames.append(down(im, w, h))
-    strip(frames, "scope_%dx%d.png" % (w, h))
-
 def arrows():
     """the arrows of the steppers shown for one model only (gen_layout.py fix_arrows draws them on the page), as the
     skin draws a stepper's own: an accent triangle on the panel; and the patch that hides one"""
@@ -115,13 +101,13 @@ def arrows():
     Image.new("RGBA", (44, 44), hexc("28282b")).save(os.path.join(OUT, "patch.png"))
     print("  arrow_prev.png, arrow_next.png, patch.png")
 
-def scopebg(w, h):
+def wavebox(w, h):
     im = display(w, h, 10); d = ImageDraw.Draw(im)
     d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 200), width=SS)
     for q in (0.25, 0.75):
         d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("3d3d42", 90), width=SS)
-    im = down(im, w, h); im.save(os.path.join(OUT, "scopebg_%dx%d.png" % (w, h)), optimize=True)
-    print("  %-26s %dx%d" % ("scopebg_%dx%d.png" % (w, h), w, h))
+    im = down(im, w, h); im.save(os.path.join(OUT, "wavebox_%dx%d.png" % (w, h)), optimize=True)
+    print("  %-26s %dx%d" % ("wavebox_%dx%d.png" % (w, h), w, h))
 
 def fold(w, h):
     """WEST COAST: one cycle of the carrier through the wavefolder. 128 frames = FOLD in 16 steps x SYMMETRY in 8
@@ -263,17 +249,14 @@ FOLD = (360, 96)
 FLT = (220, 56)
 ENV = (96, 50)
 BARS = [(186, 22), (130, 20), (92, 18)]       # MAIN sends; SUB / PITCH panels; FILTER base-width
-SCOPE = (460, 106)                            # the WAVETABLE scope box
-SCOPE_COL = (14, 106)                         # one of its columns
-SCOPE_LEVELS = 24                             # src/dsp/params.h NW_SCOPE_LEVELS
+WAVEBOX = (460, 128)                          # the WAVETABLE window round the table picture
 PANELS = {"sub": ("SUB", 472, 128), "pitch": ("PITCH", 472, 240), "lpg": ("LPG", 472, 240)}
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
     for b in BARS: bar(*b)
-    scope(*SCOPE_COL, SCOPE_LEVELS)
-    scopebg(*SCOPE)
+    wavebox(*WAVEBOX)
     arrows()
     fold(*FOLD)
     for k in FLT_TYPES: filt(k, *FLT)

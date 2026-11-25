@@ -145,7 +145,8 @@ static const char *saved_path(const Instance *inst, const char *path, char *buf,
     return path;
 }
 
-/* the table picture: which frame of images/nw/tables_*.png shows machine m's table (0 = not one of the shipped) */
+/* the table picture: which picture shows machine m's table (0 = not one of the shipped, 1 = Init); the pictures
+ * are split over two strips (tablesa_*, tablesb_*), each with a blank frame 0 -- table_strip() says which frame */
 static int table_view(const Instance *inst, int m)
 {
     const char *path = inst->wt_path[m];
@@ -159,20 +160,11 @@ static int table_view(const Instance *inst, int m)
     return 0;
 }
 
-/* the scope over the table picture: column c of the frame POSITION (K1) is on, 0..NW_SCOPE_LEVELS-1 */
-static int scope_value(Instance *inst, int m, int c)
+static int table_strip(const Instance *inst, int m, bool second)
 {
-    auto t = inst->engine.table(m);
-    const int mid = NW_SCOPE_LEVELS / 2;
-    if (!t || t->size() < 1) return mid;
-    const int nf = t->size();
-    const int f = std::clamp((int) std::lround(slotParam(inst, m, NW_P_M1_K1) / 127.0f * (float) (nf - 1)), 0, nf - 1);
-    const nw::FrameTable *ft = t->frame(f);
-    if (!ft || ft->levels.empty() || ft->levels[0].data.empty()) return mid;
-    const auto &d = ft->levels[0].data;
-    const size_t j = std::min(d.size() - 1, (size_t) ((double) c / NW_SCOPE_COLS * (double) ft->levels[0].size));
-    const float v = std::clamp(d[j], -1.0f, 1.0f);
-    return std::clamp((int) std::lround((v + 1.0f) * 0.5f * (float) (NW_SCOPE_LEVELS - 1)), 0, NW_SCOPE_LEVELS - 1);
+    const int v = table_view(inst, m);
+    if (v < NW_TABLE_VIEW_SPLIT) return second ? 0 : v + 1;
+    return second ? v - NW_TABLE_VIEW_SPLIT + 1 : 0;
 }
 
 /* ------------------------------------------------------------------ pictures */
@@ -400,8 +392,6 @@ static unsigned display_rev(Instance *inst)
     auto mix = [&v](int x) { v = (v ^ (unsigned) x) * 16777619u; };
     for (int m = 0; m < NW_SLOTS; m++) {
         mix(filter_view(inst, m)); mix(table_view(inst, m)); mix(fold_view(inst, m));
-        if ((int) slotParam(inst, m, NW_P_M1_MODEL) == nw::M_WAVETABLE)
-            for (int c = 0; c < NW_SCOPE_COLS; c++) mix(scope_value(inst, m, c));
     }
     mix(inst->cpuShown);
     return v;
@@ -428,11 +418,8 @@ static int nw_get_param(void *instance, const char *key, char *buf, int buf_len)
     }
     if (int m = slot_key(key, "fview"); m >= 0) return write_int(buf, buf_len, filter_view(inst, m));
     if (int m = slot_key(key, "cview"); m >= 0) return write_int(buf, buf_len, fold_view(inst, m));
-    if (int m = slot_key(key, "wview"); m >= 0) return write_int(buf, buf_len, table_view(inst, m));
-    if (key[0] == 'm' && key[1] >= '1' && key[1] <= '0' + NW_SLOTS && !strncmp(key + 2, "_ws", 3)) {
-        const int c = atoi(key + 5);
-        if (c >= 0 && c < NW_SCOPE_COLS) return write_int(buf, buf_len, scope_value(inst, key[1] - '1', c));
-    }
+    if (int m = slot_key(key, "wview"); m >= 0) return write_int(buf, buf_len, table_strip(inst, m, false));
+    if (int m = slot_key(key, "wviewb"); m >= 0) return write_int(buf, buf_len, table_strip(inst, m, true));
     if (int m = slot_key(key, "select"); m >= 0) return write_int(buf, buf_len, table_index(inst, inst->wt_path[m]));
     if (int m = slot_key(key, "tname"); m >= 0) {
         const char *path = inst->wt_path[m];

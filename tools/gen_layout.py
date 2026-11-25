@@ -45,7 +45,9 @@ _spec = importlib.util.spec_from_file_location("gen_art", os.path.join(here, "ge
 ART = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ART)
 
 STRIP = "strip=images/nw/knob.png frames=128"
-TABLE_FRAMES = int(re.search(r"NW_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(root, "src/dsp/table_view.h")).read()).group(1))
+_tv = open(os.path.join(root, "src/dsp/table_view.h")).read()
+_nf, _split = (int(re.search(r"NW_TABLE_VIEW_%s (\d+)" % k, _tv).group(1)) for k in ("FRAMES", "SPLIT"))
+TABLE_STRIPS = {"a": _split + 1, "b": _nf - _split + 1}          # frames per strip, a blank one first
 def W(s, when): return s + (" when=" + when if when else "")
 def knob(cx, cy, label, key, when="", bw=0, r=26):
     return W('knob cx=%d cy=%d r=%d label="%s" key=%s %s%s' % (cx, cy, r, label, key, STRIP, (" bw=%d" % bw) if bw else ""), when)
@@ -133,7 +135,7 @@ def slot_page(n):
          text(320, 124, "MODEL", 1.0), stepper(320, 164, 270, m),
          popup(535, 166, 130, "", m)]
     # model-specific selectors in the top band: steppers in three places shared by every model (see fix_arrows)
-    TV = (440, 72)                          # tools/gen_tables.py SIZE
+    TV = (440, 112)                         # tools/gen_tables.py SIZE
     A, B, C = (750, 250), (990, 210), (1180, 160)
     L += [text(A[0], 124, "TABLE", 1.0, when(0)), stepper(A[0], 164, A[1], s + "select", s + "tname", when(0)),
           text(A[0], 124, "ALGORITHM", 1.0, when(1)), stepper(A[0], 164, A[1], s + "fm_algo", "", when(1)),
@@ -150,23 +152,17 @@ def slot_page(n):
     for mi, items in COLS.items():
         for j, (k, lab) in enumerate(items):
             L.append(knob(KX[j % 4], ROW1 if j < 4 else ROW2, lab, s + k, when(mi), bw=170))
-    # WAVETABLE: EFFECT and UNISON MODE in row 2; the wave window: the loaded table's frame at POSITION, drawn live
-    # from the plugin (it moves with POSITION and changes with the table); SUB as sliders on its panel under it
+    # WAVETABLE: EFFECT and UNISON MODE in row 2; the table's window; SUB as sliders on its panel under it
     L += [text(KX[2], ROW2 - 40, "EFFECT", 1.0, when(0)), stepper(KX[2], ROW2 - 4, 170, s + "wt_fx", "", when(0)),
           text(KX[3], ROW2 - 40, "UNISON MODE", 1.0, when(0)), stepper(KX[3], ROW2 - 4, 190, s + "wt_umode", "", when(0))]
-    SX, SY = RIGHT[0] + RIGHT[2] // 2, RIGHT[1] + 2 + ART.SCOPE[1] // 2
-    L.append(W('art file=images/nw/scopebg_%dx%d.png x=%d y=%d w=%d h=%d'
-               % (ART.SCOPE + (SX - ART.SCOPE[0] // 2, SY - ART.SCOPE[1] // 2) + ART.SCOPE), when(0)))
-    # the loaded table's own waves (a picture per table, as in 1.3) ...
-    L.append(W('meter cx=%d cy=%d w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
-               % (SX, SY, TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), when(0)))
-    # ... and over it the wave POSITION is on, a line of points the plugin works out live, so it changes shape as
-    # POSITION moves
-    cols = 32; cw = ART.SCOPE_COL[0]; span = ART.SCOPE[0] - 20
-    for c in range(cols):
-        x = SX - span // 2 + int((c + 0.5) * span / cols)
-        L.append(W('meter cx=%d cy=%d w=%d h=%d key=%sws%d strip=images/nw/scope_%dx%d.png frames=%d'
-                   % (x, SY, cw, ART.SCOPE_COL[1], s, c, cw, ART.SCOPE_COL[1], ART.SCOPE_LEVELS), when(0)))
+    # the window: the loaded table's own waves (a picture per table, in two strips; the plugin shows the table in
+    # one and a blank frame in the other), from the frame's title line down to the SUB panel
+    BX, BY = RIGHT[0] + RIGHT[2] // 2, 212 + ART.WAVEBOX[1] // 2
+    L.append(W('art file=images/nw/wavebox_%dx%d.png x=%d y=%d w=%d h=%d'
+               % (ART.WAVEBOX + (BX - ART.WAVEBOX[0] // 2, BY - ART.WAVEBOX[1] // 2) + ART.WAVEBOX), when(0)))
+    for part, key in (("a", "wview"), ("b", "wviewb")):
+        L.append(W('meter cx=%d cy=%d w=%d h=%d key=%s%s strip=images/nw/tables%s_%dx%d.png frames=%d'
+                   % (BX, BY, TV[0], TV[1], s, key, part, TV[0], TV[1], TABLE_STRIPS[part]), when(0)))
     PY = RIGHT[1] + RIGHT[3] - ART.PANELS["sub"][2]
     L.append(W('art file=images/nw/panel_sub.png x=%d y=%d w=%d h=%d' % (RIGHT[0], PY, RIGHT[2], ART.PANELS["sub"][2]), when(0)))
     BW = ART.BARS[1]

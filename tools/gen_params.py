@@ -145,7 +145,9 @@ h += opt_lines + ["", "static const nw_param_t nw_params[NW_PARAM_COUNT] = {"] +
 open(os.path.join(ROOT, "src/dsp/params.h"), "w").write("\n".join(h))
 
 # ------------------------------------------------------------------------------------------------ params.json
-_nf = int(re.search(r"NW_TABLE_VIEW_FRAMES (\d+)", open(os.path.join(ROOT, "src/dsp/table_view.h")).read()).group(1))
+_tv = open(os.path.join(ROOT, "src/dsp/table_view.h")).read()
+_nf = int(re.search(r"NW_TABLE_VIEW_FRAMES (\d+)", _tv).group(1))
+_split = int(re.search(r"NW_TABLE_VIEW_SPLIT (\d+)", _tv).group(1))
 out = []
 for key, name, kind, lo, hi, d, opts, x in P:
     if kind == "path":
@@ -183,7 +185,7 @@ out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "
         # beta: the share of each audio block the engine takes (worked out by the plugin, shown on MAIN)
         {"key": "cpu", "name": "CPU", "min": 0, "max": 0, "display": "string", "type": "readout"}]
 # pictures the plugin works out (HAS_DISPLAY_REV makes the wrapper report them when they change: "display_rev"):
-# the filter curve (frame of the type's strip), the WEST COAST fold, the WAVETABLE table and its POSITION
+# the filter curve (frame of the type's strip), the WEST COAST fold, the WAVETABLE table (two strips: a and b)
 for n in range(1, SLOTS + 1):
     out.append({"key": "m%d_fview" % n, "name": "M%d FILTER VIEW" % n, "min": 0, "max": 191, "default": 0,
                 "display": "int", "clamped": True})
@@ -191,19 +193,11 @@ for n in range(1, SLOTS + 1):
     out.append({"key": "m%d_cview" % n, "name": "M%d FOLD VIEW" % n, "min": 0, "max": 127, "default": 0,
                 "display": "int", "clamped": True})
 for n in range(1, SLOTS + 1):
-    out.append({"key": "m%d_wview" % n, "name": "M%d TABLE VIEW" % n, "min": 0, "max": _nf - 1, "default": 1,
+    out.append({"key": "m%d_wview" % n, "name": "M%d TABLE VIEW" % n, "min": 0, "max": _split, "default": 2,
                 "display": "int", "clamped": True})
-# the WAVETABLE scope: the frame POSITION is on, drawn live over the table's picture as SCOPE_COLS columns, each a
-# value 0..SCOPE_LEVELS-1 (the sample at that point of the cycle) the plugin reads off the loaded table
-SCOPE_COLS, SCOPE_LEVELS = 32, 24
 for n in range(1, SLOTS + 1):
-    for c in range(SCOPE_COLS):
-        out.append({"key": "m%d_ws%d" % (n, c), "name": "M%d SCOPE %d" % (n, c + 1), "min": 0,
-                    "max": SCOPE_LEVELS - 1, "default": SCOPE_LEVELS // 2, "display": "int", "clamped": True})
-h2 = open(os.path.join(ROOT, "src/dsp/params.h")).read().replace(
-    "#endif /* NORTHWEST_PARAMS_H */",
-    "#define NW_SCOPE_COLS %d\n#define NW_SCOPE_LEVELS %d\n\n#endif /* NORTHWEST_PARAMS_H */" % (SCOPE_COLS, SCOPE_LEVELS))
-open(os.path.join(ROOT, "src/dsp/params.h"), "w").write(h2)
+    out.append({"key": "m%d_wviewb" % n, "name": "M%d TABLE VIEW B" % n, "min": 0, "max": _nf - _split,
+                "default": 0, "display": "int", "clamped": True})
 json.dump({"name": "NorthWest", "params": out}, open(os.path.join(ROOT, "params.json"), "w"), indent=1)
 open(os.path.join(ROOT, "params.lock"), "w").write("\n".join(p["key"] for p in out) + "\n")
 print("engine params %d | VST params %d" % (len(P), len(out)))

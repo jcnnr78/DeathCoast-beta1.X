@@ -542,7 +542,4 @@ static const nw_param_t nw_params[NW_PARAM_COUNT] = {
     { "fx_xgrit", NW_INT, 0, 127, 0, 0, 0 },
 };
 
-#define NW_SCOPE_COLS 32
-#define NW_SCOPE_LEVELS 24
-
 #endif /* NORTHWEST_PARAMS_H */
