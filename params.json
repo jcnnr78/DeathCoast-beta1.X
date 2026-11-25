@@ -3131,10 +3131,10 @@
    "name": "MOD1 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3188,10 +3188,10 @@
    "name": "MOD2 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3245,10 +3245,10 @@
    "name": "MOD3 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3302,10 +3302,10 @@
    "name": "MOD4 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3359,10 +3359,10 @@
    "name": "MOD5 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3416,10 +3416,10 @@
    "name": "MOD6 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3473,10 +3473,10 @@
    "name": "MOD7 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -3530,10 +3530,10 @@
    "name": "MOD8 MACHINE",
    "options": [
     "ALL",
-    "M1",
-    "M2",
-    "M3",
-    "M4"
+    "E1",
+    "E2",
+    "E3",
+    "E4"
    ],
    "default": 0
   },
@@ -4082,6 +4082,42 @@
    "max": 127,
    "default": 40,
    "display": "int"
+  },
+  {
+   "key": "m1_solo",
+   "name": "M1 SOLO",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m2_solo",
+   "name": "M2 SOLO",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m3_solo",
+   "name": "M3 SOLO",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
+  },
+  {
+   "key": "m4_solo",
+   "name": "M4 SOLO",
+   "options": [
+    "OFF",
+    "ON"
+   ],
+   "default": 0
   }
  ]
 }

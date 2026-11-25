@@ -188,9 +188,13 @@ void Engine::renderBlock(int16_t *out, int frames)
         const size_t bytes = (size_t) n * sizeof(float);
         for (float *b : { L, R, DL, DR, VL, VR, XL, XR }) std::memset(b, 0, bytes);
         updateMod(n);
+        /* SOLO: while any engine is on SOLO, only those play (MUTE still wins) */
+        bool anySolo = false;
+        for (int s = 0; s < DC_SLOTS; s++) anySolo |= (int) pots[slotParam(s, DC_P_M1_SOLO)] != 0;
         for (int s = 0; s < DC_SLOTS; s++) {
             if (!slots[s].isActive()) continue;
-            if ((int) pots[slotParam(s, DC_P_M1_MUTE)] != 0) { slots[s].kill(); continue; }
+            if ((int) pots[slotParam(s, DC_P_M1_MUTE)] != 0 ||
+                (anySolo && (int) pots[slotParam(s, DC_P_M1_SOLO)] == 0)) { slots[s].kill(); continue; }
             std::memset(SL, 0, bytes); std::memset(SR, 0, bytes);
             slots[s].render(pots, t[s].get(), ms, SL, SR, n);
             /* dry into the mix, and the machine's sends into the delay, reverb and DIRT buses */

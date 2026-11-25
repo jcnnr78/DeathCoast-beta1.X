@@ -29,7 +29,7 @@ MOD_SRC    = ["NONE", "EG1", "EG2", "LFO1", "LFO2", "VELOCITY", "KEY", "MOD WHEE
               "RANDOM", "AMP ENV", "FILTER ENV"]
 # TIMBRE A..D = K1..K4 of whatever model the machine runs
 MOD_DST    = ["NONE", "PITCH", "LEVEL", "PAN", "CUTOFF", "RESONANCE", "TIMBRE A", "TIMBRE B", "TIMBRE C", "TIMBRE D"]
-MOD_SLOT   = ["ALL", "M1", "M2", "M3", "M4"]
+MOD_SLOT   = ["ALL", "E1", "E2", "E3", "E4"]
 GLIDE_MODES = ["OFF", "GLISSANDO", "PORTAMENTO", "LEGATO"]
 K_DEFAULTS = [0, 0, 0, 0, 0, 0, 43, 64, 64, 64, 43, 64, 0, 64]     # K1..K14 (src/dsp/machines.h)
 # selectors drawn as steppers: arrows (_prev/_next) and a box the data wheel turns (_st, see below)
@@ -46,6 +46,7 @@ for n in range(1, SLOTS + 1):
     E(s + "model", S + "MODEL", MODELS, 0, refresh_display=True)
     E(s + "chan", S + "MIDI CHANNEL", CHANNELS, 0)
     E(s + "mute", S + "MUTE", OFF_ON, 0)
+    E(s + "solo", S + "SOLO", OFF_ON, 0)                          # 1.8: any engine on SOLO: only those play
     I(s + "level", S + "LEVEL", 0, 127, 100 if n == 1 else 0)
     I(s + "pan", S + "PAN", 0, 127, 64)
     I(s + "tune", S + "TUNE", -24, 24, 0)

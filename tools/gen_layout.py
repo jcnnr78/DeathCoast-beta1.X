@@ -2,7 +2,7 @@
 """DeathCoast: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
 
 Pages (9; MPC shows 5 at a time and a ">" for the rest):
-    MAIN   MACHINE 1   MACHINE 2   MACHINE 3   MACHINE 4   MOD   MATRIX   FX   GLOBAL
+    MAIN   ENGINE 1    ENGINE 2    ENGINE 3    ENGINE 4   MOD   MATRIX   FX   GLOBAL
 
 A machine page shows the controls of the MODEL chosen for that machine: the lines that differ carry
 when=mN_model:<i> and MPC swaps them as the model changes. Knob names and values come from the plugin
@@ -98,24 +98,26 @@ SUB_BARS = [("k5", "LEVEL"), ("k6", "DRIVE"), ("k11", "OCTAVE"), ("k12", "WAVE")
 PITCH_BARS = [("k5", "AMOUNT"), ("k6", "DECAY"), ("k11", "TARGET"), ("k12", "OSC 2 FINE"),
               ("k13", "VELOCITY"), ("k14", "OSC 1 FINE")]
 
-# ---- MAIN: a column per machine, top to bottom: model; mute and MIDI channel; level, pan, tune; the three sends --
+# ---- MAIN: a column per engine, top to bottom: model; solo, mute and MIDI channel; level, pan, tune; the sends ---
 L = ["[tab MAIN]"]
 q1, q2 = [], []
 BS = ART.BARS[0]
 for n in range(1, 5):
     s = "m%d_" % n; x0 = 10 + (n - 1) * 316; cx = x0 + 155
-    L += [frame(x0, 92, 310, 616, "MACHINE %d" % n),
+    L += [frame(x0, 92, 310, 616, "ENGINE %d" % n),
           popup(cx, 150, 270, "", s + "model"),
-          'toggle cx=%d cy=%d label="MUTE" key=%smute bw=100' % (x0 + 58, 212, s),
-          stepper(x0 + 205, 206, 180, s + "chan")]
+          # SOLO over MUTE (touch only: no Q-Link), the MIDI channel beside them
+          'toggle cx=%d cy=%d label="SOLO" key=%ssolo bw=100' % (x0 + 58, 204, s),
+          'toggle cx=%d cy=%d label="MUTE" key=%smute bw=100' % (x0 + 58, 268, s),
+          text(x0 + 205, 210, "MIDI", 0.9), stepper(x0 + 205, 246, 180, s + "chan")]
     # level, pan, tune: the knob at the left of its value, the name in front
     for i, (k, lab) in enumerate((("level", "LEVEL"), ("pan", "PAN"), ("tune", "TUNE"))):
-        cy = 290 + i * 64
+        cy = 344 + i * 52
         L += [text(x0 + 52, cy, lab, 0.9),
-              'knob cx=%d cy=%d r=22 label="" key=%s%s %s lay=side bw=190 bh=54 vs=22' % (x0 + 200, cy, s, k, STRIP)]
-    # the sends: a slider each, its value under it
+              'knob cx=%d cy=%d r=22 label="" key=%s%s %s lay=side bw=190 bh=46 vs=22' % (x0 + 200, cy, s, k, STRIP)]
+    # the sends: a slider each, its value under it; room under them for a fourth
     for i, (k, lab) in enumerate((("dsend", "DELAY"), ("rsend", "REVERB"), ("xsend", "DIRT"))):
-        cy = 494 + i * 62
+        cy = 502 + i * 54
         L += [text(x0 + 52, cy, lab, 0.9)] + bar(x0 + 200, cy, BS, s + k)
     q1 += [s + "mute", s + "level", s + "pan", s + "tune"]
     q2 += [s + "dsend", s + "rsend", s + "xsend", "-"]
@@ -124,13 +126,13 @@ L.append('readout cx=1222 cy=110 w=80 h=22 label="" key=cpu')
 L += ['qlinks "MAIN" = ' + ",".join(q1), 'qlinks "SENDS" = ' + ",".join(q2)]
 MIX = "\n".join(L) + "\n"
 
-# ---- MACHINE n ----------------------------------------------------------------------------------------------------
+# ---- ENGINE n -----------------------------------------------------------------------------------------------------
 def slot_page(n):
     s = "m%d_" % n; m = s + "model"
     def when(i): return "%s:%d" % (m, i)
-    L = ["[tab MACHINE %d]" % n,
+    L = ["[tab ENGINE %d]" % n,
          frame(10, 92, 1258, 108, ""),
-         text(85, 150, "MACHINE %d" % n, 1.5),
+         text(85, 150, "ENGINE %d" % n, 1.5),
          text(320, 124, "MODEL", 1.0), stepper(320, 164, 270, m),
          popup(535, 166, 130, "", m)]
     # model-specific selectors in the top band: steppers in three places shared by every model (see fix_arrows)
@@ -209,9 +211,9 @@ def slot_page(n):
     # Q-Link columns of 4 (one set for every model, so it follows the knob numbers): K1-K4, K7-K10, K5 K6 K11 K12,
     # then FM's OP1 LEVEL and K14 / K13 (FM OP1 RATIO; ANALOG OSC 1 FINE, VEL > P.ENV) and CUTOFF; the titles are
     # the MPC page names
-    L += ['qlinks "MACHINE %d" = ' % n + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
+    L += ['qlinks "ENGINE %d" = ' % n + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
           ",".join(s + x for x in ("op1", "k14", "k13", "cutoff")),
-          'qlinks "M%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
+          'qlinks "E%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
               "ftype", "cutoff", "reso", "fshape", "fenv", "fdec", "fkey", "-", "amp_a", "amp_d", "amp_s", "amp_r",
               "vel", "bwlo", "bwhi", "-"))]
     return "\n".join(fix_arrows(L, m)) + "\n"
@@ -262,7 +264,7 @@ MOD = "\n".join(L) + "\n"
 
 # ---- MATRIX (8 rows: source -> destination x amount, on one machine or all) ---------------------------------------
 L = ["[tab MATRIX]", frame(10, 92, 1258, 616, "MODULATION MATRIX"),
-     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "MACHINE", 1.2),
+     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "ENGINE", 1.2),
      text(1010, 160, "AMOUNT", 1.2)]
 for i in range(8):
     y = 200 + i * 62; n = i + 1
@@ -299,7 +301,7 @@ L = ["[tab GLOBAL]",
      text(420, 132, "GLIDE MODE", 1.0), stepper(420, 172, 300, "glide_mode"),
      frame(636, 92, 632, 200, "MASTER"), knob(800, 196, "BEND RANGE", "pb_range", bw=140),
      knob(1000, 196, "VOLUME", "volume", bw=140),
-     frame(10, 298, 1258, 200, "ENGINE"), knob(140, 402, "DRIFT", "drift", bw=160),
+     frame(10, 298, 1258, 200, "SYSTEM"), knob(140, 402, "DRIFT", "drift", bw=160),
      text(420, 362, "OVERSAMPLING", 1.0), stepper(420, 402, 220, "oversample"),
      text(860, 402, "AUTO: TWICE THE RATE ONLY WHILE THE SOUND NEEDS IT", 0.8),
      frame(10, 504, 1258, 204, "PRESET"),
