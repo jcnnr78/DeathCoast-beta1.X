@@ -17,8 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import gen_art as A
 
-SIZE = (320, 60)
-DEPTH, DX, DY = 7, 3.0, 2.8     # the stack: frames drawn back to front, each this far up and right
+SIZE = (440, 72)
+DEPTH, DX, DY = 7, 4.0, 3.4     # the stack: frames drawn back to front, each this far up and right
 FRAME = 2048
 
 def load(path):

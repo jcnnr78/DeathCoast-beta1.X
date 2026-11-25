@@ -133,7 +133,7 @@ def slot_page(n):
          text(320, 124, "MODEL", 1.0), stepper(320, 164, 270, m),
          popup(535, 166, 130, "", m)]
     # model-specific selectors in the top band: steppers in three places shared by every model (see fix_arrows)
-    TV = (320, 60)
+    TV = (440, 72)                          # tools/gen_tables.py SIZE
     A, B, C = (750, 250), (990, 210), (1180, 160)
     L += [text(A[0], 124, "TABLE", 1.0, when(0)), stepper(A[0], 164, A[1], s + "select", s + "tname", when(0)),
           text(A[0], 124, "ALGORITHM", 1.0, when(1)), stepper(A[0], 164, A[1], s + "fm_algo", "", when(1)),
@@ -157,6 +157,11 @@ def slot_page(n):
     SX, SY = RIGHT[0] + RIGHT[2] // 2, RIGHT[1] + 2 + ART.SCOPE[1] // 2
     L.append(W('art file=images/nw/scopebg_%dx%d.png x=%d y=%d w=%d h=%d'
                % (ART.SCOPE + (SX - ART.SCOPE[0] // 2, SY - ART.SCOPE[1] // 2) + ART.SCOPE), when(0)))
+    # the loaded table's own waves (a picture per table, as in 1.3) ...
+    L.append(W('meter cx=%d cy=%d w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
+               % (SX, SY, TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), when(0)))
+    # ... and over it the wave POSITION is on, a line of points the plugin works out live, so it changes shape as
+    # POSITION moves
     cols = 32; cw = ART.SCOPE_COL[0]; span = ART.SCOPE[0] - 20
     for c in range(cols):
         x = SX - span // 2 + int((c + 0.5) * span / cols)

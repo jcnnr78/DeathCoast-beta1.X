@@ -91,16 +91,15 @@ def bar(w, h, n=128):
     strip(frames, "bar_%dx%d.png" % (w, h))
 
 def scope(w, h, levels):
-    """one scope column: a thin bar from the centre line to the level, a bright cap at the level"""
+    """one point of the wave line drawn over the table picture: a bright dot at its level (the frame POSITION is on)"""
     frames = []
     for i in range(levels):
         v = i / (levels - 1) * 2 - 1
         im = canvas(w, h); d = ImageDraw.Draw(im)
-        top, bot = 8, h - 8
-        yc = (top + bot) / 2; yv = yc - (bot - top) / 2 * v
-        x0, x1 = (w / 2 - 2.2) * SS, (w / 2 + 2.2) * SS
-        d.rectangle((x0, min(yc, yv) * SS, x1, max(yc, yv) * SS), fill=hexc("e8871e", 150))
-        d.ellipse(((w / 2 - 3.6) * SS, (yv - 3.6) * SS, (w / 2 + 3.6) * SS, (yv + 3.6) * SS), fill=ACC_HI)
+        top, bot = 6, h - 6
+        yv = (top + bot) / 2 - (bot - top) / 2 * v
+        d.ellipse(((w / 2 - 4.2) * SS, (yv - 4.2) * SS, (w / 2 + 4.2) * SS, (yv + 4.2) * SS), fill=hexc("1b1b1e"))
+        d.ellipse(((w / 2 - 3.0) * SS, (yv - 3.0) * SS, (w / 2 + 3.0) * SS, (yv + 3.0) * SS), fill=ACC_HI)
         frames.append(down(im, w, h))
     strip(frames, "scope_%dx%d.png" % (w, h))
 
