@@ -109,7 +109,7 @@ inline const char *knobName(int machine, int k, int fxMode)
     static const char *fxn[5][2] = { { "FX 1", "FX 2" }, { "FM AMOUNT", "FM RATIO" }, { "SYNC", "PULSE WIDTH" },
                                      { "ASYMMETRY", "FOLD" }, { "BEND", "FORMANT" } };
     static const char *fm[14] = { "OP2 LEVEL", "OP3 LEVEL", "OP4 LEVEL", "FEEDBACK", "PITCH ENV", "NOISE",
-                                  "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM", "-", "-" };
+                                  "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM", "-", "OP1 RATIO" };
     static const char *wc[14] = { "FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "LPG RESPONSE", "MOD RATIO",
                                   "MOD FINE", "-", "-", "LPG MODE", "VEL > FOLD", "-", "-" };
     static const char *an[14] = { "FM 1>2", "NOISE", "DRIVE", "PULSE WIDTH", "PITCH ENV", "PITCH DECAY", "OSC 1 LEVEL",
@@ -140,7 +140,7 @@ inline void knobText(char *buf, int len, int machine, int k, float v)
         if (k == 11) { snprintf(buf, len, "%s", wtSubWaveName(wtSubWave(v))); return; }
         break;
     case M_FM:
-        if (k >= 7 && k <= 9) { snprintf(buf, len, "x%.2f", (double) fmRatio(v)); return; }
+        if ((k >= 7 && k <= 9) || k == 13) { snprintf(buf, len, "x%.2f", (double) fmRatio(v)); return; }
         if (k == 6 && v >= 126.5f) { snprintf(buf, len, "HOLD"); return; }
         if (k == 6 || k == 10) { secondsText(buf, len, fmDecaySeconds(v)); return; }
         if (k == 4) { snprintf(buf, len, "+%d st", (int) std::lround(v / 127.0f * 48.0f)); return; }
@@ -265,7 +265,7 @@ private:
 };
 
 /* ------------------------------------------------------------------ FM machine */
-/* 4 sine operators. Op 1 is always a carrier at ratio 1 (TUNE moves the slot); a modulator is
+/* 4 sine operators. Op 1 is always a carrier (OP1 LEVEL: mN_op1, OP1 RATIO: K14); a modulator is
  * always a higher-numbered operator, so they are computed 4 -> 1. Op 4 has feedback. */
 class FmMachine {
 public:
@@ -302,11 +302,11 @@ public:
         static const uint8_t carriers[8] = { 0x1, 0x1, 0x1, 0x5, 0x7, 0x3, 0xD, 0xF };
         const uint8_t car = carriers[algo];
 
-        float lvl[4] = { 1.0f, 0, 0, 0 };
+        float lvl[4] = { pot01(P[slotParam(slot, NW_P_M1_OP1)]), 0, 0, 0 };
         for (int i = 1; i < 4; i++) lvl[i] = std::clamp(pot01(K[i - 1]) + (i == 1 ? mo[MD_TA] : i == 2 ? mo[MD_TB] : mo[MD_TC]),
                                                        0.0f, 1.0f);
         const float fb = std::clamp(pot01(K[3]) + mo[MD_TD], 0.0f, 1.0f);
-        const float ratio[4] = { 1.0f, fmRatio(K[7]), fmRatio(K[8]), fmRatio(K[9]) };
+        const float ratio[4] = { fmRatio(K[13]), fmRatio(K[7]), fmRatio(K[8]), fmRatio(K[9]) };
         const float velAmt = pot01(K[11]);
         const float idxVel = 1.0f - velAmt + velAmt * velocity * 2.0f;           /* VEL > FM */
         const float noiseLvl = potSquared(K[5]) * 0.5f;
@@ -322,12 +322,12 @@ public:
 
         double inc[4];
         for (int i = 0; i < 4; i++) inc[i] = std::min(f0 * ratio[i], nyq) / (sampleRate * (float) os);
-        float carSum = 0.0f;                                   /* carriers mix: op 1 at full, others at their level */
-        for (int i = 0; i < 4; i++) if ((car >> i) & 1) carSum += i == 0 ? 1.0f : lvl[i];
+        float carSum = 0.0f;                                   /* carriers mix: each at its level */
+        for (int i = 0; i < 4; i++) if ((car >> i) & 1) carSum += lvl[i];
         const float carNorm = 1.0f / std::max(1.0f, carSum);
         float amp[4];
         for (int i = 0; i < 4; i++)
-            amp[i] = ((car >> i) & 1) ? (i == 0 ? 1.0f : lvl[i]) * carNorm
+            amp[i] = ((car >> i) & 1) ? lvl[i] * carNorm
                                       : lvl[i] * lvl[i] * 2.5f * modEnv * idxVel;   /* index, in cycles */
         const float fbAmt = fb * fb * 0.6f * (((car >> 3) & 1) ? 1.0f : modEnv);
         const uint8_t *mb = modBy[algo];

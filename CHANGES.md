@@ -2,6 +2,16 @@
 
 ## 1.7 (in progress)
 
+- REVERB, new: an 8-line feedback delay network that keeps each machine's place in the stereo field. DECAY 0.3-20 s
+  and FREEZE at the top, SIZE, PRE-DELAY 0-250 ms, TONE (dark <- -> thin), MOD (less metal, then a moving cloud),
+  LEVEL, and FROM DELAY (the delay's repeats into the reverb).
+- DELAY: SYNC to the MPC's tempo (1/32 .. 1/1, dotted and triplet), FEEDBACK up to 110 % held by tape saturation
+  (DRIVE), wow and flutter (MOD), TONE both ways, DUCK.
+- FX page: DIRT, DELAY and REVERB on one page, Q-Links in two sets (FX DIRT DELAY, FX REVERB).
+- FM: OP1 LEVEL and OP1 RATIO (K14); the page shows the four operators' levels over their ratios.
+- Parameters keep their 1.6 index (new ones at the end), so 1.6 projects open with their settings; the reverb's
+  old DAMP knob is its TONE now.
+
 - Fix: the FILTER picture showed the wrong frame for every type but MULTI (e.g. LP 4 with RESONANCE at 0 drew a resonant peak). The view parameter runs 0..191 but those strips had 128 frames, so the MPC spread the value over the wrong frames. Every filter strip now has 192 frames: LP 4, COMB, LEGACY follow CUTOFF in 48 steps x RESONANCE 4, EQ CUTOFF 24 x GAIN 8.
 
 ## NorthWest 1.6.1

@@ -59,7 +59,7 @@ def text(cx, cy, label, size=1.5, when=""): return W('text cx=%d cy=%d label="%s
 def meter(cx, cy, size, key, img, when=""):
     return W('meter cx=%d cy=%d w=%d h=%d key=%s strip=images/nw/%s frames=64' % (cx, cy, size[0], size[1], key, img), when)
 STEP_KEYS = ("_model", "_chan", "_ftype", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2",
-             "_osc_sync", "fx_dmode", "glide_mode", "oversample")     # tools/gen_params.py STEPPERS
+             "_osc_sync", "fx_dmode", "fx_dsync", "glide_mode", "oversample")     # tools/gen_params.py STEPPERS
 def stepper(cx, cy, w, key, get="", when=""):
     """the box's key is "<key>_st" for an option list (a whole-number twin the wheel steps one option a click); the
     arrows stay "<key>_prev" / "<key>_next" (prev= / next=)"""
@@ -86,15 +86,14 @@ RIGHT = (792, 232, 472, 240)                # x, y, w, h of the right-hand block
 # per model: (knob, label) in the four columns, rows 1 and 2 ("" = not used)
 COLS = {
     0: [("k1", "POSITION"), ("k2", "FX 1"), ("k3", "FX 2"), ("k4", "DETUNE"), ("k7", "UNISON"), ("k8", "SPREAD")],
-    1: [("k1", "OP2 LEVEL"), ("k2", "OP3 LEVEL"), ("k3", "OP4 LEVEL"), ("k4", "FEEDBACK"),
-        ("k7", "MOD DECAY"), ("k8", "OP2 RATIO"), ("k9", "OP3 RATIO"), ("k10", "OP4 RATIO")],
+    1: [("op1", "OP1 LEVEL"), ("k1", "OP2 LEVEL"), ("k2", "OP3 LEVEL"), ("k3", "OP4 LEVEL"),
+        ("k14", "OP1 RATIO"), ("k8", "OP2 RATIO"), ("k9", "OP3 RATIO"), ("k10", "OP4 RATIO")],
     2: [("k1", "FM AMOUNT"), ("k2", "FOLD"), ("k3", "SYMMETRY"), ("k4", "OSC MIX"), ("k7", "MOD RATIO"), ("k8", "MOD FINE")],
     3: [("k1", "FM 1>2"), ("k2", "NOISE"), ("k3", "DRIVE"), ("k4", "PULSE WIDTH"),
         ("k7", "OSC 1 LEVEL"), ("k8", "OSC 1 FREQ"), ("k9", "OSC 2 LEVEL"), ("k10", "OSC 2 FREQ")],
 }
 # the right-hand block: knobs (FM, WEST COAST) or sliders (WAVETABLE's SUB, ANALOG's PITCH)
-RIGHT_KNOBS = {1: [("k5", "PITCH ENV"), ("k6", "NOISE"), ("k11", "PITCH DECAY"), ("k12", "VEL > FM")],
-               2: [("k5", "LPG DEPTH"), ("k6", "LPG RESPONSE"), ("k11", "LPG MODE"), ("k12", "VEL > FOLD")]}
+RIGHT_KNOBS = {2: [("k5", "LPG DEPTH"), ("k6", "LPG RESPONSE"), ("k11", "LPG MODE"), ("k12", "VEL > FOLD")]}
 SUB_BARS = [("k5", "LEVEL"), ("k6", "DRIVE"), ("k11", "OCTAVE"), ("k12", "WAVE")]
 PITCH_BARS = [("k5", "AMOUNT"), ("k6", "DECAY"), ("k11", "TARGET"), ("k12", "OSC 2 FINE"),
               ("k13", "VELOCITY"), ("k14", "OSC 1 FINE")]
@@ -176,6 +175,11 @@ def slot_page(n):
     for mi, items in RIGHT_KNOBS.items():
         for j, (k, lab) in enumerate(items):
             L.append(knob(RX[j % 2], ROW1 if j < 2 else ROW2, lab, s + k, when(mi), bw=200))
+    # FM: three columns in the right-hand block: what the modulation does (row 1), the attack (row 2)
+    FM_RIGHT = [("k7", "MOD DECAY"), ("k4", "FEEDBACK"), ("k12", "VEL > FM"),
+                ("k5", "PITCH ENV"), ("k11", "PITCH DECAY"), ("k6", "NOISE")]
+    for j, (k, lab) in enumerate(FM_RIGHT):
+        L.append(knob(RIGHT[0] + 79 + (j % 3) * 157, ROW1 if j < 3 else ROW2, lab, s + k, when(1), bw=150))
     # WEST COAST: one cycle through the wavefolder (FOLD x SYMMETRY) where row 2's last two columns would be
     L.append(W('meter cx=%d cy=%d w=%d h=%d key=%scview strip=images/nw/fold_%dx%d.png frames=128'
                % ((KX[2] + KX[3]) // 2, ROW2, ART.FOLD[0], ART.FOLD[1], s, ART.FOLD[0], ART.FOLD[1]), when(2)))
@@ -202,9 +206,11 @@ def slot_page(n):
         cx = 770 + i * 108
         if i < 4: L.append(meter(cx, 546, ES, s + k, "env_%s_%dx%d.png" % (("adsr"[i],) + ES)))
         L.append(knob(cx, 640, lab, s + k, bw=104))
-    # Q-Link columns of 4: row 1, row 2, the right-hand block, the filter; the titles are the MPC page names
+    # Q-Link columns of 4 (one set for every model, so it follows the knob numbers): K1-K4, K7-K10, K5 K6 K11 K12,
+    # then FM's OP1 LEVEL and K14 / K13 (FM OP1 RATIO; ANALOG OSC 1 FINE, VEL > P.ENV) and CUTOFF; the titles are
+    # the MPC page names
     L += ['qlinks "MACHINE %d" = ' % n + ",".join(s + "k%d" % k for k in (1, 2, 3, 4, 7, 8, 9, 10, 5, 6, 11, 12)) + "," +
-          ",".join(s + x for x in ("cutoff", "reso", "fenv", "fdec")),
+          ",".join(s + x for x in ("op1", "k14", "k13", "cutoff")),
           'qlinks "M%d FILTER AMP" = ' % n + ",".join((s + x if x != "-" else x) for x in (
               "ftype", "cutoff", "reso", "fshape", "fenv", "fdec", "fkey", "-", "amp_a", "amp_d", "amp_s", "amp_r",
               "vel", "bwlo", "bwhi", "-"))]
@@ -271,15 +277,20 @@ L = ["[tab FX]",
      frame(10, 92, 1258, 200, "DIRT"),
      knob(160, 196, "DRIVE", "fx_xdrive", bw=200), knob(420, 196, "CHARACTER", "fx_xchar", bw=220),
      knob(680, 196, "TONE", "fx_xtone", bw=200), knob(940, 196, "GRIT", "fx_xgrit", bw=200),
-     frame(10, 298, 1258, 200, "DELAY"),
-     knob(160, 402, "TIME", "fx_dtime", bw=200), knob(420, 402, "FEEDBACK", "fx_dfb", bw=200),
-     knob(680, 402, "TONE", "fx_dtone", bw=200), knob(940, 402, "LEVEL", "fx_dlevel", bw=200),
-     text(1150, 362, "MODE", 1.0), stepper(1150, 402, 210, "fx_dmode"),
-     frame(10, 504, 1258, 204, "REVERB"),
-     knob(160, 608, "SIZE", "fx_rsize", bw=200), knob(420, 608, "DAMP", "fx_rdamp", bw=200),
-     knob(680, 608, "LEVEL", "fx_rlevel", bw=200),
-     'qlinks "FX" = fx_xdrive,fx_xchar,fx_xtone,fx_xgrit,fx_dtime,fx_dfb,fx_dtone,fx_dlevel,'
-     'fx_rsize,fx_rdamp,fx_rlevel,-,-,-,-,-']
+     frame(10, 298, 1258, 200, "DELAY")]
+FXX = [90 + 145 * i for i in range(7)]                # seven knobs a row, the steppers on the right
+for x, (lab, k) in zip(FXX, (("TIME", "fx_dtime"), ("FEEDBACK", "fx_dfb"), ("TONE", "fx_dtone"), ("DRIVE", "fx_ddrive"),
+                            ("MOD", "fx_dmod"), ("DUCK", "fx_dduck"), ("LEVEL", "fx_dlevel"))):
+    L.append(knob(x, 402, lab, k, bw=140))
+L += [text(1160, 342, "SYNC", 1.0), stepper(1160, 382, 220, "fx_dsync"),
+      text(1160, 420, "MODE", 1.0), stepper(1160, 460, 220, "fx_dmode"),
+      frame(10, 504, 1258, 204, "REVERB")]
+for x, (lab, k) in zip(FXX, (("DECAY", "fx_rdecay"), ("SIZE", "fx_rsize"), ("PRE-DELAY", "fx_rpre"), ("TONE", "fx_rdamp"),
+                            ("MOD", "fx_rmod"), ("FROM DELAY", "fx_drev"), ("LEVEL", "fx_rlevel"))):
+    L.append(knob(x, 608, lab, k, bw=140))
+L += ['qlinks "FX DIRT DELAY" = fx_xdrive,fx_xchar,fx_xtone,fx_xgrit,fx_dtime,fx_dfb,fx_dtone,fx_dlevel,'
+      'fx_dsync,fx_dmode,fx_ddrive,fx_dmod,fx_dduck,fx_drev,-,-',
+      'qlinks "FX REVERB" = fx_rdecay,fx_rsize,fx_rpre,fx_rdamp,fx_rmod,fx_drev,fx_rlevel,-,-,-,-,-,-,-,-,-']
 FX = "\n".join(L) + "\n"
 
 # ---- GLOBAL: glide, master, engine, preset, logo -----------------------------------------------------------------

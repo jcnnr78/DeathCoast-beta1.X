@@ -158,7 +158,7 @@ PRESETS = [
     # ---------------------------------------------------------------- EFX
     P("EFX Laser Zap",
       m(1, AN, osc_w1=SAW, k5=127, k6=55, k7=127, k9=0, amp_d=60, amp_s=0, amp_r=50, cutoff=90, reso=70, dsend=70),
-      fx_dfb=80),
+      fx_dfb=69),
     P("EFX Noise Riser",
       m(1, AN, osc_w1=SINE, k2=127, k7=0, k9=0, ftype=MULTI, fshape=64, cutoff=40, reso=100, amp_a=110, amp_s=127,
         amp_r=90, rsend=90),
@@ -172,7 +172,7 @@ PRESETS = [
     P("EFX Pinged Chaos",
       m(1, WC, k1=100, k7=wc_ratio(2.76), k2=100, k3=60, k5=110, k6=45, amp_d=55, amp_s=0, dsend=80),
       mod(1, LFO1, TA, 120), mod(2, LFO2, TC, 100), lfo1_shape=SH, lfo1_rate=95, lfo2_shape=SMOOTH, lfo2_rate=70,
-      fx_dfb=95, fx_dtime=75),
+      fx_dfb=82, fx_dtime=75),
 
     # ---------------------------------------------------------------- DRONE
     P("DRONE Dark Fifths",
@@ -184,19 +184,19 @@ PRESETS = [
       m(1, WC, level=80, k1=40, k2=50, k3=30, k5=30, k6=127, amp_a=90, amp_s=127, amp_r=120, rsend=70, dsend=30),
       m(2, FM, fm_algo=6, k1=50, k8=fm_ratio(3.5), level=35, tune=12, amp_a=100, amp_s=127, amp_r=120, rsend=70),
       mod(1, LFO1, TB, 90, 1), mod(2, LFO2, TA, 80, 1), lfo1_rate=20, lfo2_rate=10, lfo2_shape=SMOOTH,
-      fx_rsize=110),
+      fx_rdecay=100, fx_rsize=110),
     P("DRONE Vowel Choir",
       m(1, WT, table="Vocal/Choir Ah to Oo", k7=127, k4=30, k8=127, wt_umode=UNI_SHIMMER, amp_a=110, amp_s=127,
         amp_r=120, rsend=100),
       m(2, WT, table="Vocal/Vowels Male", level=70, tune=-12, amp_a=110, amp_s=127, amp_r=120, rsend=100),
-      mod(1, LFO1, TA, 100), lfo1_rate=8, fx_rsize=110),
+      mod(1, LFO1, TA, 100), lfo1_rate=8, fx_rdecay=100, fx_rsize=110),
     P("DRONE Serge Sea",
       m(1, WC, k1=50, k7=wc_ratio(1.5), k2=60, k3=40, k5=60, k6=127, amp_a=100, amp_s=127, amp_r=127, pan=30,
         rsend=100, dsend=50),
       m(2, WC, k1=45, k7=wc_ratio(2.0), k2=50, k3=60, k5=60, k6=127, tune=-12, level=85, amp_a=110, amp_s=127,
         amp_r=127, pan=98, rsend=100, dsend=50),
       mod(1, LFO2, TB, 110), mod(2, LFO1, TA, 90), mod(3, RND, TC, 100), lfo1_rate=12, lfo2_shape=SMOOTH,
-      lfo2_rate=18, fx_rsize=120, fx_dtime=95, fx_dfb=70, drift=60),
+      lfo2_rate=18, fx_rdecay=110, fx_rsize=120, fx_rmod=70, fx_dtime=95, fx_dfb=60, drift=60),
 
     # ---------------------------------------------------------------- STRESS: the heaviest the plugin can be
     P("STRESS Unison Wall",
@@ -211,7 +211,7 @@ PRESETS = [
           osc_w1=SAW, osc_w2=SAW, ftype=COMB_POS, cutoff=90, fkey=127, reso=110, amp_s=127, amp_r=127,
           dsend=90, rsend=90, xsend=90) for n in range(1, 5)],
       *[mod(r, (LFO1, LFO2, RND, EG1)[r % 4], DST8[r - 1], 110) for r in range(1, 9)],
-      lfo1_rate=120, lfo2_rate=115, oversample=1, fx_xgrit=127, fx_dfb=100),
+      lfo1_rate=120, lfo2_rate=115, oversample=1, fx_xgrit=127, fx_dfb=86),
     P("STRESS FM Feedback",
       *[m(n, FM, fm_algo=n - 1, k1=127, k2=127, k3=127, k4=127, k7=127, k8=fm_ratio(3.5), k9=fm_ratio(7.0),
           k10=fm_ratio(13.0), k6=60, ftype=MULTI, fshape=64, cutoff=90, reso=110, amp_s=127, amp_r=127,
@@ -237,7 +237,7 @@ PRESETS = [
         dsend=100, rsend=100, xsend=100),
       *[mod(r, (LFO1, LFO2, RND, EG1, EG2, AMPENV, FLTENV, VEL)[r - 1], DST8[r - 1], 120) for r in range(1, 9)],
       lfo1_rate=127, lfo2_rate=120, lfo2_shape=SH, oversample=1, drift=127, fx_xdrive=127, fx_xgrit=127,
-      fx_dfb=110, fx_rsize=127),
+      fx_dfb=95, fx_rdecay=118, fx_rsize=127, fx_rmod=100),
 ]
 
 if __name__ == "__main__":

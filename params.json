@@ -3657,15 +3657,17 @@
    "min": 0,
    "max": 127,
    "default": 50,
-   "display": "int"
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "fx_dtone",
    "name": "DELAY TONE",
    "min": 0,
    "max": 127,
-   "default": 80,
-   "display": "int"
+   "default": 50,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "fx_dmode",
@@ -3720,11 +3722,12 @@
   },
   {
    "key": "fx_rdamp",
-   "name": "REVERB DAMP",
+   "name": "REVERB TONE",
    "min": 0,
    "max": 127,
-   "default": 60,
-   "display": "int"
+   "default": 64,
+   "display": "int",
+   "dynamic_display": true
   },
   {
    "key": "fx_rlevel",
@@ -3953,6 +3956,131 @@
    "default": 0,
    "display": "int",
    "clamped": true
+  },
+  {
+   "key": "m1_op1",
+   "name": "M1 FM OP1 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int"
+  },
+  {
+   "key": "m2_op1",
+   "name": "M2 FM OP1 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int"
+  },
+  {
+   "key": "m3_op1",
+   "name": "M3 FM OP1 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int"
+  },
+  {
+   "key": "m4_op1",
+   "name": "M4 FM OP1 LEVEL",
+   "min": 0,
+   "max": 127,
+   "default": 127,
+   "display": "int"
+  },
+  {
+   "key": "fx_dsync",
+   "name": "DELAY SYNC",
+   "options": [
+    "FREE",
+    "SYNC"
+   ],
+   "default": 0
+  },
+  {
+   "key": "fx_dsync_prev",
+   "name": "DELAY SYNC PREV",
+   "momentary": true,
+   "step_of": "fx_dsync",
+   "step_delta": -1
+  },
+  {
+   "key": "fx_dsync_next",
+   "name": "DELAY SYNC NEXT",
+   "momentary": true,
+   "step_of": "fx_dsync",
+   "step_delta": 1
+  },
+  {
+   "key": "fx_dsync_st",
+   "name": "DELAY SYNC",
+   "min": 0,
+   "max": 1,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true,
+   "nudge_pct": 50,
+   "refresh_display": true,
+   "clamped": true
+  },
+  {
+   "key": "fx_ddrive",
+   "name": "DELAY DRIVE",
+   "min": 0,
+   "max": 127,
+   "default": 20,
+   "display": "int"
+  },
+  {
+   "key": "fx_dmod",
+   "name": "DELAY MOD",
+   "min": 0,
+   "max": 127,
+   "default": 10,
+   "display": "int"
+  },
+  {
+   "key": "fx_dduck",
+   "name": "DELAY DUCK",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "fx_drev",
+   "name": "DELAY > REVERB",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "fx_rdecay",
+   "name": "REVERB DECAY",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "fx_rpre",
+   "name": "REVERB PRE-DELAY",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int",
+   "dynamic_display": true
+  },
+  {
+   "key": "fx_rmod",
+   "name": "REVERB MOD",
+   "min": 0,
+   "max": 127,
+   "default": 40,
+   "display": "int"
   }
  ]
 }

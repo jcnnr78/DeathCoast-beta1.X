@@ -383,11 +383,28 @@ static int dynamic_text(Instance *inst, const char *key, char *buf, int buf_len)
         return write_str(buf, buf_len, tmp);
     }
     if (!strcmp(key, "fx_dtime_display")) {
+        if ((int) P[NW_P_FX_DSYNC] == 1) return write_str(buf, buf_len, nw::delayDivName(nw::delayDivIndex(P[NW_P_FX_DTIME])));
         const float s = nw::delayTimeSeconds(P[NW_P_FX_DTIME]);
         if (s < 1.0f) snprintf(tmp, sizeof tmp, "%d ms", (int) std::lround(s * 1000.0f));
         else snprintf(tmp, sizeof tmp, "%.2f s", (double) s);
         return write_str(buf, buf_len, tmp);
     }
+    if (!strcmp(key, "fx_dfb_display")) {
+        snprintf(tmp, sizeof tmp, "%d %%", (int) std::lround(P[NW_P_FX_DFB] / 127.0f * 110.0f));
+        return write_str(buf, buf_len, tmp);
+    }
+    if (!strcmp(key, "fx_dtone_display")) { nw::dirtToneText(tmp, sizeof tmp, P[NW_P_FX_DTONE]); return write_str(buf, buf_len, tmp); }
+    if (!strcmp(key, "fx_rdecay_display")) {
+        const float v = P[NW_P_FX_RDECAY], t = nw::reverbDecaySeconds(v);
+        if (nw::reverbFreeze(v)) snprintf(tmp, sizeof tmp, "FREEZE");
+        else snprintf(tmp, sizeof tmp, t < 10.0f ? "%.1f s" : "%.0f s", (double) t);
+        return write_str(buf, buf_len, tmp);
+    }
+    if (!strcmp(key, "fx_rpre_display")) {
+        snprintf(tmp, sizeof tmp, "%d ms", (int) std::lround(nw::reverbPreDelaySeconds(P[NW_P_FX_RPRE]) * 1000.0f));
+        return write_str(buf, buf_len, tmp);
+    }
+    if (!strcmp(key, "fx_rdamp_display")) { nw::dirtToneText(tmp, sizeof tmp, P[NW_P_FX_RDAMP]); return write_str(buf, buf_len, tmp); }
     if (!strcmp(key, "fx_xchar_display")) { nw::dirtCharacterText(tmp, sizeof tmp, P[NW_P_FX_XCHAR]); return write_str(buf, buf_len, tmp); }
     if (!strcmp(key, "fx_xtone_display")) { nw::dirtToneText(tmp, sizeof tmp, P[NW_P_FX_XTONE]); return write_str(buf, buf_len, tmp); }
     return -1;
@@ -400,6 +417,7 @@ static unsigned display_rev(Instance *inst)
     for (int m = 0; m < NW_SLOTS; m++) {
         mix(filter_view(inst, m)); mix(table_view(inst, m)); mix(fold_view(inst, m));
     }
+    mix((int) inst->params()[NW_P_FX_DSYNC]);                /* DELAY TIME's readout: ms or a note value */
     mix(inst->cpuShown);
     return v;
 }

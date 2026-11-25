@@ -34,7 +34,7 @@ GLIDE_MODES = ["OFF", "GLISSANDO", "PORTAMENTO", "LEGATO"]
 K_DEFAULTS = [0, 0, 0, 0, 0, 0, 43, 64, 64, 64, 43, 64, 0, 64]     # K1..K14 (src/dsp/machines.h)
 # selectors drawn as steppers: arrows (_prev/_next) and a box the data wheel turns (_st, see below)
 STEPPERS = ("_model", "_chan", "_ftype", "_wt_fx", "_wt_umode", "_fm_algo", "_fm_mode", "_osc_w1", "_osc_w2",
-            "_osc_sync", "fx_dmode", "glide_mode", "oversample")
+            "_osc_sync", "fx_dmode", "fx_dsync", "glide_mode", "oversample")
 
 P = []   # (key, name, kind, min, max, default, options, extra-json)
 def I(key, name, lo, hi, d, **x): P.append((key, name, "int", lo, hi, d, None, x))
@@ -72,6 +72,7 @@ for n in range(1, SLOTS + 1):
     E(s + "wt_fx", S + "WT EFFECT", WT_FX, 0)
     E(s + "wt_umode", S + "WT UNI MODE", UNI_MODES, 0)
     E(s + "fm_algo", S + "FM ALGORITHM", FM_ALGOS, 0)
+    I(s + "op1", S + "FM OP1 LEVEL", 0, 127, 127)                 # FM: the carrier's level (1.7)
     E(s + "fm_mode", S + "FM MODE", FM_MODES, 0)
     E(s + "osc_w1", S + "OSC1 WAVE", OSC_WAVES, 0)
     E(s + "osc_w2", S + "OSC2 WAVE", OSC_WAVES, 0)
@@ -98,13 +99,21 @@ I("volume", "VOLUME", 0, 127, 100)
 I("drift", "DRIFT", 0, 127, 0, dynamic_display=True)          # analog drift of pitch and cutoff, every machine
 E("oversample", "OVERSAMPLING", OFF_ON, 1)                     # 2x in WEST COAST, ANALOG and FM
 # FX: a delay, a reverb and a distortion (DIRT), fed by each machine's sends
-I("fx_dtime", "DELAY TIME", 0, 127, 70, dynamic_display=True)
-I("fx_dfb", "DELAY FEEDBACK", 0, 127, 50)
-I("fx_dtone", "DELAY TONE", 0, 127, 80)
+I("fx_dtime", "DELAY TIME", 0, 127, 70, dynamic_display=True)   # FREE: ms; SYNC: a note value
+E("fx_dsync", "DELAY SYNC", ["FREE", "SYNC"], 0)
+I("fx_dfb", "DELAY FEEDBACK", 0, 127, 50, dynamic_display=True)  # 0 .. 110 %
+I("fx_dtone", "DELAY TONE", 0, 127, 50, dynamic_display=True)    # dark <- flat (64) -> thin
+I("fx_ddrive", "DELAY DRIVE", 0, 127, 20)                      # tape saturation
+I("fx_dmod", "DELAY MOD", 0, 127, 10)                          # wow and flutter
+I("fx_dduck", "DELAY DUCK", 0, 127, 0)
 E("fx_dmode", "DELAY MODE", ["STEREO", "PING PONG"], 1)
 I("fx_dlevel", "DELAY LEVEL", 0, 127, 100)
+I("fx_drev", "DELAY > REVERB", 0, 127, 0)                     # the delay's repeats into the reverb
+I("fx_rdecay", "REVERB DECAY", 0, 127, 64, dynamic_display=True)   # 0.3 .. 20 s, 127 = FREEZE
 I("fx_rsize", "REVERB SIZE", 0, 127, 70)
-I("fx_rdamp", "REVERB DAMP", 0, 127, 60)
+I("fx_rpre", "REVERB PRE-DELAY", 0, 127, 0, dynamic_display=True)
+I("fx_rdamp", "REVERB TONE", 0, 127, 64, dynamic_display=True)   # key kept from 1.6 (DAMP), now TONE
+I("fx_rmod", "REVERB MOD", 0, 127, 40)
 I("fx_rlevel", "REVERB LEVEL", 0, 127, 100)
 I("fx_xdrive", "DIRT DRIVE", 0, 127, 64)
 I("fx_xchar", "DIRT CHARACTER", 0, 127, 40, dynamic_display=True)
@@ -198,6 +207,16 @@ for n in range(1, SLOTS + 1):
 for n in range(1, SLOTS + 1):
     out.append({"key": "m%d_wviewb" % n, "name": "M%d TABLE VIEW B" % n, "min": 0, "max": _nf - _split,
                 "default": 0, "display": "int", "clamped": True})
+# VST index order: a parameter keeps the index it was released with (params.lock, the last release's order), so a
+# project restoring its parameters by index still finds each one; a renamed key takes its old name's place, and
+# keys new since then go at the end.
+RENAMED = {}                                          # new key: old key (none: the framework's lock refuses renames)
+_lock = [l.strip() for l in open(os.path.join(ROOT, "params.lock")) if l.strip()]
+_by = {RENAMED.get(e["key"], e["key"]): e for e in out}
+_gone = [k for k in _lock if k not in _by]
+if _gone: raise SystemExit("params.lock keys with no parameter (add them to RENAMED): %s" % ", ".join(_gone))
+_new = [e for e in out if RENAMED.get(e["key"], e["key"]) not in set(_lock)]
+out = [_by[k] for k in _lock] + _new
+open(os.path.join(ROOT, "params.lock"), "w").write("\n".join(RENAMED.get(e["key"], e["key"]) for e in out) + "\n")
 json.dump({"name": "NorthWest", "params": out}, open(os.path.join(ROOT, "params.json"), "w"), indent=1)
-open(os.path.join(ROOT, "params.lock"), "w").write("\n".join(p["key"] for p in out) + "\n")
 print("engine params %d | VST params %d" % (len(P), len(out)))

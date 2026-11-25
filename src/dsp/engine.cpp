@@ -206,10 +206,12 @@ void Engine::renderBlock(int16_t *out, int frames)
         }
         dirt.process(XL, XR, L, R, n, pot01(pots[NW_P_FX_XDRIVE]), pot01(pots[NW_P_FX_XCHAR]),
                      pot01(pots[NW_P_FX_XTONE]), pot01(pots[NW_P_FX_XGRIT]));
-        delay.process(DL, DR, L, R, n, pot01(pots[NW_P_FX_DTIME]), pot01(pots[NW_P_FX_DFB]), pot01(pots[NW_P_FX_DTONE]),
-                      (int) pots[NW_P_FX_DMODE] == 1, potSquared(pots[NW_P_FX_DLEVEL]));
-        reverb.process(VL, VR, L, R, n, pot01(pots[NW_P_FX_RSIZE]), pot01(pots[NW_P_FX_RDAMP]),
-                       potSquared(pots[NW_P_FX_RLEVEL]));
+        delay.process(DL, DR, L, R, n, delaySeconds(pots[NW_P_FX_DTIME], (int) pots[NW_P_FX_DSYNC] == 1, hostBpm),
+                      pot01(pots[NW_P_FX_DFB]), pot01(pots[NW_P_FX_DTONE]), (int) pots[NW_P_FX_DMODE] == 1,
+                      potSquared(pots[NW_P_FX_DLEVEL]), pot01(pots[NW_P_FX_DDRIVE]), pot01(pots[NW_P_FX_DMOD]),
+                      pot01(pots[NW_P_FX_DDUCK]), VL, VR, potSquared(pots[NW_P_FX_DREV]));
+        reverb.process(VL, VR, L, R, n, pots[NW_P_FX_RDECAY], pot01(pots[NW_P_FX_RSIZE]), pots[NW_P_FX_RPRE],
+                       pot01(pots[NW_P_FX_RDAMP]), pot01(pots[NW_P_FX_RMOD]), potSquared(pots[NW_P_FX_RLEVEL]));
         const float master = potSquared(pots[NW_P_VOLUME]) * 0.8f;
         for (int i = 0; i < n; i++) { L[i] *= master; R[i] *= master; }
         limiter.process(L, R, n);
