@@ -1,5 +1,9 @@
 # Changes
 
+## NorthWest 1.6.1
+
+- Fix: 1.6.0 did not load on the MPC. The build's newer libstdc++ headers pulled in `std::__throw_bad_array_new_length` (GLIBCXX_3.4.29), which the MPC's libstdc++ lacks; the plugin now defines it itself.
+
 ## NorthWest 1.6 (branch v1.6)
 
 | Area | Change |

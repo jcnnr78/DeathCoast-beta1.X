@@ -28,6 +28,13 @@
 #include "wt/scanner.h"
 #include "wt/loader.h"
 
+// The build toolchain's libstdc++ headers (GCC 11+) make vector/new[] call std::__throw_bad_array_new_length,
+// which lives only in libstdc++ GLIBCXX_3.4.29. The MPC's libstdc++ is older, so the .so would fail to load
+// ("version GLIBCXX_3.4.29 not found"). Defining it here keeps that versioned import out of the .so.
+namespace std {
+void __throw_bad_array_new_length() { std::abort(); }
+}
+
 static const host_api_v1_t *g_host = nullptr;
 
 /* the state's tag; 1.3-1.5 betas saved "TBLR2;" (same key=value body), still read */

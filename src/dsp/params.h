@@ -2,7 +2,7 @@
 #ifndef NORTHWEST_PARAMS_H
 #define NORTHWEST_PARAMS_H
 
-#define NW_VERSION "1.6.0"
+#define NW_VERSION "1.6.1"
 #define NW_PARAM_COUNT 248
 #define NW_SLOTS 4
 #define NW_KNOBS 14
