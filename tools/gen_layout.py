@@ -163,6 +163,9 @@ def slot_page(n):
     for part, key in (("a", "wview"), ("b", "wviewb")):
         L.append(W('meter cx=%d cy=%d w=%d h=%d key=%s%s strip=images/nw/tables%s_%dx%d.png frames=%d'
                    % (BX, BY, TV[0], TV[1], s, key, part, TV[0], TV[1], TABLE_STRIPS[part]), when(0)))
+    # POSITION: a line over the picture, on the frame of the stack POSITION (K1) is on, as in 1.5
+    L.append(W('meter cx=%d cy=%d w=%d h=%d key=%sk1 strip=images/nw/posmark_%dx%d.png frames=64'
+               % (BX, BY, TV[0], TV[1], s, TV[0], TV[1]), when(0)))
     PY = RIGHT[1] + RIGHT[3] - ART.PANELS["sub"][2]
     L.append(W('art file=images/nw/panel_sub.png x=%d y=%d w=%d h=%d' % (RIGHT[0], PY, RIGHT[2], ART.PANELS["sub"][2]), when(0)))
     BW = ART.BARS[1]

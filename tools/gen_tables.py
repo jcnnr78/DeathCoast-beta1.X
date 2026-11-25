@@ -61,6 +61,24 @@ def draw(table, w, h):
         A.polyline(d, pts, A.hexc("e8871e", a), int(1.4 * A.SS))
     return A.down(im, w, h)
 
+def posmark(w, h, n=64):
+    """the POSITION overlay, drawn over the table picture (transparent): a bright cursor along the frame of the stack
+    POSITION is on, with a dot where the wave starts. 64 frames, follows K1."""
+    frames = []
+    pw = w - 20 - DEPTH * DX; ph = (h - 14 - DEPTH * DY) / 2
+    for i in range(n):
+        k = i / (n - 1) * DEPTH
+        ox, oy = 10 + k * DX, h / 2 + DEPTH * DY / 2 - k * DY
+        im = A.canvas(w, h); d = ImageDraw.Draw(im)
+        glow = A.canvas(w, h); gd = ImageDraw.Draw(glow)
+        gd.line(((ox * A.SS, oy * A.SS), ((ox + pw) * A.SS, oy * A.SS)), fill=A.hexc("ffb347", 150), width=int(5 * A.SS))
+        im.alpha_composite(glow.filter(__import__("PIL.ImageFilter", fromlist=["x"]).GaussianBlur(3 * A.SS)))
+        d.line(((ox * A.SS, oy * A.SS), ((ox + pw) * A.SS, oy * A.SS)), fill=A.ACC_HI, width=int(1.6 * A.SS))
+        r = 3.2 * A.SS
+        d.ellipse((ox * A.SS - r, oy * A.SS - r, ox * A.SS + r, oy * A.SS + r), fill=A.INK)
+        frames.append(A.down(im, w, h))
+    A.strip(frames, "posmark_%dx%d.png" % (w, h))
+
 def main():
     lib = sys.argv[1] if len(sys.argv) > 1 else next(
         (p for p in (os.path.join(ROOT, "..", "tablor-src", "src", "wavetables"), os.path.join(ROOT, "library", "wavetables"))
@@ -74,6 +92,7 @@ def main():
         stem = os.path.splitext(os.path.basename(f))[0]
         if stem in seen: continue
         seen.add(stem); names.append(stem); frames.append(draw(load(f), *SIZE))
+    posmark(*SIZE)
     # two strips (a strip may not pass 12288 px): A = blank + the first SPLIT pictures, B = blank + the rest; the plugin
     # shows a picture in one and the blank frame in the other (m<n>_wview, m<n>_wviewb)
     split = (len(frames) + 1) // 2
