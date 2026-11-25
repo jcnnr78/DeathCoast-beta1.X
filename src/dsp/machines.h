@@ -111,7 +111,7 @@ inline const char *knobName(int machine, int k, int fxMode)
                                   "MOD RATIO", "MOD FINE", "-", "-", "VEL > FOLD" };
     if (machine == M_WESTCOAST) return wc[k];
     static const char *an[12] = { "FM 1>2", "NOISE", "DRIVE", "PULSE WIDTH", "PITCH ENV", "PITCH DECAY",
-                                  "OSC 1 LEVEL", "OSC 2 LEVEL", "OSC 2 TUNE", "OSC 2 FINE", "VEL > P.ENV", "P.ENV TARGET" };
+                                  "OSC 1 LEVEL", "OSC 1 TUNE", "OSC 2 LEVEL", "OSC 2 TUNE", "P.ENV TARGET", "OSC 2 FINE" };
     if (machine == M_ANALOG) return an[k];
     return "-";
 }
@@ -151,9 +151,9 @@ inline void knobText(char *buf, int len, int machine, int k, float v)
             return;
         }
         if (k == 3) { snprintf(buf, len, "%d %%", (int) std::lround(anPulseWidth(v) * 100.0f)); return; }
-        if (k == 8) { snprintf(buf, len, "%+d st", (int) anTuneSemis(v)); return; }
-        if (k == 9) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
-        if (k == 11) { static const char *t[3] = { "OSC 1", "BOTH", "OSC 2" }; snprintf(buf, len, "%s", t[anTarget(v)]); return; }
+        if (k == 7 || k == 9) { snprintf(buf, len, "%+d st", (int) anTuneSemis(v)); return; }
+        if (k == 11) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
+        if (k == 10) { static const char *t[3] = { "OSC 1", "BOTH", "OSC 2" }; snprintf(buf, len, "%s", t[anTarget(v)]); return; }
     }
     snprintf(buf, len, "%d", (int) std::lround(v));
 }
@@ -486,14 +486,13 @@ public:
         const float noise = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
         const float drive = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
         const float pwk = std::clamp(K[3] + mo[MD_TD] * 127.0f, 0.0f, 127.0f);
-        const float lvl1 = pot01(K[6]), lvl2 = pot01(K[7]);
-        const float velAmt = pot01(K[10]);
-        const float penvSemis = anPitchEnvSemis(K[4]) * (1.0f - velAmt + velAmt * velocity);
+        const float lvl1 = pot01(K[6]), lvl2 = pot01(K[8]);
+        const float penvSemis = anPitchEnvSemis(K[4]);   /* velocity -> pitch: the matrix (VEL -> PITCH) */
         const float pdec = std::exp(-1.0f / (fmDecaySeconds(K[5]) * sampleRate));
         const float pw = anPulseWidth(pwk);
-        const float off2 = anTuneSemis(K[8]) + wcFineSemis(K[9]);
-        const float n1base = note;
-        const int target = anTarget(K[11]);
+        const float off2 = anTuneSemis(K[9]) + wcFineSemis(K[11]);
+        const float n1base = note + anTuneSemis(K[7]);
+        const int target = anTarget(K[10]);
         const float t1 = target <= 1 ? 1.0f : 0.0f, t2 = target >= 1 ? 1.0f : 0.0f;
         const float pm = fm * fm * 2.0f;
         const float g = 1.0f + drive * 6.0f, norm = 1.0f / fastTanh(g);

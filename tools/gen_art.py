@@ -239,5 +239,5 @@ if __name__ == "__main__":
     for k in FLT_TYPES: filt(k, *FLT)
     for s in "adsr": env(s, *ENV)
     subpanel()
-    subpanel(label="PITCH ENV", name="penvpanel.png")
+    subpanel(label="PITCH", name="penvpanel.png")
     logo()
