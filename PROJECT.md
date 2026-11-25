@@ -14,8 +14,10 @@
   osc 2 (FM 1>2), sync, white noise, tanh-like DRIVE (Pade, cheaper than tanh), decay pitch envelope (amount up to
   +48 st, decay 5 ms..4 s, velocity amount, target OSC 1 / BOTH / OSC 2). The ladder is the machine filter's LP 24 /
   HP 24 (same FILTER block as the other models). Header: OSC 1 WAVE, OSC 2 WAVE, SYNC (shared osc_w1/osc_w2/osc_sync).
-- K: FM 1>2, OSC 2 LEVEL, NOISE, DRIVE, PITCH ENV, PITCH DECAY, PULSE WIDTH, OSC 2 TUNE, OSC 2 FINE, OSC 1 OCTAVE,
-  VEL > P.ENV, P.ENV TARGET; the right-hand 2x2 (K5, K6, K11, K12) is the PITCH ENV panel, like SUB in WAVETABLE.
+- K (25-nov, after the first try on the MPC: osc 1 had no level): K1-K4 FM 1>2, NOISE, DRIVE, PULSE WIDTH (the
+  matrix's TIMBRE A-D); K7-K10 OSC 1 LEVEL, OSC 2 LEVEL, OSC 2 TUNE, OSC 2 FINE; PITCH ENV panel K5 PITCH ENV, K6 PITCH
+  DECAY, K11 VEL > P.ENV, K12 P.ENV TARGET. OSC 1 OCTAVE dropped: the machine's TUNE (MIX) moves osc 1. Levels add
+  up to 1 before they are scaled down, so a level alone is absolute; FM 1>2 works with osc 1 at level 0; the right-hand 2x2 (K5, K6, K11, K12) is the PITCH ENV panel, like SUB in WAVETABLE.
 - FX (src/dsp/fx.h): delay (10 ms..1.5 s, gliding time, feedback with LP tone + 90 Hz HP, stereo or ping pong) and
   reverb (4 combs + 2 allpasses a side). Each machine has DELAY and REVERB sends (mN_dsend / mN_rsend, on MIX with
   Q-Links level, pan, delay, reverb). Effects controls on GLOBAL. Each effect sleeps once silent.

@@ -76,8 +76,8 @@ K_LABELS = {
         "MOD DECAY", "OP2 RATIO", "OP3 RATIO", "OP4 RATIO", "PITCH DECAY", "VEL > FM"],
     2: ["FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "", "LPG RESPONSE", "MOD RATIO", "MOD FINE", "", "",
         "VEL > FOLD"],
-    3: ["FM 1>2", "OSC 2 LEVEL", "NOISE", "DRIVE", "PITCH ENV", "PITCH DECAY", "PULSE WIDTH", "OSC 2 TUNE", "OSC 2 FINE",
-        "OSC 1 OCTAVE", "VEL > P.ENV", "P.ENV TARGET"],
+    3: ["FM 1>2", "NOISE", "DRIVE", "PULSE WIDTH", "PITCH ENV", "PITCH DECAY", "OSC 1 LEVEL", "OSC 2 LEVEL",
+        "OSC 2 TUNE", "OSC 2 FINE", "VEL > P.ENV", "P.ENV TARGET"],
 }
 KX = [120 + i * 205 for i in range(6)]      # knob columns of the model area
 ROW1, ROW2 = 272, 398

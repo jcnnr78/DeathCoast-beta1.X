@@ -91,7 +91,6 @@ inline float fastTanh(float x)        /* Pade, clamped: within 2 % of tanh, mono
 inline float anPitchEnvSemis(float v) { const float x = v / 127.0f; return x * x * 48.0f; }
 inline float anPulseWidth(float v) { return 0.5f - 0.45f * v / 127.0f; }
 inline float anTuneSemis(float v) { return std::round((v - 64.0f) / 63.0f * 24.0f); }
-inline int anOctave(float v) { return std::clamp((int) std::lround(v / 127.0f * 4.0f), 0, 4) - 2; }
 inline int anTarget(float v) { return std::clamp((int) (v * 3.0f / 128.0f), 0, 2); }   /* 0 OSC 1, 1 BOTH, 2 OSC 2 */
 
 inline const char *knobName(int machine, int k, int fxMode)
@@ -111,8 +110,8 @@ inline const char *knobName(int machine, int k, int fxMode)
     static const char *wc[12] = { "FM AMOUNT", "FOLD", "SYMMETRY", "OSC MIX", "LPG DEPTH", "-", "LPG RESPONSE",
                                   "MOD RATIO", "MOD FINE", "-", "-", "VEL > FOLD" };
     if (machine == M_WESTCOAST) return wc[k];
-    static const char *an[12] = { "FM 1>2", "OSC 2 LEVEL", "NOISE", "DRIVE", "PITCH ENV", "PITCH DECAY",
-                                  "PULSE WIDTH", "OSC 2 TUNE", "OSC 2 FINE", "OSC 1 OCTAVE", "VEL > P.ENV", "P.ENV TARGET" };
+    static const char *an[12] = { "FM 1>2", "NOISE", "DRIVE", "PULSE WIDTH", "PITCH ENV", "PITCH DECAY",
+                                  "OSC 1 LEVEL", "OSC 2 LEVEL", "OSC 2 TUNE", "OSC 2 FINE", "VEL > P.ENV", "P.ENV TARGET" };
     if (machine == M_ANALOG) return an[k];
     return "-";
 }
@@ -151,10 +150,9 @@ inline void knobText(char *buf, int len, int machine, int k, float v)
             else snprintf(buf, len, "%.1f s", (double) s);
             return;
         }
-        if (k == 6) { snprintf(buf, len, "%d %%", (int) std::lround(anPulseWidth(v) * 100.0f)); return; }
-        if (k == 7) { snprintf(buf, len, "%+d st", (int) anTuneSemis(v)); return; }
-        if (k == 8) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
-        if (k == 9) { snprintf(buf, len, "%+d OCT", anOctave(v)); return; }
+        if (k == 3) { snprintf(buf, len, "%d %%", (int) std::lround(anPulseWidth(v) * 100.0f)); return; }
+        if (k == 8) { snprintf(buf, len, "%+d st", (int) anTuneSemis(v)); return; }
+        if (k == 9) { snprintf(buf, len, "%+d ct", (int) std::lround(wcFineSemis(v) * 100.0f)); return; }
         if (k == 11) { static const char *t[3] = { "OSC 1", "BOTH", "OSC 2" }; snprintf(buf, len, "%s", t[anTarget(v)]); return; }
     }
     snprintf(buf, len, "%d", (int) std::lround(v));
@@ -485,21 +483,22 @@ public:
         const int w1 = (int) P[slotParam(slot, TB_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, TB_P_M1_OSC_W2)];
         const bool sync = (int) P[slotParam(slot, TB_P_M1_OSC_SYNC)] != 0;
         const float fm = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
-        const float lvl2 = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
-        const float noise = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
-        const float drive = std::clamp(pot01(K[3]) + mo[MD_TD], 0.0f, 1.0f);
+        const float noise = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
+        const float drive = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
+        const float pwk = std::clamp(K[3] + mo[MD_TD] * 127.0f, 0.0f, 127.0f);
+        const float lvl1 = pot01(K[6]), lvl2 = pot01(K[7]);
         const float velAmt = pot01(K[10]);
         const float penvSemis = anPitchEnvSemis(K[4]) * (1.0f - velAmt + velAmt * velocity);
         const float pdec = std::exp(-1.0f / (fmDecaySeconds(K[5]) * sampleRate));
-        const float pw = anPulseWidth(K[6]);
-        const float off2 = anTuneSemis(K[7]) + wcFineSemis(K[8]);
-        const float n1base = note + 12.0f * (float) anOctave(K[9]);
+        const float pw = anPulseWidth(pwk);
+        const float off2 = anTuneSemis(K[8]) + wcFineSemis(K[9]);
+        const float n1base = note;
         const int target = anTarget(K[11]);
         const float t1 = target <= 1 ? 1.0f : 0.0f, t2 = target >= 1 ? 1.0f : 0.0f;
         const float pm = fm * fm * 2.0f;
         const float g = 1.0f + drive * 6.0f, norm = 1.0f / fastTanh(g);
         const float nl = noise * noise;
-        const float sum = 1.0f / (1.0f + lvl2 + nl);
+        const float sum = 1.0f / std::max(1.0f, lvl1 + lvl2 + nl);   /* levels are absolute until they add past 1 */
 
         float note1 = n1base, note2 = note + off2, f1 = 0, f2 = 0;
         for (int i = 0; i < n; i++) {
@@ -519,7 +518,7 @@ public:
             osc.ph2 += f2; if (osc.ph2 >= 1.0f) osc.ph2 -= 1.0f;
             rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5;
             const float wn = (float) (int32_t) rng * (1.0f / 2147483648.0f);
-            float x = (a + b * lvl2 + wn * nl) * sum;
+            float x = (a * lvl1 + b * lvl2 + wn * nl) * sum;
             if (drive > 0.0f) x = fastTanh(x * g) * norm;
             L[i] += x * 0.8f; R[i] += x * 0.8f;
         }
