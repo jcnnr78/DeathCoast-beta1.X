@@ -23,7 +23,7 @@
 #include <cstring>
 #include <random>
 
-namespace nw {
+namespace dc {
 
 enum class Wave {
     silence = 0, sine, triangle, sawUp, sawDown, pulse, square,
@@ -333,4 +333,4 @@ private:
     float phase = 0.0f;
 };
 
-} // namespace nw
+} // namespace dc

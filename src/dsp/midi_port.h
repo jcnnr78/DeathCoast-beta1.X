@@ -1,7 +1,7 @@
-/* NorthWest -- its own MIDI input port, so each machine can be played from its own MPC track and channel.
+/* DeathCoast -- its own MIDI input port, so each machine can be played from its own MPC track and channel.
  *
  * MPC hands a plugin every note-on of its own track on channel 1, so a plugin cannot tell channels apart there. A
- * plugin's own ALSA sequencer port does keep them: it shows in a MIDI track's MIDI OUTPUT list ("NorthWest MIDI In")
+ * plugin's own ALSA sequencer port does keep them: it shows in a MIDI track's MIDI OUTPUT list ("DeathCoast MIDI In")
  * and the track's notes arrive on its output channel (framework docs/NOTES.md, verified on a Live II, MPC OS 3.9.1;
  * unverified on 2.15.1). A machine whose MIDI CHANNEL is CH n listens there; TRACK (the default) keeps playing from
  * the plugin's own track.
@@ -15,7 +15,7 @@
 #include <cstring>
 #include <dlfcn.h>
 
-namespace nw {
+namespace dc {
 
 class MidiPort {
 public:
@@ -106,4 +106,4 @@ private:
     int (*f_freeConfig)() = nullptr;
 };
 
-} // namespace nw
+} // namespace dc

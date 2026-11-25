@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NorthWest factory presets (presets/northwest.tbl), written from the readable list below.
+"""DeathCoast factory presets (presets/deathcoast.tbl), written from the readable list below.
 
 Test sounds, not the final library. Every name starts with its kind: BASS, MELODY, DRUM, EFX, DRONE, and STRESS
 (sounds built to load the CPU as far as the plugin goes: four machines, the heaviest settings, every effect).
@@ -20,7 +20,7 @@ UNI_SHIMMER, UNI_NOISE, UNI_POS = 1, 2, 4                     # WAVETABLE unison
 LPG_VCA, LPG_COMBO, LPG_LP = 0, 43, 127                      # WEST COAST K11 (LPG MODE) values
 
 
-def table(path): return "NorthWest/" + path + " 2048.wav"   # relative to the plugin's wavetables folder
+def table(path): return "DeathCoast/" + path + " 2048.wav"   # relative to the plugin's wavetables folder
 
 # knob values for the ratio lists (src/dsp/machines.h fmRatio / wcRatio)
 FM_HI = [1.0, 1.41, 1.5, 2.0, 2.5, 2.76, 3.0, 3.5, 4.0, 4.5, 5.0, 5.4, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0,
@@ -241,9 +241,9 @@ PRESETS = [
 ]
 
 if __name__ == "__main__":
-    lines = ["# NorthWest factory sounds: Name|NW1;key=value;...  Written by tools/make_presets.py -- edit that.",
-             "# Kinds: BASS, MELODY, DRUM, EFX, DRONE, STRESS (CPU tests). Wavetables: the plugin's NorthWest pack."]
+    lines = ["# DeathCoast factory sounds: Name|DC1;key=value;...  Written by tools/make_presets.py -- edit that.",
+             "# Kinds: BASS, MELODY, DRUM, EFX, DRONE, STRESS (CPU tests). Wavetables: the plugin's DeathCoast pack."]
     for name, d in PRESETS:
-        lines.append(name + "|NW1;" + "".join("%s=%s;" % (k, v) for k, v in d.items()))
-    open(os.path.join(ROOT, "presets/northwest.tbl"), "w").write("\n".join(lines) + "\n")
-    print("presets/northwest.tbl: %d presets" % len(PRESETS))
+        lines.append(name + "|DC1;" + "".join("%s=%s;" % (k, v) for k, v in d.items()))
+    open(os.path.join(ROOT, "presets/deathcoast.tbl"), "w").write("\n".join(lines) + "\n")
+    print("presets/deathcoast.tbl: %d presets" % len(PRESETS))

@@ -21,7 +21,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace nw {
+namespace dc {
 
 namespace math {
     inline float pow2(float x) { return x * x; }
@@ -441,4 +441,4 @@ private:
     uint32_t rs = 0x9E3779B9u;
 };
 
-} // namespace nw
+} // namespace dc

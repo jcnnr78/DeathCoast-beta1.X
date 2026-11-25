@@ -1,4 +1,4 @@
-// NorthWest v1.5 CPU bench: 4 s of audio, one held note, all 4 machines playing.
+// DeathCoast v1.5 CPU bench: 4 s of audio, one held note, all 4 machines playing.
 //   ./bench t   typical: 4 x WAVETABLE unison 2, filter on
 //   ./bench h   heavy:   4 x WAVETABLE unison 4 + FM effect + resonant 24 dB filter
 //   ./bench f   4 x FM, 4 operators, feedback, DRUM off
@@ -12,9 +12,9 @@
 #include <cstring>
 #include <string>
 #include <vector>
-using namespace nw;
+using namespace dc;
 static void set(Engine &e, std::string k, float v) {
-  for (int i = 0; i < NW_PARAM_COUNT; i++) if (k == nw_params[i].key) { e.pots[i] = v; return; }
+  for (int i = 0; i < DC_PARAM_COUNT; i++) if (k == dc_params[i].key) { e.pots[i] = v; return; }
   fprintf(stderr, "no param %s\n", k.c_str());
 }
 int main(int argc, char **argv) {

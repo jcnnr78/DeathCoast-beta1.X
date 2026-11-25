@@ -1,6 +1,11 @@
 # Changes
 
-## 1.7 (in progress)
+NorthWest is called DeathCoast from 1.7 (after the Costa da Morte). The entries below 1.7 keep the old name.
+
+## DeathCoast 1.7 (in progress)
+
+- The name: DeathCoast everywhere (plugin, MIDI port "DeathCoast MIDI In", folder, presets, wavetable pack, code).
+  The VST id stays "NWst" and NorthWest's states ("NW1;") and table paths ("NorthWest/...") are still read.
 
 - REVERB, new: an 8-line feedback delay network that keeps each machine's place in the stereo field. DECAY 0.3-20 s
   and FREEZE at the top, SIZE, PRE-DELAY 0-250 ms, TONE (dark <- -> thin), MOD (less metal, then a moving cloud),

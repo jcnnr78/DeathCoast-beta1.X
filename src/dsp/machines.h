@@ -1,4 +1,4 @@
-/* NorthWest -- the four machines and the models they run.
+/* DeathCoast -- the four machines and the models they run.
  *
  *   Engine: notes (per machine: its own MIDI channel or the plugin's track), shared modulation, effects, master
  *     └─ Slot x4: model (WAVETABLE | FM | WEST COAST | ANALOG) -> filter (filters.h) -> amp env -> level/pan/sends
@@ -23,7 +23,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace nw {
+namespace dc {
 
 inline constexpr int kBlock = 32;
 inline constexpr int kMatrixRows = 8;
@@ -44,8 +44,8 @@ inline float velocityToGain(float velocity, float sensitivity)
     return std::clamp(g, 0.0f, 1.0f);
 }
 
-/* a slot's parameter: P[slotParam(n, NW_P_M1_CUTOFF)] */
-inline int slotParam(int slot, int s1Index) { return s1Index + slot * NW_SLOT_STRIDE; }
+/* a slot's parameter: P[slotParam(n, DC_P_M1_CUTOFF)] */
+inline int slotParam(int slot, int s1Index) { return s1Index + slot * DC_SLOT_STRIDE; }
 
 /* ------------------------------------------------------------------ knob meanings */
 /* WAVETABLE: K1 POSITION, K2 FX 1, K3 FX 2, K4 DETUNE, K7 UNISON (1..4), K8 SPREAD (64 = half),
@@ -194,15 +194,15 @@ public:
         const bool swapped = last && t != last;
         last = t;
         osc.setWavetable(t);
-        const float *K = P + slotParam(slot, NW_P_M1_K1);
+        const float *K = P + slotParam(slot, DC_P_M1_K1);
         VoicedWTParams vp;
         vp.voices   = std::clamp(wtUnison(K[6]), 1, 4);
         vp.position = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
         vp.detune   = std::clamp(potDetune(K[3]) + mo[MD_TD], 0.0f, 1.0f);
         vp.spread   = pot01(K[7]);
         vp.gain = 1.0f; vp.pan = 0.0f;
-        vp.mode = std::clamp((int) P[slotParam(slot, NW_P_M1_WT_UMODE)], 0, UNI_COUNT - 1);
-        const int fx = std::clamp((int) P[slotParam(slot, NW_P_M1_WT_FX)], 0, 4);
+        vp.mode = std::clamp((int) P[slotParam(slot, DC_P_M1_WT_UMODE)], 0, UNI_COUNT - 1);
+        const int fx = std::clamp((int) P[slotParam(slot, DC_P_M1_WT_FX)], 0, 4);
         const float fx1 = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
         const float fx2 = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
         vp.fm = nullptr;
@@ -287,8 +287,8 @@ public:
     /* mono, n * os samples into M (os = 1, or 2 when oversampling) */
     void render(const float *P, int slot, float note, const float *mo, float *M, int n, int os)
     {
-        const float *K = P + slotParam(slot, NW_P_M1_K1);
-        const int algo = std::clamp((int) P[slotParam(slot, NW_P_M1_FM_ALGO)], 0, 7);
+        const float *K = P + slotParam(slot, DC_P_M1_K1);
+        const int algo = std::clamp((int) P[slotParam(slot, DC_P_M1_FM_ALGO)], 0, 7);
         /* which operators each operator hears (bit i = op i+1), and which are carriers */
         static const uint8_t modBy[8][4] = {
             { 0x2, 0x4, 0x8, 0 },     /* 4>3>2>1   */
@@ -302,7 +302,7 @@ public:
         static const uint8_t carriers[8] = { 0x1, 0x1, 0x1, 0x5, 0x7, 0x3, 0xD, 0xF };
         const uint8_t car = carriers[algo];
 
-        float lvl[4] = { pot01(P[slotParam(slot, NW_P_M1_OP1)]), 0, 0, 0 };
+        float lvl[4] = { pot01(P[slotParam(slot, DC_P_M1_OP1)]), 0, 0, 0 };
         for (int i = 1; i < 4; i++) lvl[i] = std::clamp(pot01(K[i - 1]) + (i == 1 ? mo[MD_TA] : i == 2 ? mo[MD_TB] : mo[MD_TC]),
                                                        0.0f, 1.0f);
         const float fb = std::clamp(pot01(K[3]) + mo[MD_TD], 0.0f, 1.0f);
@@ -410,9 +410,9 @@ public:
     /* mono, n * os samples into M; env: the amp envelope, n samples at the base rate */
     void render(const float *P, int slot, float note, const float *mo, const float *env, float *M, int n, int os)
     {
-        const float *K = P + slotParam(slot, NW_P_M1_K1);
-        const int w1 = (int) P[slotParam(slot, NW_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, NW_P_M1_OSC_W2)];
-        const bool sync = (int) P[slotParam(slot, NW_P_M1_OSC_SYNC)] != 0;
+        const float *K = P + slotParam(slot, DC_P_M1_K1);
+        const int w1 = (int) P[slotParam(slot, DC_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, DC_P_M1_OSC_W2)];
+        const bool sync = (int) P[slotParam(slot, DC_P_M1_OSC_SYNC)] != 0;
         const float fm = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
         const float velAmt = pot01(K[11]);
         const float fold = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f) * (1.0f - velAmt + velAmt * velocity);
@@ -488,9 +488,9 @@ public:
     /* mono, n * os samples into M */
     void render(const float *P, int slot, float note, const float *mo, float *M, int n, int os)
     {
-        const float *K = P + slotParam(slot, NW_P_M1_K1);
-        const int w1 = (int) P[slotParam(slot, NW_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, NW_P_M1_OSC_W2)];
-        const bool sync = (int) P[slotParam(slot, NW_P_M1_OSC_SYNC)] != 0;
+        const float *K = P + slotParam(slot, DC_P_M1_K1);
+        const int w1 = (int) P[slotParam(slot, DC_P_M1_OSC_W1)], w2 = (int) P[slotParam(slot, DC_P_M1_OSC_W2)];
+        const bool sync = (int) P[slotParam(slot, DC_P_M1_OSC_SYNC)] != 0;
         const float fm = std::clamp(pot01(K[0]) + mo[MD_TA], 0.0f, 1.0f);
         const float noise = std::clamp(pot01(K[1]) + mo[MD_TB], 0.0f, 1.0f);
         const float drive = std::clamp(pot01(K[2]) + mo[MD_TC], 0.0f, 1.0f);
@@ -560,13 +560,13 @@ public:
     void start(int idx, const float *P, const Wavetable *t, int note, float vel, float glideFrom, uint32_t seed)
     {
         slot = idx;
-        machine = std::clamp((int) P[sp(NW_P_M1_MODEL)], 0, M_COUNT - 1);
-        drum = machine == M_FM && (int) P[sp(NW_P_M1_FM_MODE)] == 1;
+        machine = std::clamp((int) P[sp(DC_P_M1_MODEL)], 0, M_COUNT - 1);
+        drum = machine == M_FM && (int) P[sp(DC_P_M1_FM_MODE)] == 1;
         midiNote = note; velocity = vel; active = true;
-        const int gm = (int) P[NW_P_GLIDE_MODE];
+        const int gm = (int) P[DC_P_GLIDE_MODE];
         glissando = gm == GM_GLISSANDO;
         if (glideFrom >= 0.0f && (gm == GM_GLISSANDO || gm == GM_PORTAMENTO)) {
-            noteSmoother.setTime(potGlideTime(P[NW_P_GLIDE]));
+            noteSmoother.setTime(potGlideTime(P[DC_P_GLIDE]));
             noteSmoother.setValueUnsmoothed(glideFrom / 127.0f);
             noteSmoother.setValue((float) note / 127.0f);
         } else {
@@ -574,7 +574,7 @@ public:
         }
         filter.reset(); lastFn = -1000.0f; wasOpen = false;
         dec.reset();
-        if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(NW_P_M1_WT_UMODE)]);
+        if (machine == M_WAVETABLE) wt.start(t, (int) P[sp(DC_P_M1_WT_UMODE)]);
         if (machine == M_FM) fm.start(vel, seed);
         if (machine == M_WESTCOAST) wc.start(vel);
         if (machine == M_ANALOG) an.start(vel, seed);
@@ -586,11 +586,11 @@ public:
     /* a new note while held: no phase reset; LEGATO keeps the envelopes running */
     void retrigger(const float *P, int note, float vel, uint32_t seed)
     {
-        const int gm = (int) P[NW_P_GLIDE_MODE];
+        const int gm = (int) P[DC_P_GLIDE_MODE];
         glissando = gm == GM_GLISSANDO;
         midiNote = note; velocity = vel;
         if (gm != GM_OFF) {
-            noteSmoother.setTime(potGlideTime(P[NW_P_GLIDE]));
+            noteSmoother.setTime(potGlideTime(P[DC_P_GLIDE]));
             noteSmoother.setValue((float) note / 127.0f);
         } else {
             noteSmoother.setValueUnsmoothed((float) note / 127.0f);
@@ -622,7 +622,7 @@ public:
         ms.src[MS_VELOCITY] = velocity;
         ms.src[MS_KEY] = std::clamp(((float) midiNote - 60.0f) / 60.0f, -1.0f, 1.0f);
         for (int m = 0; m < kMatrixRows; m++) {
-            const int b = NW_P_MM1_SRC + 4 * m;
+            const int b = DC_P_MM1_SRC + 4 * m;
             const int src = (int) P[b], dst = (int) P[b + 1], tgt = (int) P[b + 3];
             if (src > MS_NONE && src < MS_COUNT && dst > MD_NONE && dst < MD_COUNT && (tgt == 0 || tgt == slot + 1))
                 mo[dst] += ms.src[src] * potBipolar(P[b + 2]);
@@ -630,14 +630,14 @@ public:
 
         float note = noteSmoother.getCurrentValue() * 127.0f;
         if (glissando) note = (float) (int) (note + 0.5f);
-        note += P[sp(NW_P_M1_TUNE)] + ms.pitchBendSemis + mo[MD_PITCH] * 24.0f + driftPitch;
+        note += P[sp(DC_P_M1_TUNE)] + ms.pitchBendSemis + mo[MD_PITCH] * 24.0f + driftPitch;
 
         float L[kBlock] = {}, R[kBlock] = {};
         if (machine == M_WAVETABLE) {
             wt.render(t, P, slot, note, mo, L, R, n);
         } else {
             /* FM, WEST COAST, ANALOG: mono, at twice the rate with OVERSAMPLING on */
-            const int os = (int) P[NW_P_OVERSAMPLE] != 0 && needsOversampling(P) ? 2 : 1;
+            const int os = (int) P[DC_P_OVERSAMPLE] != 0 && needsOversampling(P) ? 2 : 1;
             if (os != lastOs) { dec.reset(); lastOs = os; }
             float M[2 * kBlock];
             if (machine == M_FM) fm.render(P, slot, note, mo, M, n, os);
@@ -657,13 +657,13 @@ public:
 
         /* filter: the cutoff in MIDI-note units, gliding from the last block's to this one's */
         const float filterWidth = 12.0f * std::log2(20000.0f / 440.0f) + 69.0f;
-        float fn = potFilterNote(P[sp(NW_P_M1_CUTOFF)]);
-        fn += ((float) midiNote - 60.0f) * pot01(P[sp(NW_P_M1_FKEY)]);
-        fn += fenv.getOutput() * potBipolar(P[sp(NW_P_M1_FENV)]) * filterWidth;
+        float fn = potFilterNote(P[sp(DC_P_M1_CUTOFF)]);
+        fn += ((float) midiNote - 60.0f) * pot01(P[sp(DC_P_M1_FKEY)]);
+        fn += fenv.getOutput() * potBipolar(P[sp(DC_P_M1_FENV)]) * filterWidth;
         fn += mo[MD_CUTOFF] * filterWidth + driftCutoff;
-        const float res = std::clamp(pot01(P[sp(NW_P_M1_RESO)]) + mo[MD_RESO], 0.0f, 1.0f);
-        const int ft = (int) P[sp(NW_P_M1_FTYPE)];
-        const float shape = P[sp(NW_P_M1_FSHAPE)], bwlo = P[sp(NW_P_M1_BWLO)], bwhi = P[sp(NW_P_M1_BWHI)];
+        const float res = std::clamp(pot01(P[sp(DC_P_M1_RESO)]) + mo[MD_RESO], 0.0f, 1.0f);
+        const int ft = (int) P[sp(DC_P_M1_FTYPE)];
+        const float shape = P[sp(DC_P_M1_FSHAPE)], bwlo = P[sp(DC_P_M1_BWLO)], bwhi = P[sp(DC_P_M1_BWHI)];
         if (lastFn < -999.0f) lastFn = fn;
         const bool open = MachineFilter::transparent(ft, std::min(fn, lastFn), res, shape, bwlo, bwhi);
         if (!open) {
@@ -673,9 +673,9 @@ public:
         lastFn = fn; wasOpen = open;
 
         /* velocity, amp envelope, level, pan */
-        const float g = velocityToGain(velocity, pot01(P[sp(NW_P_M1_VEL)])) *
-                        std::clamp(potSquared(P[sp(NW_P_M1_LEVEL)]) + mo[MD_LEVEL], 0.0f, 1.0f);
-        const float pan = std::clamp(potBipolar(P[sp(NW_P_M1_PAN)]) + mo[MD_PAN], -1.0f, 1.0f);
+        const float g = velocityToGain(velocity, pot01(P[sp(DC_P_M1_VEL)])) *
+                        std::clamp(potSquared(P[sp(DC_P_M1_LEVEL)]) + mo[MD_LEVEL], 0.0f, 1.0f);
+        const float pan = std::clamp(potBipolar(P[sp(DC_P_M1_PAN)]) + mo[MD_PAN], -1.0f, 1.0f);
         if (machine != M_WESTCOAST) amp.processMultiplying(L, R, n);
         const float gl = g * std::min(1.0f, 1.0f - pan), gr = g * std::min(1.0f, 1.0f + pan);
         for (int i = 0; i < n; i++) { outL[i] += L[i] * gl; outR[i] += R[i] * gr; }
@@ -692,11 +692,11 @@ private:
 
     void updateEnvs(const float *P, int n)
     {
-        amp.setAttack(potAttackTime(P[sp(NW_P_M1_AMP_A)]));
-        amp.setDecay(potEnvTime(P[sp(NW_P_M1_AMP_D)]));
-        amp.setSustainLevel(drum ? 0.0f : pot01(P[sp(NW_P_M1_AMP_S)]));
-        amp.setRelease(potEnvTime(P[sp(NW_P_M1_AMP_R)]));
-        const float fd = potEnvTime(P[sp(NW_P_M1_FDEC)]);
+        amp.setAttack(potAttackTime(P[sp(DC_P_M1_AMP_A)]));
+        amp.setDecay(potEnvTime(P[sp(DC_P_M1_AMP_D)]));
+        amp.setSustainLevel(drum ? 0.0f : pot01(P[sp(DC_P_M1_AMP_S)]));
+        amp.setRelease(potEnvTime(P[sp(DC_P_M1_AMP_R)]));
+        const float fd = potEnvTime(P[sp(DC_P_M1_FDEC)]);
         fenv.setAttack(0.002f); fenv.setDecay(fd); fenv.setSustainLevel(0.0f); fenv.setRelease(fd);
         if (n > 0) fenv.process(n);
     }
@@ -705,10 +705,10 @@ private:
      * much feedback (a soft FM bell gains nothing and would cost twice) */
     bool needsOversampling(const float *P) const
     {
-        const float *K = P + sp(NW_P_M1_K1);
+        const float *K = P + sp(DC_P_M1_K1);
         switch (machine) {
         case M_WESTCOAST: return true;
-        case M_ANALOG: return (int) P[sp(NW_P_M1_OSC_SYNC)] != 0 || K[0] > 0.5f || K[2] > 0.5f;
+        case M_ANALOG: return (int) P[sp(DC_P_M1_OSC_SYNC)] != 0 || K[0] > 0.5f || K[2] > 0.5f;
         case M_FM: return K[0] > 80.0f || K[1] > 80.0f || K[2] > 80.0f || K[3] > 50.0f;
         default: return false;
         }
@@ -717,7 +717,7 @@ private:
     /* DRIFT: a slow random walk of pitch (up to 15 cents) and cutoff (up to 1 semitone), its own per machine */
     void updateDrift(const float *P)
     {
-        const float amt = pot01(P[NW_P_DRIFT]);
+        const float amt = pot01(P[DC_P_DRIFT]);
         if (amt <= 0.0f) { driftPitch = driftCutoff = 0.0f; return; }
         auto rnd = [this] { drs ^= drs << 13; drs ^= drs >> 17; drs ^= drs << 5; return (float) (drs & 0xFFFF) / 32768.0f - 1.0f; };
         if ((drs & 511) < 4) { tgtPitch = rnd(); tgtCutoff = rnd(); }     /* a new target every ~0.2 s on average */
@@ -742,4 +742,4 @@ private:
     bool active = false, glissando = false, drum = false, wasOpen = false;
 };
 
-} // namespace nw
+} // namespace dc

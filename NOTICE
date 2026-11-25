@@ -1,4 +1,4 @@
-NorthWest contains code derived from Tablor (https://github.com/athousanddetails/schwung-tablor, commit
+DeathCoast contains code derived from Tablor (https://github.com/athousanddetails/schwung-tablor, commit
 d51887187f7a03f7b32cc4a74f5c60c5532e65fa), vendored through https://github.com/saustin2010/mpc-vst-tablor.
 Tablor itself is after Wavetable by Roland Rabien (FigBug) and uses AudioFilter (Michael Massberg), dr_flac
 (David Reid) and pink noise code (Thomas Merchant, MIT). All are BSD-3-Clause / MIT / public domain; see LICENSE,
@@ -8,4 +8,4 @@ The wavetable library fetched at build time (release/library.json) is by Kristof
 public domain) and Neu KatalYst (free to use).
 
 The history of changes is in CHANGES.md and PROJECT.md.
-Neither the names of the copyright holders nor of the contributors are used to endorse NorthWest.
+Neither the names of the copyright holders nor of the contributors are used to endorse DeathCoast.

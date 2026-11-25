@@ -9,7 +9,7 @@
 #include <sched.h>
 #include <cstring>
 
-namespace nw {
+namespace dc {
 
 /* Start a worker that is SCHED_OTHER from birth, off the SPI core, and
  * carries its own name. Returns 0 on success, like pthread_create.
@@ -48,4 +48,4 @@ inline int rtStartWorker(pthread_t *tid, void *(*fn)(void *), void *arg,
     return rc;
 }
 
-} // namespace nw
+} // namespace dc

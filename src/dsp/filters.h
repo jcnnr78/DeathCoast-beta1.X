@@ -1,11 +1,11 @@
-/* NorthWest -- the machine filter (Digitone II style: a fixed base-width filter, then one of seven types).
+/* DeathCoast -- the machine filter (Digitone II style: a fixed base-width filter, then one of seven types).
  *
  *   BASE-WIDTH  a 12 dB high pass (BASE) and a 12 dB low pass (WIDTH) in front; each skipped at its end (off)
  *   MULTI       a 12 dB state-variable filter that morphs LP > BP > HP (SHAPE = morph)
  *   LP 4        a 24 dB ladder with drive into its feedback loop; self-oscillates at the top of RESONANCE
  *   COMB - / +  a comb tuned to CUTOFF (negative or positive feedback = RESONANCE), SHAPE damps the repeats
  *   EQ          a peaking band at CUTOFF, RESONANCE = narrowness, SHAPE = gain (64 = 0 dB)
- *   LEGACY LP / HP  the biquad low / high pass of NorthWest 1.0-1.5, SHAPE = slope (12 / 24 dB)
+ *   LEGACY LP / HP  the biquad low / high pass of DeathCoast 1.0-1.5, SHAPE = slope (12 / 24 dB)
  *
  * The state-variable and ladder filters are zero-delay-feedback (topology-preserving) designs, whose cutoff can move
  * every sample without blowing up; the cutoff glides across each control block (32 samples) sample by sample. */
@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace nw {
+namespace dc {
 
 enum FilterType { FT_MULTI = 0, FT_LP4, FT_COMB_NEG, FT_COMB_POS, FT_EQ, FT_LEGACY_LP, FT_LEGACY_HP, FT_COUNT };
 
@@ -61,7 +61,7 @@ inline void baseWidthText(char *buf, int len, float v, bool width)
     else snprintf(buf, len, "%.1f kHz", (double) (hz / 1000.0f));
 }
 
-/* the filter picture: a frame of the type's strip (images/nw/flt_<type>_*.png). MULTI: CUTOFF 16 x MORPH 4 x
+/* the filter picture: a frame of the type's strip (images/dc/flt_<type>_*.png). MULTI: CUTOFF 16 x MORPH 4 x
  * RESONANCE 3 (192); EQ: CUTOFF 16 x GAIN 8; the others: CUTOFF 32 x RESONANCE 4 */
 inline int filterView(int type, float cutoff, float reso, float shape)
 {
@@ -282,4 +282,4 @@ private:
     int pos = 0, lastType = -1;
 };
 
-} // namespace nw
+} // namespace dc

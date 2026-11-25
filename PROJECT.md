@@ -1,4 +1,4 @@
-# NorthWest - project notes
+# DeathCoast - project notes
 
 - 4 mono slots; each slot picks a machine (WAVETABLE, FM, WEST COAST, ANALOG), repeats allowed; machine + params stored in the preset.
 - Note routing: layers for now (zones / MIDI channel per slot later).
@@ -6,7 +6,7 @@
 - ANALOG (Moog DFAM style): 2 oscillators (sine/tri/saw/pulse), FM 1->2, sync, shared pitch EG, noise mix, 24 dB ladder LP/HP, decay-only envelopes.
 - WEST COAST shares oscillators/mixer/envelopes with ANALOG: wavefolder + LPG instead of ladder.
 - Target: MPC One. CPU figures are estimates until measured with tools/bench.sh.
-- Next visual version: minimalist rounded knobs (value box under each knob), thin NorthWest logo, graphic filter/envelope/wavetable displays.
+- Next visual version: minimalist rounded knobs (value box under each knob), thin DeathCoast logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
 ## Phase 6 - v1.6, branch v1.6 (built locally, not yet on the MPC)
@@ -30,8 +30,8 @@
   DRIFT, OVERSAMPLING switch (GLOBAL). 24-bit output: dropped for now (the wrapper is 16-bit throughout).
 - CPU readout on MAIN (beta): render time / block time, peak-held, whole percent twice a second.
 - Presets: 41, tagged; STRESS ones for the CPU test on the device.
-- Cleanup: northwest.cpp replaces northwest_plugin.cpp (MPC only), gen_params.py replaces gen_params_v2.py; tb_/TB_ ->
-  nw_/NW_; removed UPSTREAM, upstream-changes.diff, the root bench.cpp, design/stitch.html, migrate_v20.py, help.json,
+- Cleanup: deathcoast.cpp replaces deathcoast_plugin.cpp (MPC only), gen_params.py replaces gen_params_v2.py; tb_/TB_ ->
+  dc_/DC_; removed UPSTREAM, upstream-changes.diff, the root bench.cpp, design/stitch.html, migrate_v20.py, help.json,
   src/ported/audiofilter and filter.h. src/ported keeps its origin notes (licence).
 - Checks (PC): host test PASSED; 41 presets render finite, state round trip identical; CPU x86: mixed 4 machines
   ~2.7 % of a core, STRESS presets 3-5 %.
@@ -52,7 +52,7 @@
   reverb (4 combs + 2 allpasses a side). Each machine has DELAY and REVERB sends (mN_dsend / mN_rsend, on MIX with
   Q-Links level, pan, delay, reverb). Effects controls on GLOBAL. Each effect sleeps once silent.
 - Presets: the 8 inherited from Tablor/v1 and the 1.3/1.4 test sounds replaced by 24 written by tools/make_presets.py,
-  named BASS / MELODY / DRUM / EFX / DRONE. User presets folder renamed from Tablor's to "NorthWest Presets".
+  named BASS / MELODY / DRUM / EFX / DRONE. User presets folder renamed from Tablor's to "DeathCoast Presets".
 - Header selectors (user, 24-nov, after trying 1.4 on the MPC One: the wheel works on the boxes but is "a long way"):
   under QLINK_TRAVEL an option list needs half an option's width of wheel travel per step (a wheel click is 1 % of the
   range: 50 clicks on a 2-option list, 17 on MODEL). Each box now shows "<key>_st", a whole-number twin the plugin
@@ -100,7 +100,7 @@
   the engine-driven filter picture on the device.
 
 ## Phase 2 (look) - v1.2, done (built locally, not yet on the MPC)
-- tools/gen_art.py draws images/nw/: knob strip (128 frames), wavetable view (64 frames, follows wtN_pos), filter
+- tools/gen_art.py draws images/dc/: knob strip (128 frames), wavetable view (64 frames, follows wtN_pos), filter
   curves per type (64 frames, follow flt_freq / flt2_freq, shown per type with when=), ADSR stage pictures
   (64 frames each), logo (Inter ExtraLight, OFL; only the PNG ships).
 - tools/gen_layout.py draws all 8 pages with frames; MAIN and ENVELOPES no longer use the Stitch backgrounds.

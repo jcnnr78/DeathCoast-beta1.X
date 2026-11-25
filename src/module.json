@@ -1,10 +1,10 @@
 {
-  "id": "northwest",
-  "name": "NorthWest",
+  "id": "deathcoast",
+  "name": "DeathCoast",
   "abbrev": "NW",
   "version": "1.7.0",
-  "description": "NorthWest: 4 monophonic machines (wavetable, FM, west coast, analog), each with its filter, MIDI channel and effect sends; shared LFOs, envelopes, an 8-row mod matrix, distortion, delay and reverb.",
-  "author": "NorthWest project",
+  "description": "DeathCoast: 4 monophonic machines (wavetable, FM, west coast, analog), each with its filter, MIDI channel and effect sends; shared LFOs, envelopes, an 8-row mod matrix, distortion, delay and reverb.",
+  "author": "DeathCoast project",
   "dsp": "dsp.so",
   "api_version": 2,
   "capabilities": {

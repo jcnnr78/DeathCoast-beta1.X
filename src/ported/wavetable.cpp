@@ -3,7 +3,7 @@
 
 #include <ctime>
 
-namespace nw {
+namespace dc {
 
 static double nowMs()
 {
@@ -115,4 +115,4 @@ bool wtBuild(Wavetable &out, const float *samples, int nFrames, int frameSize,
     return true;
 }
 
-} // namespace nw
+} // namespace dc

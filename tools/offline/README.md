@@ -4,7 +4,7 @@ Offline checks of the sound engine on a normal PC (no MPC, no Docker). From the 
         src/dsp/engine.cpp src/dsp/wt/loader.cpp src/ported/wavetable.cpp -o render_wt -lpthread
     ./render_wt out.raw "m1_wt_fx=1,m1_k2=70"      # 3 s of 16-bit stereo 44.1 kHz, raw
 
-Note sequences (NorthWest is monophonic per machine):
+Note sequences (DeathCoast is monophonic per machine):
 
     g++ -O2 -std=c++17 -Isrc -Isrc/dsp -Isrc/host -Isrc/ported tools/offline/render_seq.cpp \
         src/dsp/engine.cpp src/dsp/wt/loader.cpp src/ported/wavetable.cpp -o seq_new -lpthread
@@ -12,4 +12,4 @@ Note sequences (NorthWest is monophonic per machine):
 
 `bench.cpp` (same build line; `./bench t|f|w|a|m|x`) measures the CPU of four machines playing: wavetable, FM,
 west coast, analog, mixed, mixed with every send. The plugin itself: the framework's `tools/test_port.sh vst.json`
-(ASan host test) with the presets and tables staged in `build/northwest/` (BUILD.md).
+(ASan host test) with the presets and tables staged in `build/deathcoast/` (BUILD.md).

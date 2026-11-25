@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NorthWest: draws the skin's own images into images/nw/ (run before gen_layout.py; needs Pillow + numpy).
+"""DeathCoast: draws the skin's own images into images/dc/ (run before gen_layout.py; needs Pillow + numpy).
 
     knob.png              the knob filmstrip: flat round disc, thin value ring, short pointer (128 frames)
     bar_WxH.png           a slider: a long box that fills with the accent colour (128 frames)
@@ -9,7 +9,7 @@
     env_<a|d|s|r>_WxH.png AMP / FILTER: one small picture per envelope stage, each following its own knob (64 frames)
     fold_WxH.png          WEST COAST: a cycle through the wavefolder (FOLD x SYMMETRY)
     panel_<name>.png      the panels that set a group of controls apart (SUB, PITCH, LPG)
-    logo.png              "NorthWest" in thin letters
+    logo.png              "DeathCoast" in thin letters
 
 Run:  python3 tools/gen_art.py"""
 import math, os
@@ -17,7 +17,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "images", "nw")
+OUT = os.path.join(ROOT, "images", "dc")
 SS = 4                                    # supersampling
 
 def hexc(h, a=255): return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
@@ -228,13 +228,13 @@ def env(stage, w, h, n=64):
 LOGO_FONT = "/usr/share/fonts/opentype/inter/Inter-ExtraLight.otf"   # Inter (OFL); only the PNG ships
 
 def logo(size=64):
-    """'NorthWest' in thin letters, the W in the accent colour. Needs the font above; without it the committed
-    images/nw/logo.png is kept as it is."""
+    """'DeathCoast' in thin letters, the D and the C in the accent colour. Needs the font above; without it the committed
+    images/dc/logo.png is kept as it is."""
     from PIL import ImageFont
     if not os.path.exists(LOGO_FONT):
         print("  logo.png                   kept (font not found)"); return
     font = ImageFont.truetype(LOGO_FONT, size * SS)
-    parts = [("North", INK), ("W", ACC), ("est", INK)]
+    parts = [("D", ACC), ("eath", INK), ("C", ACC), ("oast", INK)]
     w = sum(font.getlength(t) for t, _ in parts) + 20 * SS
     im = Image.new("RGBA", (int(w), int(size * 1.4 * SS)), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     x = 10 * SS

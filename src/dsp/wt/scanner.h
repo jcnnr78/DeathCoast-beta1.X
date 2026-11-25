@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 #include <vector>
 
-namespace nw {
+namespace dc {
 
 struct WtEntry {
     std::string name;     /* shown in the enum list: "Pack/Name" or "Name" */
@@ -98,4 +98,4 @@ private:
     std::vector<WtEntry> entries;
 };
 
-} // namespace nw
+} // namespace dc

@@ -3,7 +3,7 @@
 # docs/RELEASING.md). dry_run builds the zip and skin previews as run artifacts only.
 # The tools come from saustin2010/mpc-vst-plugins (sd88me's repo plus changes offered to it) until they're merged there:
 # then point uses: and tools_ref at sd88me/mpc-vst-plugins and drop tools_repo.
-# Parts of NorthWest's code come from Tablor (BSD-3-Clause): see LICENSE and NOTICE.
+# Parts of DeathCoast's code come from Tablor (BSD-3-Clause): see LICENSE and NOTICE.
 name: Release (draft)
 
 on:
@@ -28,12 +28,12 @@ jobs:
       tools_repo: saustin2010/mpc-vst-plugins
       tools_ref: e3a0af4e8cb7eacd4bfcc2fbcbcde834aef50fa4
       vst_dir: .
-      # its library into library/, shipped as the plugin folder's northwest/ (MODULE_SUBDIR)
-      build: python3 release/fetch-library.py library && mkdir -p library/presets && cp presets/northwest.tbl library/presets/ && mkdir -p library/wavetables && cp -R wavetables/. library/wavetables/ && bash "$MPC_VST/tools/build_port.sh" vst.json
-      host_test: 'rm -rf build/northwest && cp -R library build/northwest && "$MPC_VST/tools/test_port.sh" vst.json'
-      extra: library:northwest
-      user_data: northwest/wavetables
-      plugin_id: northwest
+      # its library into library/, shipped as the plugin folder's deathcoast/ (MODULE_SUBDIR)
+      build: python3 release/fetch-library.py library && mkdir -p library/presets && cp presets/deathcoast.tbl library/presets/ && mkdir -p library/wavetables && cp -R wavetables/. library/wavetables/ && bash "$MPC_VST/tools/build_port.sh" vst.json
+      host_test: 'rm -rf build/deathcoast && cp -R library build/deathcoast && "$MPC_VST/tools/test_port.sh" vst.json'
+      extra: library:deathcoast
+      user_data: deathcoast/wavetables
+      plugin_id: deathcoast
       license: BSD-3-Clause
       about: "Four monophonic machines in layers, each running its own model (wavetable, FM; west coast and analog coming)"
       dry_run: ${{ inputs.dry_run }}

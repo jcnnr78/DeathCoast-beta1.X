@@ -1,4 +1,4 @@
-/* NorthWest LFO -- one per voice, block-rate output.
+/* DeathCoast LFO -- one per voice, block-rate output.
  *
  * Shapes: sine, triangle, saw up, saw down, square, sample & hold, smooth
  * random. Free (Hz) or tempo-synced rate, a fade-in, and key-retrigger or
@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstdint>
 
-namespace nw {
+namespace dc {
 
 enum LfoShape { LFO_SINE = 0, LFO_TRI, LFO_SAW_UP, LFO_SAW_DOWN, LFO_SQUARE, LFO_SH, LFO_SMOOTH, LFO_SHAPES };
 
@@ -74,4 +74,4 @@ private:
     uint32_t rs = 0x1234567u;
 };
 
-} // namespace nw
+} // namespace dc

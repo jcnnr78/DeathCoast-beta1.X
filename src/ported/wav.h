@@ -15,7 +15,7 @@
 #include <cmath>
 #include <vector>
 
-namespace nw {
+namespace dc {
 
 struct WavData {
     std::vector<float> samples;   /* channel 0 */
@@ -323,4 +323,4 @@ inline std::vector<float> wavResampleFrames(const std::vector<float> &in,
     return out;
 }
 
-} // namespace nw
+} // namespace dc

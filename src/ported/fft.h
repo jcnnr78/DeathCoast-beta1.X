@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace nw {
+namespace dc {
 
 struct Cpx { float re = 0.0f, im = 0.0f; };
 
@@ -42,4 +42,4 @@ inline void fftRadix2(Cpx *a, int n, bool inverse)
     }
 }
 
-} // namespace nw
+} // namespace dc

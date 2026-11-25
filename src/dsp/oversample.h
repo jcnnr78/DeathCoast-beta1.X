@@ -1,4 +1,4 @@
-/* NorthWest -- 2x oversampling for the machines whose waveshaping aliases (the WEST COAST fold, FM at a high index,
+/* DeathCoast -- 2x oversampling for the machines whose waveshaping aliases (the WEST COAST fold, FM at a high index,
  * hard sync in ANALOG and WEST COAST, the DIRT shaper): the sound is worked out at twice the rate and brought back
  * down through a half-band low pass, so the harmonics past the original Nyquist are filtered out instead of
  * folding back into the audible range as inharmonic hash.
@@ -12,7 +12,7 @@
 #include <cmath>
 #include <cstring>
 
-namespace nw {
+namespace dc {
 
 struct HalfBand {
     static constexpr int kTaps = 31, kHalf = 15;
@@ -81,4 +81,4 @@ private:
     int p = 0;
 };
 
-} // namespace nw
+} // namespace dc

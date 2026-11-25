@@ -1,13 +1,13 @@
 {
-  "name": "[SYN] NorthWest",
-  "vendor": "NorthWest",
+  "name": "[SYN] DeathCoast",
+  "vendor": "DeathCoast",
   "uid": "NWst",
-  "so": "northwest.so",
+  "so": "deathcoast.so",
   "programs": {"param": "preset", "name": "preset_name", "count": "preset_count", "name_at": "preset_name_at"},
   "module": "src/module.json",
   "build": {
     "sources": [
-      "src/dsp/northwest.cpp",
+      "src/dsp/deathcoast.cpp",
       "src/dsp/engine.cpp",
       "src/dsp/wt/loader.cpp",
       "src/ported/wavetable.cpp"
@@ -29,7 +29,7 @@
   "art": "html",
   "defines": {
     "QLINK_TRAVEL": 1, "SET_IF_CHANGED": 1, "HAS_DISPLAY_REV": 1,
-    "MODULE_DIR": "\"/sdcard/vst/northwest\"",
-    "MODULE_SUBDIR": "\"northwest\""
+    "MODULE_DIR": "\"/sdcard/vst/deathcoast\"",
+    "MODULE_SUBDIR": "\"deathcoast\""
   }
 }

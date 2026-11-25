@@ -1,4 +1,4 @@
-# NorthWest
+# DeathCoast
 
 A synthesizer for the Akai MPC (built and tested for the MPC One on MPC OS 2.15.1): **four monophonic machines
 in layers**, each running its own **model** — wavetable, FM, west coast or analog — for rich, harmonic sequences
@@ -10,7 +10,7 @@ Status: **1.6** in progress (branch v1.6); **1.5** is the root release (`main`).
 ## How it plays
 
 Every note of the plugin's track plays on all four machines at once (layers). A machine can instead listen to a
-MIDI channel of its own (MAIN, MIDI: CH 1-16): other MPC tracks send to it by picking **NorthWest MIDI In** as their
+MIDI channel of its own (MAIN, MIDI: CH 1-16): other MPC tracks send to it by picking **DeathCoast MIDI In** as their
 MIDI output port, so each machine can have its own sequence. Each machine is monophonic, with last-note priority;
 GLIDE MODE can be OFF, GLISSANDO, PORTAMENTO or LEGATO (303-style slides between overlapping notes). A machine at
 level 0 or muted costs no CPU. Models can repeat: four FMs, four wavetables or any mix.
@@ -60,17 +60,17 @@ RESONANCE and SHAPE; the envelope views follow their knobs. CPU on MAIN is the e
 
 ## Presets
 
-41 test sounds (`presets/northwest.tbl`, written by `tools/make_presets.py`), named by kind: **BASS**, **MELODY**,
+41 test sounds (`presets/deathcoast.tbl`, written by `tools/make_presets.py`), named by kind: **BASS**, **MELODY**,
 **DRUM**, **EFX**, **DRONE** and **STRESS** (built to load the CPU as far as it goes, to test the plugin), plus Init.
-They use every model, filter type and effect and the NorthWest wavetables; they are for trying the versions out, not
+They use every model, filter type and effect and the DeathCoast wavetables; they are for trying the versions out, not
 the final library. A sound is saved with the MPC project, or as an MPC plugin preset.
 
 ## Wavetables
 
-- `wavetables/NorthWest/`: 52 original tables in 6 categories, made by `tools/make_wavetables.py`.
+- `wavetables/DeathCoast/`: 52 original tables in 6 categories, made by `tools/make_wavetables.py`.
 - Fetched at build time (`release/library.json`): **Adventure Kid** (AKWF/AKWP) by Kristoffer Ekstrand, public
   domain, 65 tables; **Neu KatalYst**, free to use, 50 tables.
-- Your own tables go in the plugin's `northwest/wavetables/` folder on the MPC.
+- Your own tables go in the plugin's `deathcoast/wavetables/` folder on the MPC.
 
 ## Building
 
@@ -83,7 +83,7 @@ pictures), `tools/gen_art.py` (knob and other pictures), `tools/gen_layout.py` (
 
 ## Credits and licence
 
-NorthWest is released under the BSD-3-Clause licence (`LICENSE`). Parts of its code (`src/ported/`, the wavetable oscillator
+DeathCoast is released under the BSD-3-Clause licence (`LICENSE`). Parts of its code (`src/ported/`, the wavetable oscillator
 and loader) come from **Tablor** by athousanddetails and from **Wavetable** by Roland Rabien (FigBug), with dr_flac
 (David Reid, public domain) and pink noise code (Thomas Merchant, MIT); their copyright notices are kept in
 `LICENSE`, and `NOTICE` says where the code comes from. The MPC plugin framework is

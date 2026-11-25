@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-namespace nw {
+namespace dc {
 
 inline float pot01(float v)        { return v / 127.0f; }                 /* 0..1 */
 inline float potBipolar(float v)   { return (v - 64.0f) / 63.0f; }        /* -1..1 (64=0) */
@@ -57,4 +57,4 @@ inline float potGlideTime(float v)
 /* Unison detune across the stack, semitones (0..1 like the original's range). */
 inline float potDetune(float v)    { return pot01(v); }
 
-} // namespace nw
+} // namespace dc

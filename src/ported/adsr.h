@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-namespace nw {
+namespace dc {
 
 class AnalogADSR {
 public:
@@ -189,4 +189,4 @@ private:
     T current = (T) 0, target = (T) 0;
 };
 
-} // namespace nw
+} // namespace dc

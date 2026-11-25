@@ -1,4 +1,4 @@
-/* NorthWest -- the shared effects: a delay, a reverb and a distortion (DIRT), each fed by every machine's send,
+/* DeathCoast -- the shared effects: a delay, a reverb and a distortion (DIRT), each fed by every machine's send,
  * and the master limiter.
  *
  * DELAY: a tape-like delay. TIME 10 ms .. 1.5 s (FREE) or a note value at the MPC's tempo (SYNC, up to 4 s);
@@ -22,7 +22,7 @@
 #include "filters.h"
 #include "oversample.h"
 
-namespace nw {
+namespace dc {
 
 inline float delayTimeSeconds(float v) { return std::min(0.01f * std::pow(150.0f, v / 127.0f), 1.5f); }
 /* SYNC: TIME picks one of these note values (in beats) */
@@ -381,4 +381,4 @@ private:
     float g = 1.0f, rel = 0.0002f;
 };
 
-} // namespace nw
+} // namespace dc

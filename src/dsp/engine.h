@@ -1,4 +1,4 @@
-/* NorthWest engine -- 4 monophonic machines (slots), each played from the plugin's track or from its own MIDI
+/* DeathCoast engine -- 4 monophonic machines (slots), each played from the plugin's track or from its own MIDI
  * channel on the plugin's MIDI port; per machine: last-note priority, glide, sustain pedal. Shared: the modulation
  * (EG1/EG2, LFO1/LFO2, random, controllers), the effects (delay, reverb, DIRT) and the master limiter.
  * The machines themselves are in machines.h.
@@ -11,14 +11,14 @@
 #include <atomic>
 #include <memory>
 
-namespace nw {
+namespace dc {
 
 class Engine {
 public:
     Engine();
 
     /* Pots are written by set_param and read by the audio thread; aligned float stores are atomic. */
-    float pots[NW_PARAM_COUNT] = {};
+    float pots[DC_PARAM_COUNT] = {};
 
     void setHostBpm(float bpm) { hostBpm = bpm; }
     /* MIDI from the plugin's own track (the machines on TRACK) / from its MIDI port (the machines on CH n) */
@@ -29,11 +29,11 @@ public:
     /* machine n's wavetable (the loader thread swaps them) */
     void setTable(int slot, std::shared_ptr<Wavetable> t)
     {
-        if (slot >= 0 && slot < NW_SLOTS) std::atomic_store(&tables[slot], std::move(t));
+        if (slot >= 0 && slot < DC_SLOTS) std::atomic_store(&tables[slot], std::move(t));
     }
     std::shared_ptr<Wavetable> table(int slot) const
     {
-        return slot >= 0 && slot < NW_SLOTS ? std::atomic_load(&tables[slot]) : nullptr;
+        return slot >= 0 && slot < DC_SLOTS ? std::atomic_load(&tables[slot]) : nullptr;
     }
     void allNotesOff(int source, bool allowTail);
 
@@ -49,10 +49,10 @@ private:
     };
 
     void onMidi(int source, const uint8_t *msg, int len);
-    int sourceOf(int s) const { return (int) pots[slotParam(s, NW_P_M1_CHAN)]; }
+    int sourceOf(int s) const { return (int) pots[slotParam(s, DC_P_M1_CHAN)]; }
     bool slotOn(int s) const
     {
-        return pots[slotParam(s, NW_P_M1_LEVEL)] > 0.0f && (int) pots[slotParam(s, NW_P_M1_MUTE)] == 0;
+        return pots[slotParam(s, DC_P_M1_LEVEL)] > 0.0f && (int) pots[slotParam(s, DC_P_M1_MUTE)] == 0;
     }
     void noteOn(int source, int note, float vel);
     void noteOff(int source, int note);
@@ -62,9 +62,9 @@ private:
     void updateMod(int n);
 
     AnalogTables analog { 44100.0 };
-    Slot slots[NW_SLOTS] = { Slot(analog), Slot(analog), Slot(analog), Slot(analog) };
-    Voice voices[NW_SLOTS];
-    std::shared_ptr<Wavetable> tables[NW_SLOTS];
+    Slot slots[DC_SLOTS] = { Slot(analog), Slot(analog), Slot(analog), Slot(analog) };
+    Voice voices[DC_SLOTS];
+    std::shared_ptr<Wavetable> tables[DC_SLOTS];
 
     /* shared modulation */
     AnalogADSR modEnv[kModEnvs];
@@ -90,4 +90,4 @@ private:
 /* Built-in "Init" wavetable: 64-frame PWM morph, generated in memory so the synth makes sound with no files. */
 std::shared_ptr<Wavetable> makeInitTable();
 
-} // namespace nw
+} // namespace dc

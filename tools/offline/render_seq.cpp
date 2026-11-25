@@ -1,4 +1,4 @@
-// NorthWest offline check: ./render_seq out.raw "key=val,..." [seq]
+// DeathCoast offline check: ./render_seq out.raw "key=val,..." [seq]
 // Plays a monophonic line on the engine and writes 3 s of int16 stereo @44.1 kHz.
 //   seq 0: separate notes (48, 55, 60, 43), each released before the next
 //   seq 1: overlapping notes (legato line) 48 -> 55 -> 60, then back to 55 when 60 is released
@@ -7,14 +7,14 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-using namespace nw;
+using namespace dc;
 int main(int argc, char **argv) {
   srand(1234);
   Engine e;
   if (argc > 2) { std::string s = argv[2]; size_t p = 0; while (p < s.size()) { size_t q = s.find(',', p); if (q == std::string::npos) q = s.size();
       std::string kv = s.substr(p, q - p); p = q + 1; size_t eq = kv.find('='); if (eq == std::string::npos) continue;
       std::string k = kv.substr(0, eq); float v = atof(kv.c_str() + eq + 1); bool ok = false;
-      for (int i = 0; i < NW_PARAM_COUNT; i++) if (k == nw_params[i].key) { e.pots[i] = v; ok = true; }
+      for (int i = 0; i < DC_PARAM_COUNT; i++) if (k == dc_params[i].key) { e.pots[i] = v; ok = true; }
       if (!ok) { fprintf(stderr, "unknown param %s\n", k.c_str()); return 2; } } }
   int seq = argc > 3 ? atoi(argv[3]) : 0;
   const int SR = 44100, frames = SR * 3;

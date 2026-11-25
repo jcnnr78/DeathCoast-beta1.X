@@ -1,5 +1,5 @@
 {
-  "about": "The wavetable library NorthWest ships besides its own (Adventure Kid, public domain; Neu KatalYst, free to use), fetched at a fixed commit (every file checked against its git hash). release/fetch-library.py puts it in library/, which the release ships as the plugin folder's northwest/ (its data folder, MODULE_SUBDIR).",
+  "about": "The wavetable library DeathCoast ships besides its own (Adventure Kid, public domain; Neu KatalYst, free to use), fetched at a fixed commit (every file checked against its git hash). release/fetch-library.py puts it in library/, which the release ships as the plugin folder's deathcoast/ (its data folder, MODULE_SUBDIR).",
   "sources": [
     {
       "repo": "athousanddetails/schwung-tablor",
