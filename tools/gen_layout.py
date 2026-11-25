@@ -123,6 +123,8 @@ for n in range(1, 5):
     q2 += [s + "dsend", s + "rsend", s + "xsend", "-"]
 # beta: the engine's share of each audio block, in a corner
 L.append('readout cx=1222 cy=110 w=80 h=22 label="" key=cpu')
+# the name, small, in ENGINE 1's bottom left corner (a try)
+L.append('art file=images/dc/logo.png x=24 y=680 w=114 h=20')
 L += ['qlinks "MAIN" = ' + ",".join(q1), 'qlinks "SENDS" = ' + ",".join(q2)]
 MIX = "\n".join(L) + "\n"
 
