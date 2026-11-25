@@ -136,8 +136,6 @@ def slot_page(n):
     TV = (320, 60)
     A, B, C = (750, 250), (990, 210), (1180, 160)
     L += [text(A[0], 124, "TABLE", 1.0, when(0)), stepper(A[0], 164, A[1], s + "select", s + "tname", when(0)),
-          W('meter cx=1100 cy=150 w=%d h=%d key=%swview strip=images/nw/tables_%dx%d.png frames=%d'
-            % (TV[0], TV[1], s, TV[0], TV[1], TABLE_FRAMES), when(0)),
           text(A[0], 124, "ALGORITHM", 1.0, when(1)), stepper(A[0], 164, A[1], s + "fm_algo", "", when(1)),
           text(B[0], 124, "MODE", 1.0, when(1)), stepper(B[0], 164, B[1], s + "fm_mode", "", when(1)),
           text(A[0], 124, "MOD WAVE", 1.0, when(2)), stepper(A[0], 164, A[1], s + "osc_w1", "", when(2)),
@@ -152,8 +150,8 @@ def slot_page(n):
     for mi, items in COLS.items():
         for j, (k, lab) in enumerate(items):
             L.append(knob(KX[j % 4], ROW1 if j < 4 else ROW2, lab, s + k, when(mi), bw=170))
-    # WAVETABLE: EFFECT and UNISON MODE in row 2; the scope of the frame POSITION is on (live, from the plugin);
-    # SUB as sliders on its panel under it
+    # WAVETABLE: EFFECT and UNISON MODE in row 2; the wave window: the loaded table's frame at POSITION, drawn live
+    # from the plugin (it moves with POSITION and changes with the table); SUB as sliders on its panel under it
     L += [text(KX[2], ROW2 - 40, "EFFECT", 1.0, when(0)), stepper(KX[2], ROW2 - 4, 170, s + "wt_fx", "", when(0)),
           text(KX[3], ROW2 - 40, "UNISON MODE", 1.0, when(0)), stepper(KX[3], ROW2 - 4, 190, s + "wt_umode", "", when(0))]
     SX, SY = RIGHT[0] + RIGHT[2] // 2, RIGHT[1] + 2 + ART.SCOPE[1] // 2
