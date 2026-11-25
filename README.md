@@ -1,18 +1,18 @@
 # DeathCoast
 
-A synthesizer for the Akai MPC (built and tested for the MPC One on MPC OS 2.15.1): **four monophonic machines
+A synthesizer for the Akai MPC (built and tested for the MPC One on MPC OS 2.15.1): **four monophonic engines
 in layers**, each running its own **model** — wavetable, FM, west coast or analog — for rich, harmonic sequences
 (basslines, arpeggios, FM percussion) at a low CPU cost. Its own minimal, rounded charcoal-and-orange screen.
 
-Status: **1.7** (`main`). Called NorthWest up to 1.6; projects saved with it still open. Plan and decisions:
+Status: **1.8** in progress (branch v1.8); **1.7** is `main`. Called NorthWest up to 1.6. Plan and decisions:
 `PROJECT.md`.
 
 ## How it plays
 
-Every note of the plugin's track plays on all four machines at once (layers). A machine can instead listen to a
+Every note of the plugin's track plays on all four engines at once (layers). An engine can instead listen to a
 MIDI channel of its own (MAIN, MIDI: CH 1-16): other MPC tracks send to it by picking **DeathCoast MIDI In** as their
-MIDI output port, so each machine can have its own sequence. Each machine is monophonic, with last-note priority;
-GLIDE MODE can be OFF, GLISSANDO, PORTAMENTO or LEGATO (303-style slides between overlapping notes). A machine at
+MIDI output port, so each engine can have its own sequence. Each engine is monophonic, with last-note priority;
+GLIDE MODE can be OFF, GLISSANDO, PORTAMENTO or LEGATO (303-style slides between overlapping notes). An engine at
 level 0 or muted costs no CPU. Models can repeat: four FMs, four wavetables or any mix.
 
 ## Models
@@ -24,36 +24,39 @@ level 0 or muted costs no CPU. Models can repeat: four FMs, four wavetables or a
 | WEST COAST | carrier phase-modulated by a second oscillator (sine, triangle, saw, pulse; sync), wavefolder, low pass gate (filter + VCA through a vactrol, driven by the amp envelope) | FM amount, fold, symmetry, osc mix, modulator ratio and fine; LPG (its panel): depth, response, mode (VCA, COMBO, LP), velocity to fold; a picture of the folded wave |
 | ANALOG | DFAM-style: 2 band-limited oscillators (sine, triangle, saw, pulse; sync), osc 1 modulates osc 2, noise, drive, a decay pitch envelope | FM 1>2, noise, drive, pulse width, level and frequency of each oscillator (±24 st); PITCH (sliders): pitch envelope amount, decay, target (osc 1, both, osc 2) and velocity, the fine tune of each oscillator |
 
-Every machine also has a filter, an amp envelope (attack, decay, sustain, release, velocity) and three sends:
+Every engine also has a filter, an amp envelope (attack, decay, sustain, release, velocity) and three sends:
 DELAY, REVERB and DIRT. The filter (Digitone II style): BASE and WIDTH (a high pass and a low pass in front), then one
 of **MULTI** (12 dB, morphs LP > BP > HP), **LP 4** (24 dB ladder with drive, self-oscillates), **COMB -** / **COMB +**
 (tuned to CUTOFF; KEY 127 plays it in tune), **EQ** (a peak or a dip), **LEGACY LP** / **LEGACY HP** (1.0-1.5's
 filter, 12 or 24 dB); cutoff, resonance, SHAPE (what it does follows the type), envelope amount and decay, key
 tracking. WEST COAST, ANALOG and FM can run at twice the rate (OVERSAMPLING, page GLOBAL: OFF, AUTO, ON) so their
-folding, sync and phase modulation don't alias; AUTO (the default) does it only while the sound needs it; DRIFT (GLOBAL) lets each machine's pitch and cutoff wander slightly.
+folding, sync and phase modulation don't alias; AUTO (the default) does it only while the sound needs it; DRIFT (GLOBAL) lets each engine's pitch and cutoff wander slightly.
 
 ## Effects
 
-Three effects, shared, fed by each machine's sends (page MAIN), set on page FX. **DIRT**, a distortion: DRIVE,
+Three effects, shared, fed by each engine's sends (page MAIN), set on page FX. **DIRT**, a distortion: DRIVE,
 CHARACTER (warm saturation > hard asymmetric clipping > wavefolding), TONE (dark .. bright, before the distortion),
 GRIT (Erosion-style hash, then bit and sample-rate reduction); its level follows what goes in. **DELAY**, tape-like:
 TIME (10 ms .. 1.5 s, or a note value at the MPC's tempo with SYNC), FEEDBACK up to 110 % (the tape saturation holds
 it), TONE (dark .. thin), DRIVE, MOD (wow and flutter), DUCK (the repeats dip while you play), LEVEL, STEREO or
-PING PONG. **REVERB**, an 8-line network that keeps each machine's place in the stereo field: DECAY (0.3-20 s, and
+PING PONG. **REVERB**, an 8-line network that keeps each engine's place in the stereo field: DECAY (0.3-20 s, and
 FREEZE at the top), SIZE, PRE-DELAY, TONE, MOD, FROM DELAY (the delay's repeats into it), LEVEL.
-An effect with nothing going into it stops working once its tail has died away, so it costs no CPU. A limiter on the
+An effect with nothing going into it stops working once its tail has died away, so it costs no CPU. When the MPC's
+sequencer stops, the delay stops feeding back and the reverb shortens, so their tails fade away in about a second
+(also FREEZE and a self-oscillating delay); playing a note or starting again ends the fade. A limiter on the
 master keeps the sum from clipping hard.
 
 ## Pages
 
 | Page | What is on it | Q-Link sets |
 |---|---|---|
-| MAIN | a column per machine: model, mute, MIDI channel, level, pan, tune, the three sends (sliders); CPU (beta) | MAIN · SENDS |
-| MACHINE 1-4 | the model selector (arrows and list), the model's controls (they change with the model), filter and amp | MACHINE · FILTER AMP |
-| MOD | EG1, EG2, LFO1, LFO2, shared by all machines | ENVS · LFOS |
-| MATRIX | 8 rows: source, destination, machine (ALL or M1-M4), amount | MATRIX |
+| MAIN | a column per engine: model, SOLO, MUTE, MIDI channel, level, pan, tune, the three sends (sliders); CPU (beta) | MAIN · SENDS |
+| ENGINE 1-4 | the model selector (arrows and list), the model's controls (they change with the model), filter and amp | ENGINE · FILTER AMP |
+| ENVS | EG1-EG4 (attack, decay, sustain, release), shared by all engines | ENVS |
+| LFOS | LFO1-LFO4 (shape, free or synced rate, fade in, restart), shared | LFO 1-2 · LFO 3-4 |
+| MATRIX 1-8, 9-16 | 16 rows: source, destination, engine (ALL or E1-E4), amount | MATRIX 1-8 · MATRIX 9-16 |
 | FX | DIRT, DELAY, REVERB | FX DIRT DELAY · FX REVERB |
-| GLOBAL | glide, bend range, volume, drift, oversampling, presets | GLOBAL |
+| GLOBAL | glide, bend range, volume; SYSTEM: drift, oversampling; presets | GLOBAL |
 
 The selectors (model, table, algorithm, mode, filter type, MIDI channel...) are steppers: tap the arrows, or touch the
 box and turn the MPC's data wheel or press -/+ (one option a click). On screen, left to right is a Q-Link column top
@@ -64,7 +67,7 @@ RESONANCE and SHAPE; the envelope views follow their knobs. CPU on MAIN is the e
 ## Presets
 
 61 sounds (`presets/deathcoast.tbl`, written by `tools/make_presets.py`), named by kind: **INIT** (one a model and
-all four), **BASS**, **LEAD**, **KEYS**, **PAD**, **DRUM**, **KIT** (one machine per MIDI channel), **EFX**, **DRONE**,
+all four), **BASS**, **LEAD**, **KEYS**, **PAD**, **DRUM**, **KIT** (one engine per MIDI channel), **EFX**, **DRONE**,
 **BUCHLA** (west coast at full stretch), **MOOG** (ladder and fat oscillators) and **STRESS** (built to load the CPU as
 far as it goes). They mix the four models and use the new delay and reverb in many settings. A sound is saved with the MPC project, or as an MPC plugin preset.
 

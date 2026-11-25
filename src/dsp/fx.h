@@ -135,6 +135,13 @@ public:
         }
     }
 
+    /* silence: the tape wiped */
+    void clear()
+    {
+        std::fill(bufL.begin(), bufL.end(), 0.0f); std::fill(bufR.begin(), bufR.end(), 0.0f);
+        lpL = lpR = hpL = hpR = 0.0f; idle = size + 1;
+    }
+
 private:
     std::vector<float> bufL, bufR;
     int size = 1, pos = 0, idle = 0;
@@ -169,11 +176,12 @@ public:
         preL.assign((size_t) preSize, 0.0f); preR.assign((size_t) preSize, 0.0f);
         pos = prePos = 0; sizeS = -1; preS = -1; hpInL = hpInR = 0; idle = 0;
     }
+    /* decayCap > 0: the decay is at most that many seconds and FREEZE is off (the fade when the MPC stops) */
     void process(const float *inL, const float *inR, float *outL, float *outR, int n,
-                 float decayV, float size01, float preV, float tone01, float mod01, float level)
+                 float decayV, float size01, float preV, float tone01, float mod01, float level, float decayCap = 0.0f)
     {
-        const bool freeze = reverbFreeze(decayV);
-        const float T60 = reverbDecaySeconds(decayV);
+        const bool freeze = reverbFreeze(decayV) && decayCap <= 0.0f;
+        const float T60 = decayCap > 0.0f ? std::fmin(reverbDecaySeconds(decayV), decayCap) : reverbDecaySeconds(decayV);
         float peak = 0;
         for (int i = 0; i < n; i++) peak = std::max(peak, std::fabs(inL[i]) + std::fabs(inR[i]));
         const int tail = (int) ((T60 * 1.2f + 0.3f) * sampleRate);
@@ -247,6 +255,16 @@ public:
             yl -= hpInL; yr -= hpInR;
             outL[s] += yl * level * 2.4f; outR[s] += yr * level * 2.4f;
         }
+    }
+
+    /* silence: every line, the pre-delay and the diffusers emptied */
+    void clear()
+    {
+        for (auto &l : line) std::fill(l.begin(), l.end(), 0.0f);
+        std::fill(preL.begin(), preL.end(), 0.0f); std::fill(preR.begin(), preR.end(), 0.0f);
+        for (auto &side : diff) for (auto &a : side) std::fill(a.b.begin(), a.b.end(), 0.0f);
+        for (float &v : lp) v = 0.0f;
+        hpInL = hpInR = 0.0f; idle = 1 << 30;
     }
 
 private:

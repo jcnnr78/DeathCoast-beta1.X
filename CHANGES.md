@@ -1,5 +1,18 @@
 # Changes
 
+## DeathCoast 1.8 (in progress, branch v1.8)
+
+- "Machine" is "Engine" everywhere on screen (tabs ENGINE 1-4, Q-Link pages, MATRIX E1-E4); GLOBAL's ENGINE block
+  is SYSTEM.
+- MAIN: SOLO over MUTE in each column (touch only; any engine on SOLO: only those play, MUTE still wins); the column
+  moved down, with room under the sends for a fourth; the name, small, in ENGINE 1's corner.
+- Modulation: 4 envelopes (EG1-EG4) and 4 LFOs, pages ENVS and LFOS; the matrix has 16 rows (MATRIX 1-8, 9-16). New
+  sources are at the end of the list, so saved routings keep theirs.
+- The envelopes, glide, LFO and knob curves are DeathCoast's own (no Tablor code left in them); same curves, the
+  smooth random LFO glides on a cosine.
+- Stop: when the MPC's sequencer stops the delay and reverb fade away in about a second (HAS_TRANSPORT); a note or
+  play ends the fade.
+
 NorthWest is called DeathCoast from 1.7 (after the Costa da Morte). The entries below 1.7 keep the old name.
 
 ## DeathCoast 1.7

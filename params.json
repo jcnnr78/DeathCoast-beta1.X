@@ -3,7 +3,7 @@
  "params": [
   {
    "key": "m1_model",
-   "name": "M1 MODEL",
+   "name": "E1 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -15,21 +15,21 @@
   },
   {
    "key": "m1_model_prev",
-   "name": "M1 MODEL PREV",
+   "name": "E1 MODEL PREV",
    "momentary": true,
    "step_of": "m1_model",
    "step_delta": -1
   },
   {
    "key": "m1_model_next",
-   "name": "M1 MODEL NEXT",
+   "name": "E1 MODEL NEXT",
    "momentary": true,
    "step_of": "m1_model",
    "step_delta": 1
   },
   {
    "key": "m1_model_st",
-   "name": "M1 MODEL",
+   "name": "E1 MODEL",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -41,7 +41,7 @@
   },
   {
    "key": "m1_chan",
-   "name": "M1 MIDI CHANNEL",
+   "name": "E1 MIDI CHANNEL",
    "options": [
     "TRACK",
     "CH 1",
@@ -65,21 +65,21 @@
   },
   {
    "key": "m1_chan_prev",
-   "name": "M1 MIDI CHANNEL PREV",
+   "name": "E1 MIDI CHANNEL PREV",
    "momentary": true,
    "step_of": "m1_chan",
    "step_delta": -1
   },
   {
    "key": "m1_chan_next",
-   "name": "M1 MIDI CHANNEL NEXT",
+   "name": "E1 MIDI CHANNEL NEXT",
    "momentary": true,
    "step_of": "m1_chan",
    "step_delta": 1
   },
   {
    "key": "m1_chan_st",
-   "name": "M1 MIDI CHANNEL",
+   "name": "E1 MIDI CHANNEL",
    "min": 0,
    "max": 16,
    "default": 0,
@@ -91,7 +91,7 @@
   },
   {
    "key": "m1_mute",
-   "name": "M1 MUTE",
+   "name": "E1 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -100,7 +100,7 @@
   },
   {
    "key": "m1_level",
-   "name": "M1 LEVEL",
+   "name": "E1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 100,
@@ -108,7 +108,7 @@
   },
   {
    "key": "m1_pan",
-   "name": "M1 PAN",
+   "name": "E1 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -116,7 +116,7 @@
   },
   {
    "key": "m1_tune",
-   "name": "M1 TUNE",
+   "name": "E1 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
@@ -124,7 +124,7 @@
   },
   {
    "key": "m1_dsend",
-   "name": "M1 DELAY SEND",
+   "name": "E1 DELAY SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -132,7 +132,7 @@
   },
   {
    "key": "m1_rsend",
-   "name": "M1 REVERB SEND",
+   "name": "E1 REVERB SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -140,7 +140,7 @@
   },
   {
    "key": "m1_xsend",
-   "name": "M1 DIRT SEND",
+   "name": "E1 DIRT SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -148,7 +148,7 @@
   },
   {
    "key": "m1_amp_a",
-   "name": "M1 ATTACK",
+   "name": "E1 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -156,7 +156,7 @@
   },
   {
    "key": "m1_amp_d",
-   "name": "M1 DECAY",
+   "name": "E1 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -164,7 +164,7 @@
   },
   {
    "key": "m1_amp_s",
-   "name": "M1 SUSTAIN",
+   "name": "E1 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
@@ -172,7 +172,7 @@
   },
   {
    "key": "m1_amp_r",
-   "name": "M1 RELEASE",
+   "name": "E1 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
@@ -180,7 +180,7 @@
   },
   {
    "key": "m1_vel",
-   "name": "M1 VELOCITY",
+   "name": "E1 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
@@ -188,7 +188,7 @@
   },
   {
    "key": "m1_ftype",
-   "name": "M1 FILTER TYPE",
+   "name": "E1 FILTER TYPE",
    "options": [
     "MULTI",
     "LP 4",
@@ -203,21 +203,21 @@
   },
   {
    "key": "m1_ftype_prev",
-   "name": "M1 FILTER TYPE PREV",
+   "name": "E1 FILTER TYPE PREV",
    "momentary": true,
    "step_of": "m1_ftype",
    "step_delta": -1
   },
   {
    "key": "m1_ftype_next",
-   "name": "M1 FILTER TYPE NEXT",
+   "name": "E1 FILTER TYPE NEXT",
    "momentary": true,
    "step_of": "m1_ftype",
    "step_delta": 1
   },
   {
    "key": "m1_ftype_st",
-   "name": "M1 FILTER TYPE",
+   "name": "E1 FILTER TYPE",
    "min": 0,
    "max": 6,
    "default": 1,
@@ -229,7 +229,7 @@
   },
   {
    "key": "m1_cutoff",
-   "name": "M1 CUTOFF",
+   "name": "E1 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -237,7 +237,7 @@
   },
   {
    "key": "m1_reso",
-   "name": "M1 RESONANCE",
+   "name": "E1 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -245,7 +245,7 @@
   },
   {
    "key": "m1_fshape",
-   "name": "M1 FILTER SHAPE",
+   "name": "E1 FILTER SHAPE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -255,7 +255,7 @@
   },
   {
    "key": "m1_fenv",
-   "name": "M1 FILTER ENV",
+   "name": "E1 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -263,7 +263,7 @@
   },
   {
    "key": "m1_fdec",
-   "name": "M1 FILTER DECAY",
+   "name": "E1 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -271,7 +271,7 @@
   },
   {
    "key": "m1_fkey",
-   "name": "M1 KEY TRACK",
+   "name": "E1 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -279,7 +279,7 @@
   },
   {
    "key": "m1_bwlo",
-   "name": "M1 BASE",
+   "name": "E1 BASE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -288,7 +288,7 @@
   },
   {
    "key": "m1_bwhi",
-   "name": "M1 WIDTH",
+   "name": "E1 WIDTH",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -297,7 +297,7 @@
   },
   {
    "key": "m1_k1",
-   "name": "M1 K1",
+   "name": "E1 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -307,7 +307,7 @@
   },
   {
    "key": "m1_k2",
-   "name": "M1 K2",
+   "name": "E1 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -317,7 +317,7 @@
   },
   {
    "key": "m1_k3",
-   "name": "M1 K3",
+   "name": "E1 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -327,7 +327,7 @@
   },
   {
    "key": "m1_k4",
-   "name": "M1 K4",
+   "name": "E1 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -337,7 +337,7 @@
   },
   {
    "key": "m1_k5",
-   "name": "M1 K5",
+   "name": "E1 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -347,7 +347,7 @@
   },
   {
    "key": "m1_k6",
-   "name": "M1 K6",
+   "name": "E1 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -357,7 +357,7 @@
   },
   {
    "key": "m1_k7",
-   "name": "M1 K7",
+   "name": "E1 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -367,7 +367,7 @@
   },
   {
    "key": "m1_k8",
-   "name": "M1 K8",
+   "name": "E1 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -377,7 +377,7 @@
   },
   {
    "key": "m1_k9",
-   "name": "M1 K9",
+   "name": "E1 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -387,7 +387,7 @@
   },
   {
    "key": "m1_k10",
-   "name": "M1 K10",
+   "name": "E1 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -397,7 +397,7 @@
   },
   {
    "key": "m1_k11",
-   "name": "M1 K11",
+   "name": "E1 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -407,7 +407,7 @@
   },
   {
    "key": "m1_k12",
-   "name": "M1 K12",
+   "name": "E1 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -417,7 +417,7 @@
   },
   {
    "key": "m1_k13",
-   "name": "M1 K13",
+   "name": "E1 K13",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -427,7 +427,7 @@
   },
   {
    "key": "m1_k14",
-   "name": "M1 K14",
+   "name": "E1 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -437,7 +437,7 @@
   },
   {
    "key": "m1_wt_fx",
-   "name": "M1 WT EFFECT",
+   "name": "E1 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -449,21 +449,21 @@
   },
   {
    "key": "m1_wt_fx_prev",
-   "name": "M1 WT EFFECT PREV",
+   "name": "E1 WT EFFECT PREV",
    "momentary": true,
    "step_of": "m1_wt_fx",
    "step_delta": -1
   },
   {
    "key": "m1_wt_fx_next",
-   "name": "M1 WT EFFECT NEXT",
+   "name": "E1 WT EFFECT NEXT",
    "momentary": true,
    "step_of": "m1_wt_fx",
    "step_delta": 1
   },
   {
    "key": "m1_wt_fx_st",
-   "name": "M1 WT EFFECT",
+   "name": "E1 WT EFFECT",
    "min": 0,
    "max": 4,
    "default": 0,
@@ -475,7 +475,7 @@
   },
   {
    "key": "m1_wt_umode",
-   "name": "M1 WT UNI MODE",
+   "name": "E1 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -488,21 +488,21 @@
   },
   {
    "key": "m1_wt_umode_prev",
-   "name": "M1 WT UNI MODE PREV",
+   "name": "E1 WT UNI MODE PREV",
    "momentary": true,
    "step_of": "m1_wt_umode",
    "step_delta": -1
   },
   {
    "key": "m1_wt_umode_next",
-   "name": "M1 WT UNI MODE NEXT",
+   "name": "E1 WT UNI MODE NEXT",
    "momentary": true,
    "step_of": "m1_wt_umode",
    "step_delta": 1
   },
   {
    "key": "m1_wt_umode_st",
-   "name": "M1 WT UNI MODE",
+   "name": "E1 WT UNI MODE",
    "min": 0,
    "max": 5,
    "default": 0,
@@ -514,7 +514,7 @@
   },
   {
    "key": "m1_fm_algo",
-   "name": "M1 FM ALGORITHM",
+   "name": "E1 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -529,21 +529,21 @@
   },
   {
    "key": "m1_fm_algo_prev",
-   "name": "M1 FM ALGORITHM PREV",
+   "name": "E1 FM ALGORITHM PREV",
    "momentary": true,
    "step_of": "m1_fm_algo",
    "step_delta": -1
   },
   {
    "key": "m1_fm_algo_next",
-   "name": "M1 FM ALGORITHM NEXT",
+   "name": "E1 FM ALGORITHM NEXT",
    "momentary": true,
    "step_of": "m1_fm_algo",
    "step_delta": 1
   },
   {
    "key": "m1_fm_algo_st",
-   "name": "M1 FM ALGORITHM",
+   "name": "E1 FM ALGORITHM",
    "min": 0,
    "max": 7,
    "default": 0,
@@ -555,7 +555,7 @@
   },
   {
    "key": "m1_fm_mode",
-   "name": "M1 FM MODE",
+   "name": "E1 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -564,21 +564,21 @@
   },
   {
    "key": "m1_fm_mode_prev",
-   "name": "M1 FM MODE PREV",
+   "name": "E1 FM MODE PREV",
    "momentary": true,
    "step_of": "m1_fm_mode",
    "step_delta": -1
   },
   {
    "key": "m1_fm_mode_next",
-   "name": "M1 FM MODE NEXT",
+   "name": "E1 FM MODE NEXT",
    "momentary": true,
    "step_of": "m1_fm_mode",
    "step_delta": 1
   },
   {
    "key": "m1_fm_mode_st",
-   "name": "M1 FM MODE",
+   "name": "E1 FM MODE",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -590,7 +590,7 @@
   },
   {
    "key": "m1_osc_w1",
-   "name": "M1 OSC1 WAVE",
+   "name": "E1 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -601,21 +601,21 @@
   },
   {
    "key": "m1_osc_w1_prev",
-   "name": "M1 OSC1 WAVE PREV",
+   "name": "E1 OSC1 WAVE PREV",
    "momentary": true,
    "step_of": "m1_osc_w1",
    "step_delta": -1
   },
   {
    "key": "m1_osc_w1_next",
-   "name": "M1 OSC1 WAVE NEXT",
+   "name": "E1 OSC1 WAVE NEXT",
    "momentary": true,
    "step_of": "m1_osc_w1",
    "step_delta": 1
   },
   {
    "key": "m1_osc_w1_st",
-   "name": "M1 OSC1 WAVE",
+   "name": "E1 OSC1 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -627,7 +627,7 @@
   },
   {
    "key": "m1_osc_w2",
-   "name": "M1 OSC2 WAVE",
+   "name": "E1 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -638,21 +638,21 @@
   },
   {
    "key": "m1_osc_w2_prev",
-   "name": "M1 OSC2 WAVE PREV",
+   "name": "E1 OSC2 WAVE PREV",
    "momentary": true,
    "step_of": "m1_osc_w2",
    "step_delta": -1
   },
   {
    "key": "m1_osc_w2_next",
-   "name": "M1 OSC2 WAVE NEXT",
+   "name": "E1 OSC2 WAVE NEXT",
    "momentary": true,
    "step_of": "m1_osc_w2",
    "step_delta": 1
   },
   {
    "key": "m1_osc_w2_st",
-   "name": "M1 OSC2 WAVE",
+   "name": "E1 OSC2 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -664,7 +664,7 @@
   },
   {
    "key": "m1_osc_sync",
-   "name": "M1 OSC SYNC",
+   "name": "E1 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -673,21 +673,21 @@
   },
   {
    "key": "m1_osc_sync_prev",
-   "name": "M1 OSC SYNC PREV",
+   "name": "E1 OSC SYNC PREV",
    "momentary": true,
    "step_of": "m1_osc_sync",
    "step_delta": -1
   },
   {
    "key": "m1_osc_sync_next",
-   "name": "M1 OSC SYNC NEXT",
+   "name": "E1 OSC SYNC NEXT",
    "momentary": true,
    "step_of": "m1_osc_sync",
    "step_delta": 1
   },
   {
    "key": "m1_osc_sync_st",
-   "name": "M1 OSC SYNC",
+   "name": "E1 OSC SYNC",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -700,7 +700,7 @@
   {
    "key": "m1_select",
    "refresh_display": true,
-   "name": "M1 TABLE",
+   "name": "E1 TABLE",
    "min": 0,
    "max": 167,
    "default": 0,
@@ -711,21 +711,21 @@
   },
   {
    "key": "m1_select_prev",
-   "name": "M1 TABLE PREV",
+   "name": "E1 TABLE PREV",
    "momentary": true,
    "step_of": "m1_select",
    "step_delta": -1
   },
   {
    "key": "m1_select_next",
-   "name": "M1 TABLE NEXT",
+   "name": "E1 TABLE NEXT",
    "momentary": true,
    "step_of": "m1_select",
    "step_delta": 1
   },
   {
    "key": "m1_tname",
-   "name": "M1 TABLE NAME",
+   "name": "E1 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
@@ -733,7 +733,7 @@
   },
   {
    "key": "m2_model",
-   "name": "M2 MODEL",
+   "name": "E2 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -745,21 +745,21 @@
   },
   {
    "key": "m2_model_prev",
-   "name": "M2 MODEL PREV",
+   "name": "E2 MODEL PREV",
    "momentary": true,
    "step_of": "m2_model",
    "step_delta": -1
   },
   {
    "key": "m2_model_next",
-   "name": "M2 MODEL NEXT",
+   "name": "E2 MODEL NEXT",
    "momentary": true,
    "step_of": "m2_model",
    "step_delta": 1
   },
   {
    "key": "m2_model_st",
-   "name": "M2 MODEL",
+   "name": "E2 MODEL",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -771,7 +771,7 @@
   },
   {
    "key": "m2_chan",
-   "name": "M2 MIDI CHANNEL",
+   "name": "E2 MIDI CHANNEL",
    "options": [
     "TRACK",
     "CH 1",
@@ -795,21 +795,21 @@
   },
   {
    "key": "m2_chan_prev",
-   "name": "M2 MIDI CHANNEL PREV",
+   "name": "E2 MIDI CHANNEL PREV",
    "momentary": true,
    "step_of": "m2_chan",
    "step_delta": -1
   },
   {
    "key": "m2_chan_next",
-   "name": "M2 MIDI CHANNEL NEXT",
+   "name": "E2 MIDI CHANNEL NEXT",
    "momentary": true,
    "step_of": "m2_chan",
    "step_delta": 1
   },
   {
    "key": "m2_chan_st",
-   "name": "M2 MIDI CHANNEL",
+   "name": "E2 MIDI CHANNEL",
    "min": 0,
    "max": 16,
    "default": 0,
@@ -821,7 +821,7 @@
   },
   {
    "key": "m2_mute",
-   "name": "M2 MUTE",
+   "name": "E2 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -830,7 +830,7 @@
   },
   {
    "key": "m2_level",
-   "name": "M2 LEVEL",
+   "name": "E2 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -838,7 +838,7 @@
   },
   {
    "key": "m2_pan",
-   "name": "M2 PAN",
+   "name": "E2 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -846,7 +846,7 @@
   },
   {
    "key": "m2_tune",
-   "name": "M2 TUNE",
+   "name": "E2 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
@@ -854,7 +854,7 @@
   },
   {
    "key": "m2_dsend",
-   "name": "M2 DELAY SEND",
+   "name": "E2 DELAY SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -862,7 +862,7 @@
   },
   {
    "key": "m2_rsend",
-   "name": "M2 REVERB SEND",
+   "name": "E2 REVERB SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -870,7 +870,7 @@
   },
   {
    "key": "m2_xsend",
-   "name": "M2 DIRT SEND",
+   "name": "E2 DIRT SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -878,7 +878,7 @@
   },
   {
    "key": "m2_amp_a",
-   "name": "M2 ATTACK",
+   "name": "E2 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -886,7 +886,7 @@
   },
   {
    "key": "m2_amp_d",
-   "name": "M2 DECAY",
+   "name": "E2 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -894,7 +894,7 @@
   },
   {
    "key": "m2_amp_s",
-   "name": "M2 SUSTAIN",
+   "name": "E2 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
@@ -902,7 +902,7 @@
   },
   {
    "key": "m2_amp_r",
-   "name": "M2 RELEASE",
+   "name": "E2 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
@@ -910,7 +910,7 @@
   },
   {
    "key": "m2_vel",
-   "name": "M2 VELOCITY",
+   "name": "E2 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
@@ -918,7 +918,7 @@
   },
   {
    "key": "m2_ftype",
-   "name": "M2 FILTER TYPE",
+   "name": "E2 FILTER TYPE",
    "options": [
     "MULTI",
     "LP 4",
@@ -933,21 +933,21 @@
   },
   {
    "key": "m2_ftype_prev",
-   "name": "M2 FILTER TYPE PREV",
+   "name": "E2 FILTER TYPE PREV",
    "momentary": true,
    "step_of": "m2_ftype",
    "step_delta": -1
   },
   {
    "key": "m2_ftype_next",
-   "name": "M2 FILTER TYPE NEXT",
+   "name": "E2 FILTER TYPE NEXT",
    "momentary": true,
    "step_of": "m2_ftype",
    "step_delta": 1
   },
   {
    "key": "m2_ftype_st",
-   "name": "M2 FILTER TYPE",
+   "name": "E2 FILTER TYPE",
    "min": 0,
    "max": 6,
    "default": 1,
@@ -959,7 +959,7 @@
   },
   {
    "key": "m2_cutoff",
-   "name": "M2 CUTOFF",
+   "name": "E2 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -967,7 +967,7 @@
   },
   {
    "key": "m2_reso",
-   "name": "M2 RESONANCE",
+   "name": "E2 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -975,7 +975,7 @@
   },
   {
    "key": "m2_fshape",
-   "name": "M2 FILTER SHAPE",
+   "name": "E2 FILTER SHAPE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -985,7 +985,7 @@
   },
   {
    "key": "m2_fenv",
-   "name": "M2 FILTER ENV",
+   "name": "E2 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -993,7 +993,7 @@
   },
   {
    "key": "m2_fdec",
-   "name": "M2 FILTER DECAY",
+   "name": "E2 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1001,7 +1001,7 @@
   },
   {
    "key": "m2_fkey",
-   "name": "M2 KEY TRACK",
+   "name": "E2 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1009,7 +1009,7 @@
   },
   {
    "key": "m2_bwlo",
-   "name": "M2 BASE",
+   "name": "E2 BASE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1018,7 +1018,7 @@
   },
   {
    "key": "m2_bwhi",
-   "name": "M2 WIDTH",
+   "name": "E2 WIDTH",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -1027,7 +1027,7 @@
   },
   {
    "key": "m2_k1",
-   "name": "M2 K1",
+   "name": "E2 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1037,7 +1037,7 @@
   },
   {
    "key": "m2_k2",
-   "name": "M2 K2",
+   "name": "E2 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1047,7 +1047,7 @@
   },
   {
    "key": "m2_k3",
-   "name": "M2 K3",
+   "name": "E2 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1057,7 +1057,7 @@
   },
   {
    "key": "m2_k4",
-   "name": "M2 K4",
+   "name": "E2 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1067,7 +1067,7 @@
   },
   {
    "key": "m2_k5",
-   "name": "M2 K5",
+   "name": "E2 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1077,7 +1077,7 @@
   },
   {
    "key": "m2_k6",
-   "name": "M2 K6",
+   "name": "E2 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1087,7 +1087,7 @@
   },
   {
    "key": "m2_k7",
-   "name": "M2 K7",
+   "name": "E2 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1097,7 +1097,7 @@
   },
   {
    "key": "m2_k8",
-   "name": "M2 K8",
+   "name": "E2 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1107,7 +1107,7 @@
   },
   {
    "key": "m2_k9",
-   "name": "M2 K9",
+   "name": "E2 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1117,7 +1117,7 @@
   },
   {
    "key": "m2_k10",
-   "name": "M2 K10",
+   "name": "E2 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1127,7 +1127,7 @@
   },
   {
    "key": "m2_k11",
-   "name": "M2 K11",
+   "name": "E2 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1137,7 +1137,7 @@
   },
   {
    "key": "m2_k12",
-   "name": "M2 K12",
+   "name": "E2 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1147,7 +1147,7 @@
   },
   {
    "key": "m2_k13",
-   "name": "M2 K13",
+   "name": "E2 K13",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1157,7 +1157,7 @@
   },
   {
    "key": "m2_k14",
-   "name": "M2 K14",
+   "name": "E2 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1167,7 +1167,7 @@
   },
   {
    "key": "m2_wt_fx",
-   "name": "M2 WT EFFECT",
+   "name": "E2 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -1179,21 +1179,21 @@
   },
   {
    "key": "m2_wt_fx_prev",
-   "name": "M2 WT EFFECT PREV",
+   "name": "E2 WT EFFECT PREV",
    "momentary": true,
    "step_of": "m2_wt_fx",
    "step_delta": -1
   },
   {
    "key": "m2_wt_fx_next",
-   "name": "M2 WT EFFECT NEXT",
+   "name": "E2 WT EFFECT NEXT",
    "momentary": true,
    "step_of": "m2_wt_fx",
    "step_delta": 1
   },
   {
    "key": "m2_wt_fx_st",
-   "name": "M2 WT EFFECT",
+   "name": "E2 WT EFFECT",
    "min": 0,
    "max": 4,
    "default": 0,
@@ -1205,7 +1205,7 @@
   },
   {
    "key": "m2_wt_umode",
-   "name": "M2 WT UNI MODE",
+   "name": "E2 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -1218,21 +1218,21 @@
   },
   {
    "key": "m2_wt_umode_prev",
-   "name": "M2 WT UNI MODE PREV",
+   "name": "E2 WT UNI MODE PREV",
    "momentary": true,
    "step_of": "m2_wt_umode",
    "step_delta": -1
   },
   {
    "key": "m2_wt_umode_next",
-   "name": "M2 WT UNI MODE NEXT",
+   "name": "E2 WT UNI MODE NEXT",
    "momentary": true,
    "step_of": "m2_wt_umode",
    "step_delta": 1
   },
   {
    "key": "m2_wt_umode_st",
-   "name": "M2 WT UNI MODE",
+   "name": "E2 WT UNI MODE",
    "min": 0,
    "max": 5,
    "default": 0,
@@ -1244,7 +1244,7 @@
   },
   {
    "key": "m2_fm_algo",
-   "name": "M2 FM ALGORITHM",
+   "name": "E2 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -1259,21 +1259,21 @@
   },
   {
    "key": "m2_fm_algo_prev",
-   "name": "M2 FM ALGORITHM PREV",
+   "name": "E2 FM ALGORITHM PREV",
    "momentary": true,
    "step_of": "m2_fm_algo",
    "step_delta": -1
   },
   {
    "key": "m2_fm_algo_next",
-   "name": "M2 FM ALGORITHM NEXT",
+   "name": "E2 FM ALGORITHM NEXT",
    "momentary": true,
    "step_of": "m2_fm_algo",
    "step_delta": 1
   },
   {
    "key": "m2_fm_algo_st",
-   "name": "M2 FM ALGORITHM",
+   "name": "E2 FM ALGORITHM",
    "min": 0,
    "max": 7,
    "default": 0,
@@ -1285,7 +1285,7 @@
   },
   {
    "key": "m2_fm_mode",
-   "name": "M2 FM MODE",
+   "name": "E2 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -1294,21 +1294,21 @@
   },
   {
    "key": "m2_fm_mode_prev",
-   "name": "M2 FM MODE PREV",
+   "name": "E2 FM MODE PREV",
    "momentary": true,
    "step_of": "m2_fm_mode",
    "step_delta": -1
   },
   {
    "key": "m2_fm_mode_next",
-   "name": "M2 FM MODE NEXT",
+   "name": "E2 FM MODE NEXT",
    "momentary": true,
    "step_of": "m2_fm_mode",
    "step_delta": 1
   },
   {
    "key": "m2_fm_mode_st",
-   "name": "M2 FM MODE",
+   "name": "E2 FM MODE",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -1320,7 +1320,7 @@
   },
   {
    "key": "m2_osc_w1",
-   "name": "M2 OSC1 WAVE",
+   "name": "E2 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1331,21 +1331,21 @@
   },
   {
    "key": "m2_osc_w1_prev",
-   "name": "M2 OSC1 WAVE PREV",
+   "name": "E2 OSC1 WAVE PREV",
    "momentary": true,
    "step_of": "m2_osc_w1",
    "step_delta": -1
   },
   {
    "key": "m2_osc_w1_next",
-   "name": "M2 OSC1 WAVE NEXT",
+   "name": "E2 OSC1 WAVE NEXT",
    "momentary": true,
    "step_of": "m2_osc_w1",
    "step_delta": 1
   },
   {
    "key": "m2_osc_w1_st",
-   "name": "M2 OSC1 WAVE",
+   "name": "E2 OSC1 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -1357,7 +1357,7 @@
   },
   {
    "key": "m2_osc_w2",
-   "name": "M2 OSC2 WAVE",
+   "name": "E2 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -1368,21 +1368,21 @@
   },
   {
    "key": "m2_osc_w2_prev",
-   "name": "M2 OSC2 WAVE PREV",
+   "name": "E2 OSC2 WAVE PREV",
    "momentary": true,
    "step_of": "m2_osc_w2",
    "step_delta": -1
   },
   {
    "key": "m2_osc_w2_next",
-   "name": "M2 OSC2 WAVE NEXT",
+   "name": "E2 OSC2 WAVE NEXT",
    "momentary": true,
    "step_of": "m2_osc_w2",
    "step_delta": 1
   },
   {
    "key": "m2_osc_w2_st",
-   "name": "M2 OSC2 WAVE",
+   "name": "E2 OSC2 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -1394,7 +1394,7 @@
   },
   {
    "key": "m2_osc_sync",
-   "name": "M2 OSC SYNC",
+   "name": "E2 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -1403,21 +1403,21 @@
   },
   {
    "key": "m2_osc_sync_prev",
-   "name": "M2 OSC SYNC PREV",
+   "name": "E2 OSC SYNC PREV",
    "momentary": true,
    "step_of": "m2_osc_sync",
    "step_delta": -1
   },
   {
    "key": "m2_osc_sync_next",
-   "name": "M2 OSC SYNC NEXT",
+   "name": "E2 OSC SYNC NEXT",
    "momentary": true,
    "step_of": "m2_osc_sync",
    "step_delta": 1
   },
   {
    "key": "m2_osc_sync_st",
-   "name": "M2 OSC SYNC",
+   "name": "E2 OSC SYNC",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -1430,7 +1430,7 @@
   {
    "key": "m2_select",
    "refresh_display": true,
-   "name": "M2 TABLE",
+   "name": "E2 TABLE",
    "min": 0,
    "max": 167,
    "default": 0,
@@ -1441,21 +1441,21 @@
   },
   {
    "key": "m2_select_prev",
-   "name": "M2 TABLE PREV",
+   "name": "E2 TABLE PREV",
    "momentary": true,
    "step_of": "m2_select",
    "step_delta": -1
   },
   {
    "key": "m2_select_next",
-   "name": "M2 TABLE NEXT",
+   "name": "E2 TABLE NEXT",
    "momentary": true,
    "step_of": "m2_select",
    "step_delta": 1
   },
   {
    "key": "m2_tname",
-   "name": "M2 TABLE NAME",
+   "name": "E2 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
@@ -1463,7 +1463,7 @@
   },
   {
    "key": "m3_model",
-   "name": "M3 MODEL",
+   "name": "E3 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -1475,21 +1475,21 @@
   },
   {
    "key": "m3_model_prev",
-   "name": "M3 MODEL PREV",
+   "name": "E3 MODEL PREV",
    "momentary": true,
    "step_of": "m3_model",
    "step_delta": -1
   },
   {
    "key": "m3_model_next",
-   "name": "M3 MODEL NEXT",
+   "name": "E3 MODEL NEXT",
    "momentary": true,
    "step_of": "m3_model",
    "step_delta": 1
   },
   {
    "key": "m3_model_st",
-   "name": "M3 MODEL",
+   "name": "E3 MODEL",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -1501,7 +1501,7 @@
   },
   {
    "key": "m3_chan",
-   "name": "M3 MIDI CHANNEL",
+   "name": "E3 MIDI CHANNEL",
    "options": [
     "TRACK",
     "CH 1",
@@ -1525,21 +1525,21 @@
   },
   {
    "key": "m3_chan_prev",
-   "name": "M3 MIDI CHANNEL PREV",
+   "name": "E3 MIDI CHANNEL PREV",
    "momentary": true,
    "step_of": "m3_chan",
    "step_delta": -1
   },
   {
    "key": "m3_chan_next",
-   "name": "M3 MIDI CHANNEL NEXT",
+   "name": "E3 MIDI CHANNEL NEXT",
    "momentary": true,
    "step_of": "m3_chan",
    "step_delta": 1
   },
   {
    "key": "m3_chan_st",
-   "name": "M3 MIDI CHANNEL",
+   "name": "E3 MIDI CHANNEL",
    "min": 0,
    "max": 16,
    "default": 0,
@@ -1551,7 +1551,7 @@
   },
   {
    "key": "m3_mute",
-   "name": "M3 MUTE",
+   "name": "E3 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -1560,7 +1560,7 @@
   },
   {
    "key": "m3_level",
-   "name": "M3 LEVEL",
+   "name": "E3 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1568,7 +1568,7 @@
   },
   {
    "key": "m3_pan",
-   "name": "M3 PAN",
+   "name": "E3 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1576,7 +1576,7 @@
   },
   {
    "key": "m3_tune",
-   "name": "M3 TUNE",
+   "name": "E3 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
@@ -1584,7 +1584,7 @@
   },
   {
    "key": "m3_dsend",
-   "name": "M3 DELAY SEND",
+   "name": "E3 DELAY SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1592,7 +1592,7 @@
   },
   {
    "key": "m3_rsend",
-   "name": "M3 REVERB SEND",
+   "name": "E3 REVERB SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1600,7 +1600,7 @@
   },
   {
    "key": "m3_xsend",
-   "name": "M3 DIRT SEND",
+   "name": "E3 DIRT SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1608,7 +1608,7 @@
   },
   {
    "key": "m3_amp_a",
-   "name": "M3 ATTACK",
+   "name": "E3 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1616,7 +1616,7 @@
   },
   {
    "key": "m3_amp_d",
-   "name": "M3 DECAY",
+   "name": "E3 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1624,7 +1624,7 @@
   },
   {
    "key": "m3_amp_s",
-   "name": "M3 SUSTAIN",
+   "name": "E3 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
@@ -1632,7 +1632,7 @@
   },
   {
    "key": "m3_amp_r",
-   "name": "M3 RELEASE",
+   "name": "E3 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
@@ -1640,7 +1640,7 @@
   },
   {
    "key": "m3_vel",
-   "name": "M3 VELOCITY",
+   "name": "E3 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
@@ -1648,7 +1648,7 @@
   },
   {
    "key": "m3_ftype",
-   "name": "M3 FILTER TYPE",
+   "name": "E3 FILTER TYPE",
    "options": [
     "MULTI",
     "LP 4",
@@ -1663,21 +1663,21 @@
   },
   {
    "key": "m3_ftype_prev",
-   "name": "M3 FILTER TYPE PREV",
+   "name": "E3 FILTER TYPE PREV",
    "momentary": true,
    "step_of": "m3_ftype",
    "step_delta": -1
   },
   {
    "key": "m3_ftype_next",
-   "name": "M3 FILTER TYPE NEXT",
+   "name": "E3 FILTER TYPE NEXT",
    "momentary": true,
    "step_of": "m3_ftype",
    "step_delta": 1
   },
   {
    "key": "m3_ftype_st",
-   "name": "M3 FILTER TYPE",
+   "name": "E3 FILTER TYPE",
    "min": 0,
    "max": 6,
    "default": 1,
@@ -1689,7 +1689,7 @@
   },
   {
    "key": "m3_cutoff",
-   "name": "M3 CUTOFF",
+   "name": "E3 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -1697,7 +1697,7 @@
   },
   {
    "key": "m3_reso",
-   "name": "M3 RESONANCE",
+   "name": "E3 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1705,7 +1705,7 @@
   },
   {
    "key": "m3_fshape",
-   "name": "M3 FILTER SHAPE",
+   "name": "E3 FILTER SHAPE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1715,7 +1715,7 @@
   },
   {
    "key": "m3_fenv",
-   "name": "M3 FILTER ENV",
+   "name": "E3 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1723,7 +1723,7 @@
   },
   {
    "key": "m3_fdec",
-   "name": "M3 FILTER DECAY",
+   "name": "E3 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1731,7 +1731,7 @@
   },
   {
    "key": "m3_fkey",
-   "name": "M3 KEY TRACK",
+   "name": "E3 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1739,7 +1739,7 @@
   },
   {
    "key": "m3_bwlo",
-   "name": "M3 BASE",
+   "name": "E3 BASE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1748,7 +1748,7 @@
   },
   {
    "key": "m3_bwhi",
-   "name": "M3 WIDTH",
+   "name": "E3 WIDTH",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -1757,7 +1757,7 @@
   },
   {
    "key": "m3_k1",
-   "name": "M3 K1",
+   "name": "E3 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1767,7 +1767,7 @@
   },
   {
    "key": "m3_k2",
-   "name": "M3 K2",
+   "name": "E3 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1777,7 +1777,7 @@
   },
   {
    "key": "m3_k3",
-   "name": "M3 K3",
+   "name": "E3 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1787,7 +1787,7 @@
   },
   {
    "key": "m3_k4",
-   "name": "M3 K4",
+   "name": "E3 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1797,7 +1797,7 @@
   },
   {
    "key": "m3_k5",
-   "name": "M3 K5",
+   "name": "E3 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1807,7 +1807,7 @@
   },
   {
    "key": "m3_k6",
-   "name": "M3 K6",
+   "name": "E3 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1817,7 +1817,7 @@
   },
   {
    "key": "m3_k7",
-   "name": "M3 K7",
+   "name": "E3 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1827,7 +1827,7 @@
   },
   {
    "key": "m3_k8",
-   "name": "M3 K8",
+   "name": "E3 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1837,7 +1837,7 @@
   },
   {
    "key": "m3_k9",
-   "name": "M3 K9",
+   "name": "E3 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1847,7 +1847,7 @@
   },
   {
    "key": "m3_k10",
-   "name": "M3 K10",
+   "name": "E3 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1857,7 +1857,7 @@
   },
   {
    "key": "m3_k11",
-   "name": "M3 K11",
+   "name": "E3 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -1867,7 +1867,7 @@
   },
   {
    "key": "m3_k12",
-   "name": "M3 K12",
+   "name": "E3 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1877,7 +1877,7 @@
   },
   {
    "key": "m3_k13",
-   "name": "M3 K13",
+   "name": "E3 K13",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -1887,7 +1887,7 @@
   },
   {
    "key": "m3_k14",
-   "name": "M3 K14",
+   "name": "E3 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -1897,7 +1897,7 @@
   },
   {
    "key": "m3_wt_fx",
-   "name": "M3 WT EFFECT",
+   "name": "E3 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -1909,21 +1909,21 @@
   },
   {
    "key": "m3_wt_fx_prev",
-   "name": "M3 WT EFFECT PREV",
+   "name": "E3 WT EFFECT PREV",
    "momentary": true,
    "step_of": "m3_wt_fx",
    "step_delta": -1
   },
   {
    "key": "m3_wt_fx_next",
-   "name": "M3 WT EFFECT NEXT",
+   "name": "E3 WT EFFECT NEXT",
    "momentary": true,
    "step_of": "m3_wt_fx",
    "step_delta": 1
   },
   {
    "key": "m3_wt_fx_st",
-   "name": "M3 WT EFFECT",
+   "name": "E3 WT EFFECT",
    "min": 0,
    "max": 4,
    "default": 0,
@@ -1935,7 +1935,7 @@
   },
   {
    "key": "m3_wt_umode",
-   "name": "M3 WT UNI MODE",
+   "name": "E3 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -1948,21 +1948,21 @@
   },
   {
    "key": "m3_wt_umode_prev",
-   "name": "M3 WT UNI MODE PREV",
+   "name": "E3 WT UNI MODE PREV",
    "momentary": true,
    "step_of": "m3_wt_umode",
    "step_delta": -1
   },
   {
    "key": "m3_wt_umode_next",
-   "name": "M3 WT UNI MODE NEXT",
+   "name": "E3 WT UNI MODE NEXT",
    "momentary": true,
    "step_of": "m3_wt_umode",
    "step_delta": 1
   },
   {
    "key": "m3_wt_umode_st",
-   "name": "M3 WT UNI MODE",
+   "name": "E3 WT UNI MODE",
    "min": 0,
    "max": 5,
    "default": 0,
@@ -1974,7 +1974,7 @@
   },
   {
    "key": "m3_fm_algo",
-   "name": "M3 FM ALGORITHM",
+   "name": "E3 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -1989,21 +1989,21 @@
   },
   {
    "key": "m3_fm_algo_prev",
-   "name": "M3 FM ALGORITHM PREV",
+   "name": "E3 FM ALGORITHM PREV",
    "momentary": true,
    "step_of": "m3_fm_algo",
    "step_delta": -1
   },
   {
    "key": "m3_fm_algo_next",
-   "name": "M3 FM ALGORITHM NEXT",
+   "name": "E3 FM ALGORITHM NEXT",
    "momentary": true,
    "step_of": "m3_fm_algo",
    "step_delta": 1
   },
   {
    "key": "m3_fm_algo_st",
-   "name": "M3 FM ALGORITHM",
+   "name": "E3 FM ALGORITHM",
    "min": 0,
    "max": 7,
    "default": 0,
@@ -2015,7 +2015,7 @@
   },
   {
    "key": "m3_fm_mode",
-   "name": "M3 FM MODE",
+   "name": "E3 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -2024,21 +2024,21 @@
   },
   {
    "key": "m3_fm_mode_prev",
-   "name": "M3 FM MODE PREV",
+   "name": "E3 FM MODE PREV",
    "momentary": true,
    "step_of": "m3_fm_mode",
    "step_delta": -1
   },
   {
    "key": "m3_fm_mode_next",
-   "name": "M3 FM MODE NEXT",
+   "name": "E3 FM MODE NEXT",
    "momentary": true,
    "step_of": "m3_fm_mode",
    "step_delta": 1
   },
   {
    "key": "m3_fm_mode_st",
-   "name": "M3 FM MODE",
+   "name": "E3 FM MODE",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -2050,7 +2050,7 @@
   },
   {
    "key": "m3_osc_w1",
-   "name": "M3 OSC1 WAVE",
+   "name": "E3 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -2061,21 +2061,21 @@
   },
   {
    "key": "m3_osc_w1_prev",
-   "name": "M3 OSC1 WAVE PREV",
+   "name": "E3 OSC1 WAVE PREV",
    "momentary": true,
    "step_of": "m3_osc_w1",
    "step_delta": -1
   },
   {
    "key": "m3_osc_w1_next",
-   "name": "M3 OSC1 WAVE NEXT",
+   "name": "E3 OSC1 WAVE NEXT",
    "momentary": true,
    "step_of": "m3_osc_w1",
    "step_delta": 1
   },
   {
    "key": "m3_osc_w1_st",
-   "name": "M3 OSC1 WAVE",
+   "name": "E3 OSC1 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -2087,7 +2087,7 @@
   },
   {
    "key": "m3_osc_w2",
-   "name": "M3 OSC2 WAVE",
+   "name": "E3 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -2098,21 +2098,21 @@
   },
   {
    "key": "m3_osc_w2_prev",
-   "name": "M3 OSC2 WAVE PREV",
+   "name": "E3 OSC2 WAVE PREV",
    "momentary": true,
    "step_of": "m3_osc_w2",
    "step_delta": -1
   },
   {
    "key": "m3_osc_w2_next",
-   "name": "M3 OSC2 WAVE NEXT",
+   "name": "E3 OSC2 WAVE NEXT",
    "momentary": true,
    "step_of": "m3_osc_w2",
    "step_delta": 1
   },
   {
    "key": "m3_osc_w2_st",
-   "name": "M3 OSC2 WAVE",
+   "name": "E3 OSC2 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -2124,7 +2124,7 @@
   },
   {
    "key": "m3_osc_sync",
-   "name": "M3 OSC SYNC",
+   "name": "E3 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -2133,21 +2133,21 @@
   },
   {
    "key": "m3_osc_sync_prev",
-   "name": "M3 OSC SYNC PREV",
+   "name": "E3 OSC SYNC PREV",
    "momentary": true,
    "step_of": "m3_osc_sync",
    "step_delta": -1
   },
   {
    "key": "m3_osc_sync_next",
-   "name": "M3 OSC SYNC NEXT",
+   "name": "E3 OSC SYNC NEXT",
    "momentary": true,
    "step_of": "m3_osc_sync",
    "step_delta": 1
   },
   {
    "key": "m3_osc_sync_st",
-   "name": "M3 OSC SYNC",
+   "name": "E3 OSC SYNC",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -2160,7 +2160,7 @@
   {
    "key": "m3_select",
    "refresh_display": true,
-   "name": "M3 TABLE",
+   "name": "E3 TABLE",
    "min": 0,
    "max": 167,
    "default": 0,
@@ -2171,21 +2171,21 @@
   },
   {
    "key": "m3_select_prev",
-   "name": "M3 TABLE PREV",
+   "name": "E3 TABLE PREV",
    "momentary": true,
    "step_of": "m3_select",
    "step_delta": -1
   },
   {
    "key": "m3_select_next",
-   "name": "M3 TABLE NEXT",
+   "name": "E3 TABLE NEXT",
    "momentary": true,
    "step_of": "m3_select",
    "step_delta": 1
   },
   {
    "key": "m3_tname",
-   "name": "M3 TABLE NAME",
+   "name": "E3 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
@@ -2193,7 +2193,7 @@
   },
   {
    "key": "m4_model",
-   "name": "M4 MODEL",
+   "name": "E4 MODEL",
    "options": [
     "WAVETABLE",
     "FM",
@@ -2205,21 +2205,21 @@
   },
   {
    "key": "m4_model_prev",
-   "name": "M4 MODEL PREV",
+   "name": "E4 MODEL PREV",
    "momentary": true,
    "step_of": "m4_model",
    "step_delta": -1
   },
   {
    "key": "m4_model_next",
-   "name": "M4 MODEL NEXT",
+   "name": "E4 MODEL NEXT",
    "momentary": true,
    "step_of": "m4_model",
    "step_delta": 1
   },
   {
    "key": "m4_model_st",
-   "name": "M4 MODEL",
+   "name": "E4 MODEL",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -2231,7 +2231,7 @@
   },
   {
    "key": "m4_chan",
-   "name": "M4 MIDI CHANNEL",
+   "name": "E4 MIDI CHANNEL",
    "options": [
     "TRACK",
     "CH 1",
@@ -2255,21 +2255,21 @@
   },
   {
    "key": "m4_chan_prev",
-   "name": "M4 MIDI CHANNEL PREV",
+   "name": "E4 MIDI CHANNEL PREV",
    "momentary": true,
    "step_of": "m4_chan",
    "step_delta": -1
   },
   {
    "key": "m4_chan_next",
-   "name": "M4 MIDI CHANNEL NEXT",
+   "name": "E4 MIDI CHANNEL NEXT",
    "momentary": true,
    "step_of": "m4_chan",
    "step_delta": 1
   },
   {
    "key": "m4_chan_st",
-   "name": "M4 MIDI CHANNEL",
+   "name": "E4 MIDI CHANNEL",
    "min": 0,
    "max": 16,
    "default": 0,
@@ -2281,7 +2281,7 @@
   },
   {
    "key": "m4_mute",
-   "name": "M4 MUTE",
+   "name": "E4 MUTE",
    "options": [
     "OFF",
     "ON"
@@ -2290,7 +2290,7 @@
   },
   {
    "key": "m4_level",
-   "name": "M4 LEVEL",
+   "name": "E4 LEVEL",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2298,7 +2298,7 @@
   },
   {
    "key": "m4_pan",
-   "name": "M4 PAN",
+   "name": "E4 PAN",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2306,7 +2306,7 @@
   },
   {
    "key": "m4_tune",
-   "name": "M4 TUNE",
+   "name": "E4 TUNE",
    "min": -24,
    "max": 24,
    "default": 0,
@@ -2314,7 +2314,7 @@
   },
   {
    "key": "m4_dsend",
-   "name": "M4 DELAY SEND",
+   "name": "E4 DELAY SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2322,7 +2322,7 @@
   },
   {
    "key": "m4_rsend",
-   "name": "M4 REVERB SEND",
+   "name": "E4 REVERB SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2330,7 +2330,7 @@
   },
   {
    "key": "m4_xsend",
-   "name": "M4 DIRT SEND",
+   "name": "E4 DIRT SEND",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2338,7 +2338,7 @@
   },
   {
    "key": "m4_amp_a",
-   "name": "M4 ATTACK",
+   "name": "E4 ATTACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2346,7 +2346,7 @@
   },
   {
    "key": "m4_amp_d",
-   "name": "M4 DECAY",
+   "name": "E4 DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2354,7 +2354,7 @@
   },
   {
    "key": "m4_amp_s",
-   "name": "M4 SUSTAIN",
+   "name": "E4 SUSTAIN",
    "min": 0,
    "max": 127,
    "default": 102,
@@ -2362,7 +2362,7 @@
   },
   {
    "key": "m4_amp_r",
-   "name": "M4 RELEASE",
+   "name": "E4 RELEASE",
    "min": 0,
    "max": 127,
    "default": 50,
@@ -2370,7 +2370,7 @@
   },
   {
    "key": "m4_vel",
-   "name": "M4 VELOCITY",
+   "name": "E4 VELOCITY",
    "min": 0,
    "max": 127,
    "default": 100,
@@ -2378,7 +2378,7 @@
   },
   {
    "key": "m4_ftype",
-   "name": "M4 FILTER TYPE",
+   "name": "E4 FILTER TYPE",
    "options": [
     "MULTI",
     "LP 4",
@@ -2393,21 +2393,21 @@
   },
   {
    "key": "m4_ftype_prev",
-   "name": "M4 FILTER TYPE PREV",
+   "name": "E4 FILTER TYPE PREV",
    "momentary": true,
    "step_of": "m4_ftype",
    "step_delta": -1
   },
   {
    "key": "m4_ftype_next",
-   "name": "M4 FILTER TYPE NEXT",
+   "name": "E4 FILTER TYPE NEXT",
    "momentary": true,
    "step_of": "m4_ftype",
    "step_delta": 1
   },
   {
    "key": "m4_ftype_st",
-   "name": "M4 FILTER TYPE",
+   "name": "E4 FILTER TYPE",
    "min": 0,
    "max": 6,
    "default": 1,
@@ -2419,7 +2419,7 @@
   },
   {
    "key": "m4_cutoff",
-   "name": "M4 CUTOFF",
+   "name": "E4 CUTOFF",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -2427,7 +2427,7 @@
   },
   {
    "key": "m4_reso",
-   "name": "M4 RESONANCE",
+   "name": "E4 RESONANCE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2435,7 +2435,7 @@
   },
   {
    "key": "m4_fshape",
-   "name": "M4 FILTER SHAPE",
+   "name": "E4 FILTER SHAPE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2445,7 +2445,7 @@
   },
   {
    "key": "m4_fenv",
-   "name": "M4 FILTER ENV",
+   "name": "E4 FILTER ENV",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2453,7 +2453,7 @@
   },
   {
    "key": "m4_fdec",
-   "name": "M4 FILTER DECAY",
+   "name": "E4 FILTER DECAY",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2461,7 +2461,7 @@
   },
   {
    "key": "m4_fkey",
-   "name": "M4 KEY TRACK",
+   "name": "E4 KEY TRACK",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2469,7 +2469,7 @@
   },
   {
    "key": "m4_bwlo",
-   "name": "M4 BASE",
+   "name": "E4 BASE",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2478,7 +2478,7 @@
   },
   {
    "key": "m4_bwhi",
-   "name": "M4 WIDTH",
+   "name": "E4 WIDTH",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -2487,7 +2487,7 @@
   },
   {
    "key": "m4_k1",
-   "name": "M4 K1",
+   "name": "E4 K1",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2497,7 +2497,7 @@
   },
   {
    "key": "m4_k2",
-   "name": "M4 K2",
+   "name": "E4 K2",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2507,7 +2507,7 @@
   },
   {
    "key": "m4_k3",
-   "name": "M4 K3",
+   "name": "E4 K3",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2517,7 +2517,7 @@
   },
   {
    "key": "m4_k4",
-   "name": "M4 K4",
+   "name": "E4 K4",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2527,7 +2527,7 @@
   },
   {
    "key": "m4_k5",
-   "name": "M4 K5",
+   "name": "E4 K5",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2537,7 +2537,7 @@
   },
   {
    "key": "m4_k6",
-   "name": "M4 K6",
+   "name": "E4 K6",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2547,7 +2547,7 @@
   },
   {
    "key": "m4_k7",
-   "name": "M4 K7",
+   "name": "E4 K7",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -2557,7 +2557,7 @@
   },
   {
    "key": "m4_k8",
-   "name": "M4 K8",
+   "name": "E4 K8",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2567,7 +2567,7 @@
   },
   {
    "key": "m4_k9",
-   "name": "M4 K9",
+   "name": "E4 K9",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2577,7 +2577,7 @@
   },
   {
    "key": "m4_k10",
-   "name": "M4 K10",
+   "name": "E4 K10",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2587,7 +2587,7 @@
   },
   {
    "key": "m4_k11",
-   "name": "M4 K11",
+   "name": "E4 K11",
    "min": 0,
    "max": 127,
    "default": 43,
@@ -2597,7 +2597,7 @@
   },
   {
    "key": "m4_k12",
-   "name": "M4 K12",
+   "name": "E4 K12",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2607,7 +2607,7 @@
   },
   {
    "key": "m4_k13",
-   "name": "M4 K13",
+   "name": "E4 K13",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -2617,7 +2617,7 @@
   },
   {
    "key": "m4_k14",
-   "name": "M4 K14",
+   "name": "E4 K14",
    "min": 0,
    "max": 127,
    "default": 64,
@@ -2627,7 +2627,7 @@
   },
   {
    "key": "m4_wt_fx",
-   "name": "M4 WT EFFECT",
+   "name": "E4 WT EFFECT",
    "options": [
     "NONE",
     "FM",
@@ -2639,21 +2639,21 @@
   },
   {
    "key": "m4_wt_fx_prev",
-   "name": "M4 WT EFFECT PREV",
+   "name": "E4 WT EFFECT PREV",
    "momentary": true,
    "step_of": "m4_wt_fx",
    "step_delta": -1
   },
   {
    "key": "m4_wt_fx_next",
-   "name": "M4 WT EFFECT NEXT",
+   "name": "E4 WT EFFECT NEXT",
    "momentary": true,
    "step_of": "m4_wt_fx",
    "step_delta": 1
   },
   {
    "key": "m4_wt_fx_st",
-   "name": "M4 WT EFFECT",
+   "name": "E4 WT EFFECT",
    "min": 0,
    "max": 4,
    "default": 0,
@@ -2665,7 +2665,7 @@
   },
   {
    "key": "m4_wt_umode",
-   "name": "M4 WT UNI MODE",
+   "name": "E4 WT UNI MODE",
    "options": [
     "CLASSIC",
     "SHIMMER",
@@ -2678,21 +2678,21 @@
   },
   {
    "key": "m4_wt_umode_prev",
-   "name": "M4 WT UNI MODE PREV",
+   "name": "E4 WT UNI MODE PREV",
    "momentary": true,
    "step_of": "m4_wt_umode",
    "step_delta": -1
   },
   {
    "key": "m4_wt_umode_next",
-   "name": "M4 WT UNI MODE NEXT",
+   "name": "E4 WT UNI MODE NEXT",
    "momentary": true,
    "step_of": "m4_wt_umode",
    "step_delta": 1
   },
   {
    "key": "m4_wt_umode_st",
-   "name": "M4 WT UNI MODE",
+   "name": "E4 WT UNI MODE",
    "min": 0,
    "max": 5,
    "default": 0,
@@ -2704,7 +2704,7 @@
   },
   {
    "key": "m4_fm_algo",
-   "name": "M4 FM ALGORITHM",
+   "name": "E4 FM ALGORITHM",
    "options": [
     "4>3>2>1",
     "3+4>2>1",
@@ -2719,21 +2719,21 @@
   },
   {
    "key": "m4_fm_algo_prev",
-   "name": "M4 FM ALGORITHM PREV",
+   "name": "E4 FM ALGORITHM PREV",
    "momentary": true,
    "step_of": "m4_fm_algo",
    "step_delta": -1
   },
   {
    "key": "m4_fm_algo_next",
-   "name": "M4 FM ALGORITHM NEXT",
+   "name": "E4 FM ALGORITHM NEXT",
    "momentary": true,
    "step_of": "m4_fm_algo",
    "step_delta": 1
   },
   {
    "key": "m4_fm_algo_st",
-   "name": "M4 FM ALGORITHM",
+   "name": "E4 FM ALGORITHM",
    "min": 0,
    "max": 7,
    "default": 0,
@@ -2745,7 +2745,7 @@
   },
   {
    "key": "m4_fm_mode",
-   "name": "M4 FM MODE",
+   "name": "E4 FM MODE",
    "options": [
     "TONE",
     "DRUM"
@@ -2754,21 +2754,21 @@
   },
   {
    "key": "m4_fm_mode_prev",
-   "name": "M4 FM MODE PREV",
+   "name": "E4 FM MODE PREV",
    "momentary": true,
    "step_of": "m4_fm_mode",
    "step_delta": -1
   },
   {
    "key": "m4_fm_mode_next",
-   "name": "M4 FM MODE NEXT",
+   "name": "E4 FM MODE NEXT",
    "momentary": true,
    "step_of": "m4_fm_mode",
    "step_delta": 1
   },
   {
    "key": "m4_fm_mode_st",
-   "name": "M4 FM MODE",
+   "name": "E4 FM MODE",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -2780,7 +2780,7 @@
   },
   {
    "key": "m4_osc_w1",
-   "name": "M4 OSC1 WAVE",
+   "name": "E4 OSC1 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -2791,21 +2791,21 @@
   },
   {
    "key": "m4_osc_w1_prev",
-   "name": "M4 OSC1 WAVE PREV",
+   "name": "E4 OSC1 WAVE PREV",
    "momentary": true,
    "step_of": "m4_osc_w1",
    "step_delta": -1
   },
   {
    "key": "m4_osc_w1_next",
-   "name": "M4 OSC1 WAVE NEXT",
+   "name": "E4 OSC1 WAVE NEXT",
    "momentary": true,
    "step_of": "m4_osc_w1",
    "step_delta": 1
   },
   {
    "key": "m4_osc_w1_st",
-   "name": "M4 OSC1 WAVE",
+   "name": "E4 OSC1 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -2817,7 +2817,7 @@
   },
   {
    "key": "m4_osc_w2",
-   "name": "M4 OSC2 WAVE",
+   "name": "E4 OSC2 WAVE",
    "options": [
     "SINE",
     "TRI",
@@ -2828,21 +2828,21 @@
   },
   {
    "key": "m4_osc_w2_prev",
-   "name": "M4 OSC2 WAVE PREV",
+   "name": "E4 OSC2 WAVE PREV",
    "momentary": true,
    "step_of": "m4_osc_w2",
    "step_delta": -1
   },
   {
    "key": "m4_osc_w2_next",
-   "name": "M4 OSC2 WAVE NEXT",
+   "name": "E4 OSC2 WAVE NEXT",
    "momentary": true,
    "step_of": "m4_osc_w2",
    "step_delta": 1
   },
   {
    "key": "m4_osc_w2_st",
-   "name": "M4 OSC2 WAVE",
+   "name": "E4 OSC2 WAVE",
    "min": 0,
    "max": 3,
    "default": 0,
@@ -2854,7 +2854,7 @@
   },
   {
    "key": "m4_osc_sync",
-   "name": "M4 OSC SYNC",
+   "name": "E4 OSC SYNC",
    "options": [
     "OFF",
     "ON"
@@ -2863,21 +2863,21 @@
   },
   {
    "key": "m4_osc_sync_prev",
-   "name": "M4 OSC SYNC PREV",
+   "name": "E4 OSC SYNC PREV",
    "momentary": true,
    "step_of": "m4_osc_sync",
    "step_delta": -1
   },
   {
    "key": "m4_osc_sync_next",
-   "name": "M4 OSC SYNC NEXT",
+   "name": "E4 OSC SYNC NEXT",
    "momentary": true,
    "step_of": "m4_osc_sync",
    "step_delta": 1
   },
   {
    "key": "m4_osc_sync_st",
-   "name": "M4 OSC SYNC",
+   "name": "E4 OSC SYNC",
    "min": 0,
    "max": 1,
    "default": 0,
@@ -2890,7 +2890,7 @@
   {
    "key": "m4_select",
    "refresh_display": true,
-   "name": "M4 TABLE",
+   "name": "E4 TABLE",
    "min": 0,
    "max": 167,
    "default": 0,
@@ -2901,21 +2901,21 @@
   },
   {
    "key": "m4_select_prev",
-   "name": "M4 TABLE PREV",
+   "name": "E4 TABLE PREV",
    "momentary": true,
    "step_of": "m4_select",
    "step_delta": -1
   },
   {
    "key": "m4_select_next",
-   "name": "M4 TABLE NEXT",
+   "name": "E4 TABLE NEXT",
    "momentary": true,
    "step_of": "m4_select",
    "step_delta": 1
   },
   {
    "key": "m4_tname",
-   "name": "M4 TABLE NAME",
+   "name": "E4 TABLE NAME",
    "min": 0,
    "max": 0,
    "display": "string",
@@ -3097,7 +3097,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3154,7 +3158,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3211,7 +3219,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3268,7 +3280,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3325,7 +3341,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3382,7 +3402,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3439,7 +3463,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3496,7 +3524,11 @@
     "PITCH BEND",
     "RANDOM",
     "AMP ENV",
-    "FILTER ENV"
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
    ],
    "default": 0
   },
@@ -3816,7 +3848,7 @@
   },
   {
    "key": "m1_fview",
-   "name": "M1 FILTER VIEW",
+   "name": "E1 FILTER VIEW",
    "min": 0,
    "max": 191,
    "default": 0,
@@ -3825,7 +3857,7 @@
   },
   {
    "key": "m2_fview",
-   "name": "M2 FILTER VIEW",
+   "name": "E2 FILTER VIEW",
    "min": 0,
    "max": 191,
    "default": 0,
@@ -3834,7 +3866,7 @@
   },
   {
    "key": "m3_fview",
-   "name": "M3 FILTER VIEW",
+   "name": "E3 FILTER VIEW",
    "min": 0,
    "max": 191,
    "default": 0,
@@ -3843,7 +3875,7 @@
   },
   {
    "key": "m4_fview",
-   "name": "M4 FILTER VIEW",
+   "name": "E4 FILTER VIEW",
    "min": 0,
    "max": 191,
    "default": 0,
@@ -3852,7 +3884,7 @@
   },
   {
    "key": "m1_cview",
-   "name": "M1 FOLD VIEW",
+   "name": "E1 FOLD VIEW",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -3861,7 +3893,7 @@
   },
   {
    "key": "m2_cview",
-   "name": "M2 FOLD VIEW",
+   "name": "E2 FOLD VIEW",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -3870,7 +3902,7 @@
   },
   {
    "key": "m3_cview",
-   "name": "M3 FOLD VIEW",
+   "name": "E3 FOLD VIEW",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -3879,7 +3911,7 @@
   },
   {
    "key": "m4_cview",
-   "name": "M4 FOLD VIEW",
+   "name": "E4 FOLD VIEW",
    "min": 0,
    "max": 127,
    "default": 0,
@@ -3888,7 +3920,7 @@
   },
   {
    "key": "m1_wview",
-   "name": "M1 TABLE VIEW",
+   "name": "E1 TABLE VIEW",
    "min": 0,
    "max": 85,
    "default": 2,
@@ -3897,7 +3929,7 @@
   },
   {
    "key": "m2_wview",
-   "name": "M2 TABLE VIEW",
+   "name": "E2 TABLE VIEW",
    "min": 0,
    "max": 85,
    "default": 2,
@@ -3906,7 +3938,7 @@
   },
   {
    "key": "m3_wview",
-   "name": "M3 TABLE VIEW",
+   "name": "E3 TABLE VIEW",
    "min": 0,
    "max": 85,
    "default": 2,
@@ -3915,7 +3947,7 @@
   },
   {
    "key": "m4_wview",
-   "name": "M4 TABLE VIEW",
+   "name": "E4 TABLE VIEW",
    "min": 0,
    "max": 85,
    "default": 2,
@@ -3924,7 +3956,7 @@
   },
   {
    "key": "m1_wviewb",
-   "name": "M1 TABLE VIEW B",
+   "name": "E1 TABLE VIEW B",
    "min": 0,
    "max": 84,
    "default": 0,
@@ -3933,7 +3965,7 @@
   },
   {
    "key": "m2_wviewb",
-   "name": "M2 TABLE VIEW B",
+   "name": "E2 TABLE VIEW B",
    "min": 0,
    "max": 84,
    "default": 0,
@@ -3942,7 +3974,7 @@
   },
   {
    "key": "m3_wviewb",
-   "name": "M3 TABLE VIEW B",
+   "name": "E3 TABLE VIEW B",
    "min": 0,
    "max": 84,
    "default": 0,
@@ -3951,7 +3983,7 @@
   },
   {
    "key": "m4_wviewb",
-   "name": "M4 TABLE VIEW B",
+   "name": "E4 TABLE VIEW B",
    "min": 0,
    "max": 84,
    "default": 0,
@@ -3960,7 +3992,7 @@
   },
   {
    "key": "m1_op1",
-   "name": "M1 FM OP1 LEVEL",
+   "name": "E1 FM OP1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -3968,7 +4000,7 @@
   },
   {
    "key": "m2_op1",
-   "name": "M2 FM OP1 LEVEL",
+   "name": "E2 FM OP1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -3976,7 +4008,7 @@
   },
   {
    "key": "m3_op1",
-   "name": "M3 FM OP1 LEVEL",
+   "name": "E3 FM OP1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -3984,7 +4016,7 @@
   },
   {
    "key": "m4_op1",
-   "name": "M4 FM OP1 LEVEL",
+   "name": "E4 FM OP1 LEVEL",
    "min": 0,
    "max": 127,
    "default": 127,
@@ -4085,7 +4117,7 @@
   },
   {
    "key": "m1_solo",
-   "name": "M1 SOLO",
+   "name": "E1 SOLO",
    "options": [
     "OFF",
     "ON"
@@ -4094,7 +4126,7 @@
   },
   {
    "key": "m2_solo",
-   "name": "M2 SOLO",
+   "name": "E2 SOLO",
    "options": [
     "OFF",
     "ON"
@@ -4103,7 +4135,7 @@
   },
   {
    "key": "m3_solo",
-   "name": "M3 SOLO",
+   "name": "E3 SOLO",
    "options": [
     "OFF",
     "ON"
@@ -4112,12 +4144,668 @@
   },
   {
    "key": "m4_solo",
-   "name": "M4 SOLO",
+   "name": "E4 SOLO",
    "options": [
     "OFF",
     "ON"
    ],
    "default": 0
+  },
+  {
+   "key": "me3_a",
+   "name": "EG3 A",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me3_d",
+   "name": "EG3 D",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me3_s",
+   "name": "EG3 S",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me3_r",
+   "name": "EG3 R",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me4_a",
+   "name": "EG4 A",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me4_d",
+   "name": "EG4 D",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "me4_s",
+   "name": "EG4 S",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "me4_r",
+   "name": "EG4 R",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "lfo3_shape",
+   "name": "LFO3 SHAPE",
+   "options": [
+    "SINE",
+    "TRIANGLE",
+    "SAW UP",
+    "SAW DOWN",
+    "SQUARE",
+    "S&H",
+    "SMOOTH RND"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo3_sync",
+   "name": "LFO3 SYNC",
+   "options": [
+    "FREE",
+    "SYNC"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo3_rate",
+   "name": "LFO3 RATE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "lfo3_fade",
+   "name": "LFO3 FADE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "lfo3_retrig",
+   "name": "LFO3 RETRIG",
+   "options": [
+    "KEY",
+    "FREE"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo4_shape",
+   "name": "LFO4 SHAPE",
+   "options": [
+    "SINE",
+    "TRIANGLE",
+    "SAW UP",
+    "SAW DOWN",
+    "SQUARE",
+    "S&H",
+    "SMOOTH RND"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo4_sync",
+   "name": "LFO4 SYNC",
+   "options": [
+    "FREE",
+    "SYNC"
+   ],
+   "default": 0
+  },
+  {
+   "key": "lfo4_rate",
+   "name": "LFO4 RATE",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "lfo4_fade",
+   "name": "LFO4 FADE",
+   "min": 0,
+   "max": 127,
+   "default": 0,
+   "display": "int"
+  },
+  {
+   "key": "lfo4_retrig",
+   "name": "LFO4 RETRIG",
+   "options": [
+    "KEY",
+    "FREE"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm9_src",
+   "name": "MOD9 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm9_dst",
+   "name": "MOD9 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm9_amt",
+   "name": "MOD9 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm9_slot",
+   "name": "MOD9 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm10_src",
+   "name": "MOD10 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm10_dst",
+   "name": "MOD10 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm10_amt",
+   "name": "MOD10 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm10_slot",
+   "name": "MOD10 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm11_src",
+   "name": "MOD11 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm11_dst",
+   "name": "MOD11 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm11_amt",
+   "name": "MOD11 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm11_slot",
+   "name": "MOD11 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm12_src",
+   "name": "MOD12 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm12_dst",
+   "name": "MOD12 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm12_amt",
+   "name": "MOD12 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm12_slot",
+   "name": "MOD12 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm13_src",
+   "name": "MOD13 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm13_dst",
+   "name": "MOD13 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm13_amt",
+   "name": "MOD13 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm13_slot",
+   "name": "MOD13 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm14_src",
+   "name": "MOD14 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm14_dst",
+   "name": "MOD14 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm14_amt",
+   "name": "MOD14 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm14_slot",
+   "name": "MOD14 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm15_src",
+   "name": "MOD15 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm15_dst",
+   "name": "MOD15 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm15_amt",
+   "name": "MOD15 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm15_slot",
+   "name": "MOD15 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm16_src",
+   "name": "MOD16 SOURCE",
+   "options": [
+    "NONE",
+    "EG1",
+    "EG2",
+    "LFO1",
+    "LFO2",
+    "VELOCITY",
+    "KEY",
+    "MOD WHEEL",
+    "AFTERTOUCH",
+    "PITCH BEND",
+    "RANDOM",
+    "AMP ENV",
+    "FILTER ENV",
+    "EG3",
+    "EG4",
+    "LFO3",
+    "LFO4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm16_dst",
+   "name": "MOD16 DEST",
+   "options": [
+    "NONE",
+    "PITCH",
+    "LEVEL",
+    "PAN",
+    "CUTOFF",
+    "RESONANCE",
+    "TIMBRE A",
+    "TIMBRE B",
+    "TIMBRE C",
+    "TIMBRE D"
+   ],
+   "default": 0
+  },
+  {
+   "key": "mm16_amt",
+   "name": "MOD16 AMOUNT",
+   "min": 0,
+   "max": 127,
+   "default": 64,
+   "display": "int"
+  },
+  {
+   "key": "mm16_slot",
+   "name": "MOD16 MACHINE",
+   "options": [
+    "ALL",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+   ],
+   "default": 0
+  },
+  {
+   "key": "transport_log",
+   "name": "TRANSPORT",
+   "min": 0,
+   "max": 0,
+   "display": "string",
+   "type": "readout"
   }
  ]
 }

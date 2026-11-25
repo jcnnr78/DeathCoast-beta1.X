@@ -1,6 +1,6 @@
 /* DeathCoast engine -- 4 monophonic machines (slots), each played from the plugin's track or from its own MIDI
  * channel on the plugin's MIDI port; per machine: last-note priority, glide, sustain pedal. Shared: the modulation
- * (EG1/EG2, LFO1/LFO2, random, controllers), the effects (delay, reverb, DIRT) and the master limiter.
+ * (EG1-EG4, LFO1-LFO4, random, controllers), the effects (delay, reverb, DIRT) and the master limiter.
  * The machines themselves are in machines.h.
  */
 #pragma once
@@ -36,6 +36,8 @@ public:
         return slot >= 0 && slot < DC_SLOTS ? std::atomic_load(&tables[slot]) : nullptr;
     }
     void allNotesOff(int source, bool allowTail);
+    /* the MPC's transport (HAS_TRANSPORT): on stop the delay and reverb fade away; play or a new note ends the fade */
+    void setTransport(bool playing);
 
 private:
     /* a machine's notes: the keys held for it, last-note priority */
@@ -67,14 +69,18 @@ private:
     std::shared_ptr<Wavetable> tables[DC_SLOTS];
 
     /* shared modulation */
-    AnalogADSR modEnv[kModEnvs];
-    Lfo lfo[2];
-    float lfoVal[2] = {};
+    Envelope modEnv[kModEnvs];
+    Lfo lfo[kLfos];
+    float lfoVal[kLfos] = {};
     ModShared ms;
     float noteRand = 0.0f;
     uint32_t rs = 1;
     uint32_t nextRandBits() { rs ^= rs << 13; rs ^= rs >> 17; rs ^= rs << 5; return rs; }
     uint32_t serialCounter = 0;
+
+    /* the fade when the MPC stops: its time in samples (-1: none) */
+    static constexpr int kStopFb = 44100, kStopFadeStart = 44100, kStopFadeEnd = 132300;   /* 1 s, 1 s, 3 s */
+    int stopT = -1;
 
     /* effects and master */
     Delay delay;

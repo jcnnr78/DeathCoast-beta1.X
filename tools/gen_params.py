@@ -10,7 +10,7 @@ Run:  python3 tools/gen_params.py"""
 import json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "1.7.0"
+VERSION = "1.8.0"
 SLOTS = 4
 KNOBS = 14
 
@@ -25,8 +25,9 @@ FM_MODES   = ["TONE", "DRUM"]
 OSC_WAVES  = ["SINE", "TRI", "SAW", "PULSE"]
 OFF_ON     = ["OFF", "ON"]
 LFO_SHAPES = ["SINE", "TRIANGLE", "SAW UP", "SAW DOWN", "SQUARE", "S&H", "SMOOTH RND"]
+# 1.8 adds EG3, EG4, LFO3, LFO4 at the end, so a saved source keeps its option number
 MOD_SRC    = ["NONE", "EG1", "EG2", "LFO1", "LFO2", "VELOCITY", "KEY", "MOD WHEEL", "AFTERTOUCH", "PITCH BEND",
-              "RANDOM", "AMP ENV", "FILTER ENV"]
+              "RANDOM", "AMP ENV", "FILTER ENV", "EG3", "EG4", "LFO3", "LFO4"]
 # TIMBRE A..D = K1..K4 of whatever model the machine runs
 MOD_DST    = ["NONE", "PITCH", "LEVEL", "PAN", "CUTOFF", "RESONANCE", "TIMBRE A", "TIMBRE B", "TIMBRE C", "TIMBRE D"]
 MOD_SLOT   = ["ALL", "E1", "E2", "E3", "E4"]
@@ -42,7 +43,7 @@ def E(key, name, opts, d=0, **x):  P.append((key, name, "enum", 0, len(opts) - 1
 def PATH(key):                     P.append((key, key, "path", 0, 0, 0, None, {}))
 
 for n in range(1, SLOTS + 1):
-    s = "m%d_" % n; S = "M%d " % n
+    s = "m%d_" % n; S = "E%d " % n                          # keys keep m<n>_, the names say ENGINE
     E(s + "model", S + "MODEL", MODELS, 0, refresh_display=True)
     E(s + "chan", S + "MIDI CHANNEL", CHANNELS, 0)
     E(s + "mute", S + "MUTE", OFF_ON, 0)
@@ -79,16 +80,16 @@ for n in range(1, SLOTS + 1):
     E(s + "osc_w2", S + "OSC2 WAVE", OSC_WAVES, 0)
     E(s + "osc_sync", S + "OSC SYNC", OFF_ON, 0)
     PATH(s + "table")
-for i in (1, 2):
+for i in (1, 2, 3, 4):
     I("me%d_a" % i, "EG%d A" % i, 0, 127, 0); I("me%d_d" % i, "EG%d D" % i, 0, 127, 64)
     I("me%d_s" % i, "EG%d S" % i, 0, 127, 0); I("me%d_r" % i, "EG%d R" % i, 0, 127, 64)
-for i in (1, 2):
+for i in (1, 2, 3, 4):
     E("lfo%d_shape" % i, "LFO%d SHAPE" % i, LFO_SHAPES, 0)
     E("lfo%d_sync" % i, "LFO%d SYNC" % i, ["FREE", "SYNC"], 0)
     I("lfo%d_rate" % i, "LFO%d RATE" % i, 0, 127, 64)
     I("lfo%d_fade" % i, "LFO%d FADE" % i, 0, 127, 0)
     E("lfo%d_retrig" % i, "LFO%d RETRIG" % i, ["KEY", "FREE"], 0)
-for m in range(1, 9):
+for m in range(1, 17):
     E("mm%d_src" % m, "MOD%d SOURCE" % m, MOD_SRC, 0)
     E("mm%d_dst" % m, "MOD%d DEST" % m, MOD_DST, 0)
     I("mm%d_amt" % m, "MOD%d AMOUNT" % m, 0, 127, 64)
@@ -163,14 +164,14 @@ for key, name, kind, lo, hi, d, opts, x in P:
     if kind == "path":
         n = key[1]
         # the table list: Init + every table the plugin finds (the shipped ones are the picture's frames 1..)
-        out += [{"key": key[:3] + "select", "refresh_display": True, "name": "M%s TABLE" % n, "min": 0,
+        out += [{"key": key[:3] + "select", "refresh_display": True, "name": "E%s TABLE" % n, "min": 0,
                  "max": max(127, _nf - 2), "default": 0, "display": "int", "type": "stepper", "nudge_pct": 50,
                  "clamped": True},   # the list holds only the tables found: the host test can't land past them
-                {"key": key[:3] + "select_prev", "name": "M%s TABLE PREV" % n, "momentary": True,
+                {"key": key[:3] + "select_prev", "name": "E%s TABLE PREV" % n, "momentary": True,
                  "step_of": key[:3] + "select", "step_delta": -1},
-                {"key": key[:3] + "select_next", "name": "M%s TABLE NEXT" % n, "momentary": True,
+                {"key": key[:3] + "select_next", "name": "E%s TABLE NEXT" % n, "momentary": True,
                  "step_of": key[:3] + "select", "step_delta": 1},
-                {"key": key[:3] + "tname", "name": "M%s TABLE NAME" % n, "min": 0, "max": 0, "display": "string",
+                {"key": key[:3] + "tname", "name": "E%s TABLE NAME" % n, "min": 0, "max": 0, "display": "string",
                  "type": "readout"}]
         continue
     e = {"key": key, "name": name}
@@ -193,20 +194,22 @@ out += [{"key": "preset", "refresh_display": True, "name": "PRESET", "min": 0, "
         {"key": "preset_next", "name": "NEXT PRESET", "momentary": True, "step_of": "preset", "step_delta": 1},
         {"key": "preset_name", "name": "PRESET NAME", "min": 0, "max": 0, "display": "string", "type": "readout"},
         # beta: the share of each audio block the engine takes (worked out by the plugin, shown on MAIN)
-        {"key": "cpu", "name": "CPU", "min": 0, "max": 0, "display": "string", "type": "readout"}]
+        {"key": "cpu", "name": "CPU", "min": 0, "max": 0, "display": "string", "type": "readout"},
+        # HAS_TRANSPORT: what the plugin heard of the MPC's play / stop (the host test reads it)
+        {"key": "transport_log", "name": "TRANSPORT", "min": 0, "max": 0, "display": "string", "type": "readout"}]
 # pictures the plugin works out (HAS_DISPLAY_REV makes the wrapper report them when they change: "display_rev"):
 # the filter curve (frame of the type's strip), the WEST COAST fold, the WAVETABLE table (two strips: a and b)
 for n in range(1, SLOTS + 1):
-    out.append({"key": "m%d_fview" % n, "name": "M%d FILTER VIEW" % n, "min": 0, "max": 191, "default": 0,
+    out.append({"key": "m%d_fview" % n, "name": "E%d FILTER VIEW" % n, "min": 0, "max": 191, "default": 0,
                 "display": "int", "clamped": True})
 for n in range(1, SLOTS + 1):
-    out.append({"key": "m%d_cview" % n, "name": "M%d FOLD VIEW" % n, "min": 0, "max": 127, "default": 0,
+    out.append({"key": "m%d_cview" % n, "name": "E%d FOLD VIEW" % n, "min": 0, "max": 127, "default": 0,
                 "display": "int", "clamped": True})
 for n in range(1, SLOTS + 1):
-    out.append({"key": "m%d_wview" % n, "name": "M%d TABLE VIEW" % n, "min": 0, "max": _split, "default": 2,
+    out.append({"key": "m%d_wview" % n, "name": "E%d TABLE VIEW" % n, "min": 0, "max": _split, "default": 2,
                 "display": "int", "clamped": True})
 for n in range(1, SLOTS + 1):
-    out.append({"key": "m%d_wviewb" % n, "name": "M%d TABLE VIEW B" % n, "min": 0, "max": _nf - _split,
+    out.append({"key": "m%d_wviewb" % n, "name": "E%d TABLE VIEW B" % n, "min": 0, "max": _nf - _split,
                 "default": 0, "display": "int", "clamped": True})
 # VST index order: a parameter keeps the index it was released with (params.lock, the last release's order), so a
 # project restoring its parameters by index still finds each one; a renamed key takes its old name's place, and

@@ -3,7 +3,12 @@
   "vendor": "DeathCoast",
   "uid": "NWst",
   "so": "deathcoast.so",
-  "programs": {"param": "preset", "name": "preset_name", "count": "preset_count", "name_at": "preset_name_at"},
+  "programs": {
+    "param": "preset",
+    "name": "preset_name",
+    "count": "preset_count",
+    "name_at": "preset_name_at"
+  },
   "module": "src/module.json",
   "build": {
     "sources": [
@@ -28,8 +33,11 @@
   "layout": "layout.conf",
   "art": "html",
   "defines": {
-    "QLINK_TRAVEL": 1, "SET_IF_CHANGED": 1, "HAS_DISPLAY_REV": 1,
+    "QLINK_TRAVEL": 1,
+    "SET_IF_CHANGED": 1,
+    "HAS_DISPLAY_REV": 1,
     "MODULE_DIR": "\"/sdcard/vst/deathcoast\"",
-    "MODULE_SUBDIR": "\"deathcoast\""
+    "MODULE_SUBDIR": "\"deathcoast\"",
+    "HAS_TRANSPORT": 1
   }
 }

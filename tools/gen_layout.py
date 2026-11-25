@@ -2,7 +2,7 @@
 """DeathCoast: builds layout.conf (run tools/gen_art.py first: it draws the pictures used here).
 
 Pages (9; MPC shows 5 at a time and a ">" for the rest):
-    MAIN   ENGINE 1    ENGINE 2    ENGINE 3    ENGINE 4   MOD   MATRIX   FX   GLOBAL
+    MAIN   ENGINE 1-4   ENVS   LFOS   MATRIX 1-8   MATRIX 9-16   FX   GLOBAL
 
 A machine page shows the controls of the MODEL chosen for that machine: the lines that differ carry
 when=mN_model:<i> and MPC swaps them as the model changes. Knob names and values come from the plugin
@@ -246,35 +246,46 @@ def fix_arrows(L, m):
     last = W('art file=images/dc/none.png x=0 y=86 w=1 h=1', m.replace("model", "mute") + ":1")
     return L[:at] + arts + L[at:] + [last]
 
-# ---- MOD: EG1/EG2 + LFOs (4 rows, two Q-Link sub-pages) --------------------------------------------------------
+# ---- ENVS: EG1-EG4, a row each; LFOS: LFO1-LFO4, a row each (sources for the matrix) -----------------------------
 def row(y0): return 'art file=images/row_panel.png x=10 y=%d w=1258 h=154' % y0
-L = ["[tab MOD]"]
 rows = [88 + i * 156 for i in range(4)]
-for n, y0 in zip((1, 2), rows[:2]):
-    L += [row(y0), text(75, y0 + 77, "ENV %d" % n)]
+L = ["[tab ENVS]"]
+for n, y0 in zip((1, 2, 3, 4), rows):
+    L += [row(y0), text(75, y0 + 77, "EG %d" % n)]
     for i, k in enumerate("adsr"):
-        L.append(knob(200 + i * 150, y0 + 52, "ATK DEC SUS REL".split()[i], "me%d_%s" % (n, k), bw=110))
-    L += [text(960, y0 + 77, "ROUTE IN MATRIX (EG%d)" % n, 1.2)]
-for n, y0 in zip((1, 2), rows[2:]):
+        L.append(knob(250 + i * 170, y0 + 52, "ATTACK DECAY SUSTAIN RELEASE".split()[i], "me%d_%s" % (n, k), bw=130))
+    L += [text(1040, y0 + 77, "ROUTE IN MATRIX (EG%d)" % n, 1.0)]
+L += ['qlinks "ENVS" = ' + ",".join("me%d_%s" % (n, k) for n in (1, 2, 3, 4) for k in "adsr")]
+ENVS = "\n".join(L) + "\n"
+
+L = ["[tab LFOS]"]
+for n, y0 in zip((1, 2, 3, 4), rows):
     p = "lfo%d" % n
     L += [row(y0), text(75, y0 + 77, "LFO %d" % n), popup(230, y0 + 66, 190, "SHAPE", p + "_shape"),
           enumh(500, y0 + 66, 100, "RATE MODE", p + "_sync"), knob(720, y0 + 52, "RATE", p + "_rate"),
           knob(870, y0 + 52, "FADE IN", p + "_fade"), enumh(1090, y0 + 66, 100, "RESTART", p + "_retrig")]
-L += ['qlinks "ENVS" = me1_a,me1_d,me1_s,me1_r,-,-,-,-,me2_a,me2_d,me2_s,me2_r,-,-,-,-',
-      'qlinks "LFOS" = lfo1_shape,lfo1_sync,lfo1_rate,lfo1_fade,lfo1_retrig,-,-,-,lfo2_shape,lfo2_sync,lfo2_rate,lfo2_fade,lfo2_retrig,-,-,-']
-MOD = "\n".join(L) + "\n"
+def lfo_cols(a, b):
+    return ",".join(["lfo%d_shape" % a, "lfo%d_sync" % a, "lfo%d_rate" % a, "lfo%d_fade" % a, "lfo%d_retrig" % a,
+                     "-", "-", "-", "lfo%d_shape" % b, "lfo%d_sync" % b, "lfo%d_rate" % b, "lfo%d_fade" % b,
+                     "lfo%d_retrig" % b, "-", "-", "-"])
+L += ['qlinks "LFO 1-2" = ' + lfo_cols(1, 2), 'qlinks "LFO 3-4" = ' + lfo_cols(3, 4)]
+LFOS = "\n".join(L) + "\n"
 
-# ---- MATRIX (8 rows: source -> destination x amount, on one machine or all) ---------------------------------------
-L = ["[tab MATRIX]", frame(10, 92, 1258, 616, "MODULATION MATRIX"),
-     text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "ENGINE", 1.2),
-     text(1010, 160, "AMOUNT", 1.2)]
-for i in range(8):
-    y = 200 + i * 62; n = i + 1
-    L += [text(40, y, str(n), 1.4), popup(185, y, 240, "", "mm%d_src" % n), popup(470, y, 230, "", "mm%d_dst" % n),
-          popup(705, y, 130, "", "mm%d_slot" % n),
-          'slider_h cx=1010 cy=%d w=400 h=34 label="" ns=0 key=mm%d_amt' % (y, n)]
-L.append('qlinks "MATRIX" = ' + ",".join(["mm%d_amt" % n for n in range(1, 9)] + ["mm%d_dst" % n for n in range(1, 9)]))
-MATRIX = "\n".join(L) + "\n"
+# ---- MATRIX 1-8 and 9-16: source -> destination x amount, on one engine or all --------------------------------
+def matrix_page(first):
+    rows_ = range(first, first + 8)
+    L = ["[tab MATRIX %d-%d]" % (first, first + 7), frame(10, 92, 1258, 616, "MODULATION MATRIX"),
+         text(185, 160, "SOURCE", 1.2), text(470, 160, "DESTINATION", 1.2), text(705, 160, "ENGINE", 1.2),
+         text(1010, 160, "AMOUNT", 1.2)]
+    for i, n in enumerate(rows_):
+        y = 200 + i * 62
+        L += [text(40, y, str(n), 1.4), popup(185, y, 240, "", "mm%d_src" % n), popup(470, y, 230, "", "mm%d_dst" % n),
+              popup(705, y, 130, "", "mm%d_slot" % n),
+              'slider_h cx=1010 cy=%d w=400 h=34 label="" ns=0 key=mm%d_amt' % (y, n)]
+    L.append('qlinks "MATRIX %d-%d" = ' % (first, first + 7) +
+             ",".join(["mm%d_amt" % n for n in rows_] + ["mm%d_dst" % n for n in rows_]))
+    return "\n".join(L) + "\n"
+MATRIX = matrix_page(1) + matrix_page(9)
 
 # ---- FX: DIRT, DELAY, REVERB (fed by each machine's sends on MAIN) -------------------------------------------------
 L = ["[tab FX]",
@@ -312,7 +323,7 @@ L = ["[tab GLOBAL]",
      'qlinks "GLOBAL" = glide,glide_mode,pb_range,volume,drift,oversample,-,-,preset,-,-,-,-,-,-,-']
 GLOBAL = "\n".join(L) + "\n"
 
-order = [MIX] + [slot_page(n) for n in range(1, 5)] + [MOD, MATRIX, FX, GLOBAL]
+order = [MIX] + [slot_page(n) for n in range(1, 5)] + [ENVS, LFOS, MATRIX, FX, GLOBAL]
 out = head.rstrip("\n") + "\n\n" + "\n".join(x.rstrip("\n") + "\n" for x in order)
 open(os.path.join(root, "layout.conf"), "w").write(out)
 print("layout.conf written:", len(order), "tabs")

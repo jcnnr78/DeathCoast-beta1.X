@@ -18,13 +18,13 @@ Engine::Engine()
     for (auto &t : tables) std::atomic_store(&t, init);
 }
 
-/* EG1/EG2, LFOs and the per-note random: started by a new note, retriggered unless LEGATO */
+/* EG1-EG4, LFO1-LFO4 and the per-note random: started by a new note, retriggered unless LEGATO */
 void Engine::modStart(bool fresh)
 {
     if (fresh) {
         noteRand = (float) (nextRandBits() & 0xFFFFFF) / 16777216.0f * 2.0f - 1.0f;
-        for (int i = 0; i < 2; i++)
-            lfo[i].noteOn((int) pots[DC_P_LFO1_RETRIG + 5 * i] == 0, nextRandBits());
+        for (int i = 0; i < kLfos; i++)
+            lfo[i].restart((int) pots[DC_P_LFO1_RETRIG + 5 * i] == 0, nextRandBits());
         for (auto &e : modEnv) e.reset();
     }
     for (auto &e : modEnv) e.noteOn();
@@ -33,16 +33,15 @@ void Engine::modStart(bool fresh)
 void Engine::updateMod(int n)
 {
     const float *P = pots;
-    static const struct { int a, d, s, r; } k[kModEnvs] = {
-        { DC_P_ME1_A, DC_P_ME1_D, DC_P_ME1_S, DC_P_ME1_R }, { DC_P_ME2_A, DC_P_ME2_D, DC_P_ME2_S, DC_P_ME2_R } };
-    for (int i = 0; i < kModEnvs; i++) {
-        modEnv[i].setAttack(potAttackTime(P[k[i].a]));
-        modEnv[i].setDecay(potEnvTime(P[k[i].d]));
-        modEnv[i].setSustainLevel(pot01(P[k[i].s]));
-        modEnv[i].setRelease(potEnvTime(P[k[i].r]));
+    for (int i = 0; i < kModEnvs; i++) {              /* EGn: A D S R, 4 parameters apart */
+        const int b = DC_P_ME1_A + 4 * i;
+        modEnv[i].setAttack(potAttackTime(P[b]));
+        modEnv[i].setDecay(potEnvTime(P[b + 1]));
+        modEnv[i].setSustainLevel(pot01(P[b + 2]));
+        modEnv[i].setRelease(potEnvTime(P[b + 3]));
         modEnv[i].process(n);
     }
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < kLfos; i++) {                 /* LFOn: shape, sync, rate, fade, restart, 5 apart */
         const int b = DC_P_LFO1_SHAPE + 5 * i;
         const int shape = std::clamp((int) P[b], 0, LFO_SHAPES - 1);
         float hz;
@@ -53,7 +52,7 @@ void Engine::updateMod(int n)
             hz = potLfoRate(P[b + 2]);
         }
         const float fade = P[b + 3] < 0.5f ? 0.0f : potAttackTime(P[b + 3]);
-        lfoVal[i] = lfo[i].process(n, hz, fade, shape);
+        lfoVal[i] = lfo[i].advance(n, hz, fade, shape);
     }
     const float pbr = P[DC_P_PB_RANGE];
     ms.pitchBendSemis = pitchBendNorm * pbr;
@@ -63,6 +62,10 @@ void Engine::updateMod(int n)
     ms.src[MS_EG2] = modEnv[1].getOutput();
     ms.src[MS_LFO1] = lfoVal[0];
     ms.src[MS_LFO2] = lfoVal[1];
+    ms.src[MS_EG3] = modEnv[2].getOutput();
+    ms.src[MS_EG4] = modEnv[3].getOutput();
+    ms.src[MS_LFO3] = lfoVal[2];
+    ms.src[MS_LFO4] = lfoVal[3];
     ms.src[MS_MODWHEEL] = modWheel;
     ms.src[MS_AFTERTOUCH] = aftertouch;
     ms.src[MS_PITCHBEND] = pbr > 0.0f ? std::clamp(pitchBendNorm, -1.0f, 1.0f) : 0.0f;
@@ -97,7 +100,7 @@ void Engine::noteOn(int source, int note, float vel)
         v.lastPlayed = (float) note;
         started = true;
     }
-    /* EG1/EG2: a fresh start when nothing was held; LEGATO keeps them running between overlapping notes */
+    /* EG1-EG4: a fresh start when nothing was held; LEGATO keeps them running between overlapping notes */
     if (started && (!wasAny || !legato)) modStart(!wasAny);
 }
 
@@ -144,12 +147,14 @@ void Engine::allNotesOff(int source, bool allowTail)
     if (!anyHeld()) for (auto &e : modEnv) allowTail ? e.noteOff() : e.reset();
 }
 
+void Engine::setTransport(bool playing) { stopT = playing ? -1 : 0; }
+
 void Engine::onMidi(int source, const uint8_t *msg, int len)
 {
     if (len < 2) return;
     switch (msg[0] & 0xF0) {
     case 0x90:
-        if (len >= 3 && msg[2] > 0) { noteOn(source, msg[1], (float) msg[2] / 127.0f); break; }
+        if (len >= 3 && msg[2] > 0) { stopT = -1; noteOn(source, msg[1], (float) msg[2] / 127.0f); break; }
         [[fallthrough]];
     case 0x80:
         noteOff(source, msg[1]);
@@ -210,12 +215,28 @@ void Engine::renderBlock(int16_t *out, int frames)
         }
         dirt.process(XL, XR, L, R, n, pot01(pots[DC_P_FX_XDRIVE]), pot01(pots[DC_P_FX_XCHAR]),
                      pot01(pots[DC_P_FX_XTONE]), pot01(pots[DC_P_FX_XGRIT]));
-        delay.process(DL, DR, L, R, n, delaySeconds(pots[DC_P_FX_DTIME], (int) pots[DC_P_FX_DSYNC] == 1, hostBpm),
-                      pot01(pots[DC_P_FX_DFB]), pot01(pots[DC_P_FX_DTONE]), (int) pots[DC_P_FX_DMODE] == 1,
+        /* after a stop: the repeats stop feeding back (over 1 s) and the reverb shortens to 1.5 s, so both die away on
+         * their own; from 1 s to 3 s a fade takes what is left to silence, then both are emptied */
+        float fbScale = 1.0f, fxGain = 1.0f, revCap = 0.0f;
+        if (stopT >= 0) {
+            fbScale = std::max(0.0f, 1.0f - (float) stopT / (float) kStopFb);
+            revCap = 1.5f;
+            if (stopT > kStopFadeStart) {
+                const float x = std::min(1.0f, (float) (stopT - kStopFadeStart) / (float) (kStopFadeEnd - kStopFadeStart));
+                fxGain = (1.0f - x) * (1.0f - x);
+            }
+            stopT += n;
+        }
+        float WL[kBlock], WR[kBlock];                     /* the delay and reverb returns, faded together */
+        std::memset(WL, 0, bytes); std::memset(WR, 0, bytes);
+        delay.process(DL, DR, WL, WR, n, delaySeconds(pots[DC_P_FX_DTIME], (int) pots[DC_P_FX_DSYNC] == 1, hostBpm),
+                      pot01(pots[DC_P_FX_DFB]) * fbScale, pot01(pots[DC_P_FX_DTONE]), (int) pots[DC_P_FX_DMODE] == 1,
                       potSquared(pots[DC_P_FX_DLEVEL]), pot01(pots[DC_P_FX_DDRIVE]), pot01(pots[DC_P_FX_DMOD]),
                       pot01(pots[DC_P_FX_DDUCK]), VL, VR, potSquared(pots[DC_P_FX_DREV]));
-        reverb.process(VL, VR, L, R, n, pots[DC_P_FX_RDECAY], pot01(pots[DC_P_FX_RSIZE]), pots[DC_P_FX_RPRE],
-                       pot01(pots[DC_P_FX_RDAMP]), pot01(pots[DC_P_FX_RMOD]), potSquared(pots[DC_P_FX_RLEVEL]));
+        reverb.process(VL, VR, WL, WR, n, pots[DC_P_FX_RDECAY], pot01(pots[DC_P_FX_RSIZE]), pots[DC_P_FX_RPRE],
+                       pot01(pots[DC_P_FX_RDAMP]), pot01(pots[DC_P_FX_RMOD]), potSquared(pots[DC_P_FX_RLEVEL]), revCap);
+        for (int i = 0; i < n; i++) { L[i] += WL[i] * fxGain; R[i] += WR[i] * fxGain; }
+        if (stopT > kStopFadeEnd) { delay.clear(); reverb.clear(); stopT = -1; }
         const float master = potSquared(pots[DC_P_VOLUME]) * 0.8f;
         for (int i = 0; i < n; i++) { L[i] *= master; R[i] *= master; }
         limiter.process(L, R, n);

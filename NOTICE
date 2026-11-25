@@ -7,5 +7,9 @@ which is kept unchanged as the BSD-3-Clause terms require.
 The wavetable library fetched at build time (release/library.json) is by Kristoffer Ekstrand (Adventure Kid,
 public domain) and Neu KatalYst (free to use).
 
+Derived from Tablor: the wavetable engine (src/ported: oscillator, band-limited tables, sub oscillator and noise,
+WAV reader, FFT) and the wavetable loader (src/dsp/wt, src/dsp/rt.h). DeathCoast's own since 1.8: the envelopes,
+glide, LFO and knob curves (src/dsp/envelope.h, lfo.h, param_map.h).
+
 The history of changes is in CHANGES.md and PROJECT.md.
 Neither the names of the copyright holders nor of the contributors are used to endorse DeathCoast.

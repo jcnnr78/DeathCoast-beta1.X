@@ -14,7 +14,7 @@
 #include "../ported/analog_tables.h"
 #include "filters.h"
 #include "oversample.h"
-#include "../ported/adsr.h"
+#include "envelope.h"
 #include "lfo.h"
 #include "param_map.h"
 #include "params.h"
@@ -26,14 +26,16 @@
 namespace dc {
 
 inline constexpr int kBlock = 32;
-inline constexpr int kMatrixRows = 8;
-inline constexpr int kModEnvs = 2;
+inline constexpr int kMatrixRows = 16;
+inline constexpr int kModEnvs = 4;
+inline constexpr int kLfos = 4;
 
 enum Machine { M_WAVETABLE = 0, M_FM, M_WESTCOAST, M_ANALOG, M_COUNT };
 enum GlideMode { GM_OFF = 0, GM_GLISSANDO, GM_PORTAMENTO, GM_LEGATO };
 /* option order of mmN_src / mmN_dst in tools/gen_params_v2.py: one contract */
 enum ModSrc { MS_NONE = 0, MS_EG1, MS_EG2, MS_LFO1, MS_LFO2, MS_VELOCITY, MS_KEY, MS_MODWHEEL,
-              MS_AFTERTOUCH, MS_PITCHBEND, MS_RANDOM, MS_AMPENV, MS_FLTENV, MS_COUNT };
+              MS_AFTERTOUCH, MS_PITCHBEND, MS_RANDOM, MS_AMPENV, MS_FLTENV, MS_EG3, MS_EG4, MS_LFO3, MS_LFO4,
+              MS_COUNT };
 enum ModDst { MD_NONE = 0, MD_PITCH, MD_LEVEL, MD_PAN, MD_CUTOFF, MD_RESO,
               MD_TA, MD_TB, MD_TC, MD_TD, MD_COUNT };
 
@@ -691,8 +693,8 @@ public:
 
         noteSmoother.process(n);
         const auto st = amp.getState();
-        if ((st == AnalogADSR::State::idle && (machine != M_WESTCOAST || wc.gate() < 1e-4f)) ||
-            (drum && st == AnalogADSR::State::sustain && amp.getOutput() < 1e-4f))
+        if ((st == Envelope::State::idle && (machine != M_WESTCOAST || wc.gate() < 1e-4f)) ||
+            (drum && st == Envelope::State::sustain && amp.getOutput() < 1e-4f))
             active = false;
     }
 
@@ -756,8 +758,8 @@ private:
     AnMachine an;
     MachineFilter filter;
     Decimator2x dec;
-    AnalogADSR amp, fenv;
-    ValueSmoother<float> noteSmoother;
+    Envelope amp, fenv;
+    Glide noteSmoother;
     double sampleRate = 44100.0;
     int slot = 0, machine = 0, midiNote = 60, lastOs = 1, osAuto = -1, calm = 0, lastPos = 0;
     static constexpr int kCalmBlocks = 690;              /* 0.5 s of 32-sample blocks */

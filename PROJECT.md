@@ -9,6 +9,17 @@
 - Next visual version: minimalist rounded knobs (value box under each knob), thin DeathCoast logo, graphic filter/envelope/wavetable displays.
 - 12 test presets planned: 4 bass/arp, 4 FM percussion, 4 mixed.
 
+## Phase 8 - DeathCoast 1.8, branch v1.8 (built locally, not yet on the MPC)
+- ENGINE for MACHINE on screen (keys keep m<n>_); GLOBAL's block SYSTEM; MAIN: SOLO (m<n>_solo, touch only) over MUTE,
+  the column lower with room for a fourth send; the name small in ENGINE 1's corner.
+- EG1-EG4, LFO1-LFO4 (pages ENVS, LFOS), matrix 16 rows (MATRIX 1-8, 9-16); new sources appended to the list.
+- envelope.h (Envelope, Glide), lfo.h, param_map.h written for DeathCoast: same curves (the decay and release still
+  time a full fall), sustain now follows its knob, smooth random glides on a cosine. src/ported/adsr.h removed.
+- HAS_TRANSPORT: on stop the delay's feedback goes to 0 over 1 s, the reverb is capped at 1.5 s (FREEZE off), a fade
+  from 1 s to 3 s, then both are emptied; play (or a jump back) or a note ends it. Offline: a FREEZE + 110 % delay
+  tail is gone ~1 s after the stop, smoothly. transport_log readout for the host test ("110").
+- Next: the user's 1.7 notes from the device; then 1.9, the wavetable engine of our own.
+
 ## Phase 7 - DeathCoast 1.7 (main)
 NorthWest becomes DeathCoast (Costa da Morte): every name in plugin, code and repository; the VST id stays "NWst"
 and NorthWest's states ("NW1;") and table paths ("NorthWest/...") are still read. Parameters keep their 1.6 VST

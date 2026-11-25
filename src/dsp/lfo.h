@@ -1,11 +1,12 @@
-/* DeathCoast LFO -- one per voice, block-rate output.
+/* DeathCoast LFO (1.8: written for DeathCoast, replacing the one it inherited).
  *
- * Shapes: sine, triangle, saw up, saw down, square, sample & hold, smooth
- * random. Free (Hz) or tempo-synced rate, a fade-in, and key-retrigger or
- * random start phase. The value is read once per block (kBlock = 128 samples,
- * ~2.9 ms), which is plenty for modulation and keeps the cost negligible.
- */
+ * Shapes: sine, triangle, saw up, saw down, square, sample & hold, smooth random (a new random level each cycle,
+ * glided to across the cycle). RATE in Hz, or a note value at the MPC's tempo (SYNC). FADE IN brings the depth up
+ * from 0 after a restart. RESTART KEY starts the cycle at 0 on a fresh note; FREE starts it anywhere.
+ * Worked out once a 32-sample block (0.7 ms), fine enough that even a fast LFO moves in small steps. Output -1..1,
+ * the fade applied. */
 #pragma once
+
 #include <cmath>
 #include <cstdint>
 
@@ -13,65 +14,59 @@ namespace dc {
 
 enum LfoShape { LFO_SINE = 0, LFO_TRI, LFO_SAW_UP, LFO_SAW_DOWN, LFO_SQUARE, LFO_SH, LFO_SMOOTH, LFO_SHAPES };
 
-/* beats (quarter notes) per cycle for the 12 sync divisions */
+/* SYNC: beats (quarter notes) a cycle, slowest first: 2 bars .. 1/32 triplet */
 inline constexpr int kLfoDivs = 12;
 inline float lfoDivBeats(int i)
 {
-    static const float b[kLfoDivs] = { 8.0f, 4.0f, 2.0f, 4.0f / 3.0f, 1.0f, 2.0f / 3.0f,
-                                       0.5f, 1.0f / 3.0f, 0.25f, 1.0f / 6.0f, 0.125f, 1.0f / 12.0f };
-    return b[i < 0 ? 0 : (i >= kLfoDivs ? kLfoDivs - 1 : i)];
+    static const float beats[kLfoDivs] = { 8.0f, 4.0f, 2.0f, 4.0f / 3.0f, 1.0f, 2.0f / 3.0f,
+                                           0.5f, 1.0f / 3.0f, 0.25f, 1.0f / 6.0f, 0.125f, 1.0f / 12.0f };
+    return beats[i < 0 ? 0 : i >= kLfoDivs ? kLfoDivs - 1 : i];
 }
 
 class Lfo {
 public:
-    void setSampleRate(double sr) { sampleRate = sr; }
+    void setSampleRate(double sr) { invRate = 1.0f / (float) sr; }
 
-    void noteOn(bool keyRetrig, uint32_t seed)
+    /* a fresh note: restart (RESTART KEY) or carry on from a random point (FREE), and fade in again */
+    void restart(bool fromZero, uint32_t seed)
     {
-        rs = seed ? seed : 0x1234567u;
-        phase = keyRetrig ? 0.0f : rand01();
-        held = rand01() * 2.0f - 1.0f;
-        next = rand01() * 2.0f - 1.0f;
-        fade = 0.0f;
-        lastPhase = phase;
+        rng = seed ? seed : 0x2545F491u;
+        pos = fromZero ? 0.0f : random01();
+        from = random11(); to = random11();
+        depth = 0.0f;
     }
 
-    /* advance by n samples at rate hz; returns the value in -1..1 (fade applied) */
-    float process(int n, float hz, float fadeSeconds, int shape)
+    /* moves on n samples at hz; the value at the end of them */
+    float advance(int n, float hz, float fadeSeconds, int shape)
     {
-        const float inc = hz * (float) n / (float) sampleRate;
-        lastPhase = phase;
-        phase += inc;
-        while (phase >= 1.0f) {                        /* a cycle boundary: draw new random values */
-            phase -= 1.0f;
-            held = next;
-            next = rand01() * 2.0f - 1.0f;
-        }
-        if (fadeSeconds <= 0.001f) fade = 1.0f;
-        else { fade += (float) n / (float) sampleRate / fadeSeconds; if (fade > 1.0f) fade = 1.0f; }
-
-        float v;
-        switch (shape) {
-        case LFO_SINE:     v = std::sin(6.28318530718f * phase); break;
-        case LFO_TRI:      v = phase < 0.5f ? 4.0f * phase - 1.0f : 3.0f - 4.0f * phase; break;
-        case LFO_SAW_UP:   v = 2.0f * phase - 1.0f; break;
-        case LFO_SAW_DOWN: v = 1.0f - 2.0f * phase; break;
-        case LFO_SQUARE:   v = phase < 0.5f ? 1.0f : -1.0f; break;
-        case LFO_SH:       v = held; break;
-        default:           v = held + (next - held) * phase; break;      /* smooth random */
-        }
-        return v * fade;
+        pos += hz * (float) n * invRate;
+        while (pos >= 1.0f) { pos -= 1.0f; from = to; to = random11(); }   /* a new cycle: the next random level */
+        depth = fadeSeconds <= 0.001f ? 1.0f : std::fmin(1.0f, depth + (float) n * invRate / fadeSeconds);
+        return shapeAt(shape) * depth;
     }
 
 private:
-    float rand01()
+    float shapeAt(int shape) const
     {
-        rs ^= rs << 13; rs ^= rs >> 17; rs ^= rs << 5;
-        return (float) (rs & 0xFFFFFF) / 16777216.0f;
+        switch (shape) {
+        case LFO_SINE:     return std::sin(6.2831853f * pos);
+        case LFO_TRI:      return 1.0f - 4.0f * std::fabs(pos - 0.5f);       /* -1 at 0, +1 half way */
+        case LFO_SAW_UP:   return 2.0f * pos - 1.0f;
+        case LFO_SAW_DOWN: return 1.0f - 2.0f * pos;
+        case LFO_SQUARE:   return pos < 0.5f ? 1.0f : -1.0f;
+        case LFO_SH:       return from;
+        default: {                                           /* smooth random: a cosine glide between levels */
+            const float t = 0.5f - 0.5f * std::cos(3.14159265f * pos);
+            return from + (to - from) * t;
+        }
+        }
     }
-    double sampleRate = 44100.0;
-    float phase = 0.0f, lastPhase = 0.0f, held = 0.0f, next = 0.0f, fade = 1.0f;
-    uint32_t rs = 0x1234567u;
+    uint32_t next() { rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5; return rng; }
+    float random01() { return (float) (next() >> 8) * (1.0f / 16777216.0f); }
+    float random11() { return random01() * 2.0f - 1.0f; }
+
+    float invRate = 1.0f / 44100.0f, pos = 0.0f, from = 0.0f, to = 0.0f, depth = 1.0f;
+    uint32_t rng = 0x2545F491u;
 };
 
 } // namespace dc

@@ -67,6 +67,7 @@ struct Instance {
     /* CPU readout: the engine's share of each block, peak-held, shown in whole percent twice a second */
     float cpuPeak = 0.0f;
     int cpuShown = 0, cpuSamples = 0;
+    char transport_log[64] = "";                 /* every "transport" value received, for the host test */
 
     float *params() { return engine.pots; }
 };
@@ -282,6 +283,13 @@ static void dc_set_param(void *instance, const char *key, const char *val)
     const char *k = colon ? colon + 1 : key;
 
     if (!strcmp(k, "state")) { apply_state(inst, val); return; }
+    if (!strcmp(k, "transport")) {                    /* HAS_TRANSPORT: "1" play (or a jump back), "0" stop */
+        const bool playing = val[0] == '1';
+        inst->engine.setTransport(playing);
+        const size_t l = strlen(inst->transport_log);
+        if (l + 1 < sizeof inst->transport_log) { inst->transport_log[l] = playing ? '1' : '0'; inst->transport_log[l + 1] = 0; }
+        return;
+    }
     if (!strcmp(k, "preset")) {          /* the PRESET menu: preset n = the defaults, then its blob */
         if (inst->presets.empty()) return;
         const int n = std::clamp(atoi(val), 0, (int) inst->presets.size() - 1);
@@ -439,6 +447,7 @@ static int dc_get_param(void *instance, const char *key, char *buf, int buf_len)
         if (n < 0 || n >= (int) inst->presets.size()) return write_str(buf, buf_len, "");
         return write_str(buf, buf_len, inst->presets[(size_t) n].name.c_str());
     }
+    if (!strcmp(key, "transport_log")) return write_str(buf, buf_len, inst->transport_log);   /* the host test's */
     if (!strcmp(key, "display_rev")) return write_int(buf, buf_len, (int) (display_rev(inst) & 0x7FFFFFFF));
     if (!strcmp(key, "cpu")) {
         char tmp[16];
