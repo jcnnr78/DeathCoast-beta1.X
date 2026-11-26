@@ -2,7 +2,7 @@
 #ifndef DEATHCOAST_PARAMS_H
 #define DEATHCOAST_PARAMS_H
 
-#define DC_VERSION "1.7.1"
+#define DC_VERSION "1.7.2"
 #define DC_PARAM_COUNT 260
 #define DC_SLOTS 4
 #define DC_KNOBS 14

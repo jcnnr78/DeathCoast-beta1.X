@@ -21,7 +21,7 @@ OUT = os.path.join(ROOT, "images", "dc")
 SS = 4                                    # supersampling
 
 def hexc(h, a=255): return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
-ACC, ACC_HI, INK, INK_FAINT = hexc("b9a7ff"), hexc("6fd3c7"), hexc("e8e6e1"), hexc("7c808a")
+ACC, ACC_HI, INK, INK_FAINT = hexc("c3c8d0"), hexc("6fd3c7"), hexc("e8e6e1"), hexc("7c808a")
 LINE, DISP_BG, DISC, DISC_EDGE = hexc("2b303a"), hexc("0b0d10"), hexc("1e222b"), hexc("363c48")
 
 def canvas(w, h, bg=(0, 0, 0, 0)): return Image.new("RGBA", (w * SS, h * SS), bg)
@@ -122,7 +122,7 @@ def fold(w, h):
         d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("2b303a", 160), width=SS)
         pts = [((10 + (w - 20) * p) * SS, (h / 2 - (h / 2 - 9) * v) * SS) for p, v in zip(ph, y)]
         glow = canvas(w, h); gd = ImageDraw.Draw(glow)
-        polyline(gd, pts, hexc("b9a7ff", 130), int(6 * SS))
+        polyline(gd, pts, hexc("c3c8d0", 130), int(6 * SS))
         im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(3 * SS)))
         polyline(d, pts, ACC_HI, int(2.2 * SS))
         frames.append(down(im, w, h))
@@ -187,7 +187,7 @@ def filt(kind, w, h):
         ys = 6 + (h - 12) * (top - np.clip(db, bot, top)) / (top - bot)
         pts = [(x * SS, y * SS) for x, y in zip(xs, ys)]
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
-        fd.polygon(pts + [(pts[-1][0], (h - 6) * SS), (pts[0][0], (h - 6) * SS)], fill=hexc("b9a7ff", 55))
+        fd.polygon(pts + [(pts[-1][0], (h - 6) * SS), (pts[0][0], (h - 6) * SS)], fill=hexc("c3c8d0", 55))
         im.alpha_composite(fill)
         polyline(d, pts, ACC_HI, int(2.2 * SS))
         frames.append(down(im, w, h))
@@ -218,7 +218,7 @@ def env(stage, w, h, n=64):
             for a in np.arange(0, 1, 0.08):
                 d.line(((X(a), Y(mid)), (X(min(1, a + 0.04)), Y(mid))), fill=hexc("7c808a", 110), width=SS)
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
-        fd.polygon(pts + [(X(1), Y(0)), (X(0), Y(0))], fill=hexc("b9a7ff", 50))
+        fd.polygon(pts + [(X(1), Y(0)), (X(0), Y(0))], fill=hexc("c3c8d0", 50))
         im.alpha_composite(fill)
         polyline(d, pts, ACC_HI, int(2.4 * SS))
         frames.append(down(im, w, h))
