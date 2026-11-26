@@ -81,13 +81,26 @@ def bar(w, h, n=128):
     for i in range(n):
         v = i / (n - 1)
         im = canvas(w, h); d = ImageDraw.Draw(im)
-        r = 5 * SS
-        d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), r, fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)
+        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)   # square corners
         if v > 0.003:
-            x1 = max(2 * r, int((w * SS - 2 * SS) * v))
-            d.rounded_rectangle((SS, SS, x1, h * SS - 1 - SS), r - SS, fill=ACC)
+            x1 = max(2 * SS, int((w * SS - 2 * SS) * v))
+            d.rectangle((SS, SS, x1, h * SS - 1 - SS), fill=ACC)
         frames.append(down(im, w, h))
     strip(frames, "bar_%dx%d.png" % (w, h))
+
+def bar_bipolar(w, h, n=128):
+    """a two-way slider (the matrix AMOUNT): a box with a centre mark, filled from the centre to the value"""
+    frames = []
+    for i in range(n):
+        v = i / (n - 1)
+        im = canvas(w, h); d = ImageDraw.Draw(im)
+        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)
+        c = w * SS // 2
+        x = SS + int((w * SS - 2 * SS) * v)
+        if abs(i - 64) >= 1: d.rectangle((min(c, x), SS, max(c, x), h * SS - 1 - SS), fill=ACC)
+        d.line(((c, SS), (c, h * SS - 1 - SS)), fill=hexc("6fd3c7"), width=SS)
+        frames.append(down(im, w, h))
+    strip(frames, "barbi_%dx%d.png" % (w, h))
 
 def arrows():
     """the arrows of the steppers shown for one model only (gen_layout.py fix_arrows draws them on the page), as the
@@ -257,6 +270,7 @@ if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     knob()
     for b in BARS: bar(*b)
+    bar_bipolar(400, 30)
     wavebox(*WAVEBOX)
     arrows()
     fold(*FOLD)
