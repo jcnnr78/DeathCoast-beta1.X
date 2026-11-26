@@ -21,8 +21,8 @@ OUT = os.path.join(ROOT, "images", "dc")
 SS = 4                                    # supersampling
 
 def hexc(h, a=255): return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
-ACC, ACC_HI, INK, INK_FAINT = hexc("e8871e"), hexc("ffb347"), hexc("f2f0ec"), hexc("8c8a85")
-LINE, DISP_BG, DISC, DISC_EDGE = hexc("3d3d42"), hexc("121214"), hexc("2f2f33"), hexc("4a4a50")
+ACC, ACC_HI, INK, INK_FAINT = hexc("b9a7ff"), hexc("6fd3c7"), hexc("e8e6e1"), hexc("7c808a")
+LINE, DISP_BG, DISC, DISC_EDGE = hexc("2b303a"), hexc("0b0d10"), hexc("1e222b"), hexc("363c48")
 
 def canvas(w, h, bg=(0, 0, 0, 0)): return Image.new("RGBA", (w * SS, h * SS), bg)
 def down(im, w, h): return im.resize((w, h), Image.LANCZOS)
@@ -68,7 +68,7 @@ def panel(name, label, w, h):
     """a panel that sets a group of controls apart (one Q-Link column), its name in the accent colour"""
     from PIL import ImageFont
     im = canvas(w, h); d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("323236"), outline=hexc("4a4a50"), width=SS)
+    d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("1e222b"), outline=hexc("363c48"), width=SS)
     try: f = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 15 * SS)
     except OSError: f = ImageFont.load_default(size=15 * SS)
     d.text((12 * SS, 8 * SS), label, font=f, fill=ACC)
@@ -82,7 +82,7 @@ def bar(w, h, n=128):
         v = i / (n - 1)
         im = canvas(w, h); d = ImageDraw.Draw(im)
         r = 5 * SS
-        d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), r, fill=hexc("121214"), outline=hexc("4a4a50"), width=SS)
+        d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), r, fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)
         if v > 0.003:
             x1 = max(2 * r, int((w * SS - 2 * SS) * v))
             d.rounded_rectangle((SS, SS, x1, h * SS - 1 - SS), r - SS, fill=ACC)
@@ -96,16 +96,16 @@ def arrows():
         im = canvas(44, 44); d = ImageDraw.Draw(im)
         c, hw, hh = 22 * SS, 6 * SS, 10 * SS
         pts = [(c + hw, c - hh), (c + hw, c + hh), (c - hw, c)] if side == "prev" else [(c - hw, c - hh), (c - hw, c + hh), (c + hw, c)]
-        d.polygon(pts, fill=hexc("ffb347"))
+        d.polygon(pts, fill=hexc("6fd3c7"))
         im = down(im, 44, 44); im.save(os.path.join(OUT, "arrow_%s.png" % side), optimize=True)
-    Image.new("RGBA", (44, 44), hexc("28282b")).save(os.path.join(OUT, "patch.png"))
+    Image.new("RGBA", (44, 44), hexc("171a20")).save(os.path.join(OUT, "patch.png"))
     print("  arrow_prev.png, arrow_next.png, patch.png")
 
 def wavebox(w, h):
     im = display(w, h, 10); d = ImageDraw.Draw(im)
-    d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 200), width=SS)
+    d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("2b303a", 200), width=SS)
     for q in (0.25, 0.75):
-        d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("3d3d42", 90), width=SS)
+        d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("2b303a", 90), width=SS)
     im = down(im, w, h); im.save(os.path.join(OUT, "wavebox_%dx%d.png" % (w, h)), optimize=True)
     print("  %-26s %dx%d" % ("wavebox_%dx%d.png" % (w, h), w, h))
 
@@ -119,10 +119,10 @@ def fold(w, h):
         x = np.sin(2 * np.pi * ph) * (1 + fo * 7) + sy * 0.8
         y = np.sin(np.pi / 2 * x) if (fo > 0 or sy > 0) else x
         im = display(w, h, 8); d = ImageDraw.Draw(im)
-        d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 160), width=SS)
+        d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("2b303a", 160), width=SS)
         pts = [((10 + (w - 20) * p) * SS, (h / 2 - (h / 2 - 9) * v) * SS) for p, v in zip(ph, y)]
         glow = canvas(w, h); gd = ImageDraw.Draw(glow)
-        polyline(gd, pts, hexc("e8871e", 130), int(6 * SS))
+        polyline(gd, pts, hexc("b9a7ff", 130), int(6 * SS))
         im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(3 * SS)))
         polyline(d, pts, ACC_HI, int(2.2 * SS))
         frames.append(down(im, w, h))
@@ -180,14 +180,14 @@ def filt(kind, w, h):
         im = display(w, h); d = ImageDraw.Draw(im)
         for g in (100, 1000, 10000):             # faint decade lines
             x = (10 + (w - 20) * math.log(g / 20) / math.log(1000)) * SS
-            d.line(((x, 6 * SS), (x, (h - 6) * SS)), fill=hexc("3d3d42", 120), width=SS)
+            d.line(((x, 6 * SS), (x, (h - 6) * SS)), fill=hexc("2b303a", 120), width=SS)
         y0 = (6 + (h - 12) * top / (top - bot)) * SS
-        d.line(((10 * SS, y0), ((w - 10) * SS, y0)), fill=hexc("3d3d42", 160), width=SS)
+        d.line(((10 * SS, y0), ((w - 10) * SS, y0)), fill=hexc("2b303a", 160), width=SS)
         xs = 10 + (w - 20) * np.log(f / 20) / math.log(1000)
         ys = 6 + (h - 12) * (top - np.clip(db, bot, top)) / (top - bot)
         pts = [(x * SS, y * SS) for x, y in zip(xs, ys)]
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
-        fd.polygon(pts + [(pts[-1][0], (h - 6) * SS), (pts[0][0], (h - 6) * SS)], fill=hexc("e8871e", 55))
+        fd.polygon(pts + [(pts[-1][0], (h - 6) * SS), (pts[0][0], (h - 6) * SS)], fill=hexc("b9a7ff", 55))
         im.alpha_composite(fill)
         polyline(d, pts, ACC_HI, int(2.2 * SS))
         frames.append(down(im, w, h))
@@ -216,9 +216,9 @@ def env(stage, w, h, n=64):
         pts = [(X(a), Y(b)) for a, b in zip(u, lvl)]
         if stage in ("d", "r"):                   # the generic level, dashed
             for a in np.arange(0, 1, 0.08):
-                d.line(((X(a), Y(mid)), (X(min(1, a + 0.04)), Y(mid))), fill=hexc("8c8a85", 110), width=SS)
+                d.line(((X(a), Y(mid)), (X(min(1, a + 0.04)), Y(mid))), fill=hexc("7c808a", 110), width=SS)
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
-        fd.polygon(pts + [(X(1), Y(0)), (X(0), Y(0))], fill=hexc("e8871e", 50))
+        fd.polygon(pts + [(X(1), Y(0)), (X(0), Y(0))], fill=hexc("b9a7ff", 50))
         im.alpha_composite(fill)
         polyline(d, pts, ACC_HI, int(2.4 * SS))
         frames.append(down(im, w, h))

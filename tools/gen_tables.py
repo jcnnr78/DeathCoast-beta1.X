@@ -58,7 +58,7 @@ def draw(table, w, h):
         ox, oy = 10 + k * dx, h / 2 + depth * dy / 2 - k * dy
         pts = [((ox + pw * i / 109) * A.SS, (oy - ph * fr[x]) * A.SS) for i, x in enumerate(xs)]
         a = int(110 + 90 * (1 - k / depth))                # even: the POSITION overlay marks the current one
-        A.polyline(d, pts, A.hexc("e8871e", a), int(1.4 * A.SS))
+        A.polyline(d, pts, A.hexc("b9a7ff", a), int(1.4 * A.SS))
     return A.down(im, w, h)
 
 def posmark(w, h, n=64):
@@ -71,7 +71,7 @@ def posmark(w, h, n=64):
         ox, oy = 10 + k * DX, h / 2 + DEPTH * DY / 2 - k * DY
         im = A.canvas(w, h); d = ImageDraw.Draw(im)
         glow = A.canvas(w, h); gd = ImageDraw.Draw(glow)
-        gd.line(((ox * A.SS, oy * A.SS), ((ox + pw) * A.SS, oy * A.SS)), fill=A.hexc("ffb347", 150), width=int(5 * A.SS))
+        gd.line(((ox * A.SS, oy * A.SS), ((ox + pw) * A.SS, oy * A.SS)), fill=A.hexc("6fd3c7", 150), width=int(5 * A.SS))
         im.alpha_composite(glow.filter(__import__("PIL.ImageFilter", fromlist=["x"]).GaussianBlur(3 * A.SS)))
         d.line(((ox * A.SS, oy * A.SS), ((ox + pw) * A.SS, oy * A.SS)), fill=A.ACC_HI, width=int(1.6 * A.SS))
         r = 3.2 * A.SS

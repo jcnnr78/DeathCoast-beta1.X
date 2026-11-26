@@ -2,6 +2,11 @@
 
 NorthWest is called DeathCoast from 1.7 (after the Costa da Morte). The entries below 1.7 keep the old name.
 
+## DeathCoast 1.7.1
+
+- Colours: the Berobreus palette (blue-black #0E1014, panels #171A20, lilac #B9A7FF on knobs, sliders and rules,
+  turquoise #6FD3C7 on values, arrows and curves, text #E8E6E1). Sound and parameters as 1.7.
+
 ## DeathCoast 1.7
 
 - OVERSAMPLING: OFF, AUTO (default), ON. AUTO runs a machine at twice the rate only while its sound needs it (fold,
