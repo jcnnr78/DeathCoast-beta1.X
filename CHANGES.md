@@ -6,6 +6,7 @@ NorthWest is called DeathCoast from 1.7 (after the Costa da Morte). The entries 
 
 - Colours: light grey (#C3C8D0) instead of lilac on knobs, sliders, rules and the logo's D and C; turquoise and the
   blue-black ground stay.
+- Sliders with square corners; the matrix AMOUNT is a square two-way slider filling from its centre.
 
 ## DeathCoast 1.7.1
 

@@ -268,7 +268,7 @@ for i in range(8):
     y = 200 + i * 62; n = i + 1
     L += [text(40, y, str(n), 1.4), popup(185, y, 240, "", "mm%d_src" % n), popup(470, y, 230, "", "mm%d_dst" % n),
           popup(705, y, 130, "", "mm%d_slot" % n),
-          'slider_h cx=1010 cy=%d w=400 h=34 label="" ns=0 key=mm%d_amt' % (y, n)]
+          'slider_h cx=1010 cy=%d w=400 h=30 label="" ns=0 key=mm%d_amt strip=images/dc/barbi_400x30.png frames=128 bw=400' % (y, n)]
 L.append('qlinks "MATRIX" = ' + ",".join(["mm%d_amt" % n for n in range(1, 9)] + ["mm%d_dst" % n for n in range(1, 9)]))
 MATRIX = "\n".join(L) + "\n"
 
