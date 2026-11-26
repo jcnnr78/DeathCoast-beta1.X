@@ -58,7 +58,7 @@ def draw(table, w, h):
         ox, oy = 10 + k * dx, h / 2 + depth * dy / 2 - k * dy
         pts = [((ox + pw * i / 109) * A.SS, (oy - ph * fr[x]) * A.SS) for i, x in enumerate(xs)]
         a = int(110 + 90 * (1 - k / depth))                # even: the POSITION overlay marks the current one
-        A.polyline(d, pts, A.hexc("b9a7ff", a), int(1.4 * A.SS))
+        A.polyline(d, pts, A.hexc("c3c8d0", a), int(1.4 * A.SS))
     return A.down(im, w, h)
 
 def posmark(w, h, n=64):
