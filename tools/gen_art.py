@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """DeathCoast: draws the skin's own images into images/dc/ (run before gen_layout.py; needs Pillow + numpy).
 
-    knob.png              the knob filmstrip: flat round disc, thin value ring, short pointer (128 frames)
+    knob.png, knob_main.png  the knobs (tools/knob_art.py): pointer for most, fluted for the main controls
     bar_WxH.png           a slider: a long box that fills with the accent colour (128 frames)
     wavebox_WxH.png       the WAVETABLE window's box
     flt_<type>_WxH.png    FILTER: the response of each type, following CUTOFF, RESONANCE and SHAPE as the plugin
@@ -12,7 +12,7 @@
     logo.png              "DeathCoast" in thin letters
 
 Run:  python3 tools/gen_art.py"""
-import math, os
+import math, os, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -21,8 +21,8 @@ OUT = os.path.join(ROOT, "images", "dc")
 SS = 4                                    # supersampling
 
 def hexc(h, a=255): return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
-ACC, ACC_HI, INK, INK_FAINT = hexc("c3c8d0"), hexc("6fd3c7"), hexc("e8e6e1"), hexc("7c808a")
-LINE, DISP_BG, DISC, DISC_EDGE = hexc("2b303a"), hexc("0b0d10"), hexc("1e222b"), hexc("363c48")
+ACC, ACC_HI, INK, INK_FAINT = hexc("c3c8d0"), hexc("6fd3c7"), hexc("e8e6e1"), hexc("8c8a85")
+LINE, DISP_BG, DISC, DISC_EDGE = hexc("3d3d42"), hexc("121214"), hexc("2f2f33"), hexc("4a4a50")
 
 def canvas(w, h, bg=(0, 0, 0, 0)): return Image.new("RGBA", (w * SS, h * SS), bg)
 def down(im, w, h): return im.resize((w, h), Image.LANCZOS)
@@ -46,29 +46,17 @@ def display(w, h, radius=10):
 
 # ---------------------------------------------------------------------------------------------------- knob
 def knob(n=128, size=72):
-    frames = []
-    c = size * SS / 2
-    for i in range(n):
-        v = i / (n - 1)
-        im = canvas(size, size); d = ImageDraw.Draw(im)
-        r_ring, wr = 32 * SS, 3 * SS                           # thin ring: track + value arc, 270 degrees
-        box = (c - r_ring, c - r_ring, c + r_ring, c + r_ring)
-        d.arc(box, 135, 405, fill=LINE, width=wr)
-        if v > 0.004: d.arc(box, 135, 135 + 270 * v, fill=ACC, width=wr)
-        r = 24 * SS                                             # flat disc, no shadow
-        d.ellipse((c - r, c - r, c + r, c + r), fill=DISC, outline=DISC_EDGE, width=SS)
-        a = math.radians(135 + 270 * v)                          # short pointer, rounded ends
-        p0 = (c + math.cos(a) * 9 * SS, c + math.sin(a) * 9 * SS)
-        p1 = (c + math.cos(a) * 19 * SS, c + math.sin(a) * 19 * SS)
-        polyline(d, [p0, p1], INK, int(3 * SS))
-        frames.append(down(im, size, size))
-    strip(frames, "knob.png")
+    """the two knobs (tools/knob_art.py): knob.png the pointer one, knob_main.png the fluted one for the main
+    controls; 128 frames each"""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import knob_art
+    strip([knob_art.pointer(i / (n - 1), size) for i in range(n)], "knob.png")
+    strip([knob_art.fluted(i / (n - 1), size) for i in range(n)], "knob_main.png")
 
 def panel(name, label, w, h):
     """a panel that sets a group of controls apart (one Q-Link column), its name in the accent colour"""
     from PIL import ImageFont
     im = canvas(w, h); d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("1e222b"), outline=hexc("363c48"), width=SS)
+    d.rounded_rectangle((0, 0, w * SS - 1, h * SS - 1), 10 * SS, fill=hexc("2f2f33"), outline=hexc("4a4a50"), width=SS)
     try: f = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 15 * SS)
     except OSError: f = ImageFont.load_default(size=15 * SS)
     d.text((12 * SS, 8 * SS), label, font=f, fill=ACC)
@@ -81,7 +69,7 @@ def bar(w, h, n=128):
     for i in range(n):
         v = i / (n - 1)
         im = canvas(w, h); d = ImageDraw.Draw(im)
-        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)   # square corners
+        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("121214"), outline=hexc("4a4a50"), width=SS)   # square corners
         if v > 0.003:
             x1 = max(2 * SS, int((w * SS - 2 * SS) * v))
             d.rectangle((SS, SS, x1, h * SS - 1 - SS), fill=ACC)
@@ -94,7 +82,7 @@ def bar_bipolar(w, h, n=128):
     for i in range(n):
         v = i / (n - 1)
         im = canvas(w, h); d = ImageDraw.Draw(im)
-        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("0b0d10"), outline=hexc("363c48"), width=SS)
+        d.rectangle((0, 0, w * SS - 1, h * SS - 1), fill=hexc("121214"), outline=hexc("4a4a50"), width=SS)
         c = w * SS // 2
         x = SS + int((w * SS - 2 * SS) * v)
         if abs(i - 64) >= 1: d.rectangle((min(c, x), SS, max(c, x), h * SS - 1 - SS), fill=ACC)
@@ -111,14 +99,14 @@ def arrows():
         pts = [(c + hw, c - hh), (c + hw, c + hh), (c - hw, c)] if side == "prev" else [(c - hw, c - hh), (c - hw, c + hh), (c + hw, c)]
         d.polygon(pts, fill=hexc("6fd3c7"))
         im = down(im, 44, 44); im.save(os.path.join(OUT, "arrow_%s.png" % side), optimize=True)
-    Image.new("RGBA", (44, 44), hexc("171a20")).save(os.path.join(OUT, "patch.png"))
+    Image.new("RGBA", (44, 44), hexc("28282b")).save(os.path.join(OUT, "patch.png"))
     print("  arrow_prev.png, arrow_next.png, patch.png")
 
 def wavebox(w, h):
     im = display(w, h, 10); d = ImageDraw.Draw(im)
-    d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("2b303a", 200), width=SS)
+    d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 200), width=SS)
     for q in (0.25, 0.75):
-        d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("2b303a", 90), width=SS)
+        d.line(((10 * SS, (8 + (h - 16) * q) * SS), ((w - 10) * SS, (8 + (h - 16) * q) * SS)), fill=hexc("3d3d42", 90), width=SS)
     im = down(im, w, h); im.save(os.path.join(OUT, "wavebox_%dx%d.png" % (w, h)), optimize=True)
     print("  %-26s %dx%d" % ("wavebox_%dx%d.png" % (w, h), w, h))
 
@@ -132,7 +120,7 @@ def fold(w, h):
         x = np.sin(2 * np.pi * ph) * (1 + fo * 7) + sy * 0.8
         y = np.sin(np.pi / 2 * x) if (fo > 0 or sy > 0) else x
         im = display(w, h, 8); d = ImageDraw.Draw(im)
-        d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("2b303a", 160), width=SS)
+        d.line(((10 * SS, h / 2 * SS), ((w - 10) * SS, h / 2 * SS)), fill=hexc("3d3d42", 160), width=SS)
         pts = [((10 + (w - 20) * p) * SS, (h / 2 - (h / 2 - 9) * v) * SS) for p, v in zip(ph, y)]
         glow = canvas(w, h); gd = ImageDraw.Draw(glow)
         polyline(gd, pts, hexc("c3c8d0", 130), int(6 * SS))
@@ -193,9 +181,9 @@ def filt(kind, w, h):
         im = display(w, h); d = ImageDraw.Draw(im)
         for g in (100, 1000, 10000):             # faint decade lines
             x = (10 + (w - 20) * math.log(g / 20) / math.log(1000)) * SS
-            d.line(((x, 6 * SS), (x, (h - 6) * SS)), fill=hexc("2b303a", 120), width=SS)
+            d.line(((x, 6 * SS), (x, (h - 6) * SS)), fill=hexc("3d3d42", 120), width=SS)
         y0 = (6 + (h - 12) * top / (top - bot)) * SS
-        d.line(((10 * SS, y0), ((w - 10) * SS, y0)), fill=hexc("2b303a", 160), width=SS)
+        d.line(((10 * SS, y0), ((w - 10) * SS, y0)), fill=hexc("3d3d42", 160), width=SS)
         xs = 10 + (w - 20) * np.log(f / 20) / math.log(1000)
         ys = 6 + (h - 12) * (top - np.clip(db, bot, top)) / (top - bot)
         pts = [(x * SS, y * SS) for x, y in zip(xs, ys)]
@@ -229,7 +217,7 @@ def env(stage, w, h, n=64):
         pts = [(X(a), Y(b)) for a, b in zip(u, lvl)]
         if stage in ("d", "r"):                   # the generic level, dashed
             for a in np.arange(0, 1, 0.08):
-                d.line(((X(a), Y(mid)), (X(min(1, a + 0.04)), Y(mid))), fill=hexc("7c808a", 110), width=SS)
+                d.line(((X(a), Y(mid)), (X(min(1, a + 0.04)), Y(mid))), fill=hexc("8c8a85", 110), width=SS)
         fill = canvas(w, h); fd = ImageDraw.Draw(fill)
         fd.polygon(pts + [(X(1), Y(0)), (X(0), Y(0))], fill=hexc("c3c8d0", 50))
         im.alpha_composite(fill)

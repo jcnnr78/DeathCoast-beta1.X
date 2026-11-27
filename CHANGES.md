@@ -10,6 +10,9 @@
   sources are at the end of the list, so saved routings keep theirs.
 - The envelopes, glide, LFO and knob curves are DeathCoast's own (no Tablor code left in them); same curves, the
   smooth random LFO glides on a cosine.
+- Look: the grey ground of 1.7 back, light grey and turquoise accents, square sliders; two knobs the Moog way: a
+  fluted one for the main controls (CUTOFF, RESONANCE, every LEVEL, VOLUME), a small pointer one for the rest
+  (tools/knob_art.py).
 - Stop: when the MPC's sequencer stops the delay and reverb fade away in about a second (HAS_TRANSPORT); a note or
   play ends the fade.
 
